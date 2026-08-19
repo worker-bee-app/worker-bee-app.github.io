@@ -20,8 +20,19 @@ const twoLetterOutput = document.getElementById('two-letter-output');
 const qStart = document.getElementById('q-start');
 const qContains = document.getElementById('q-contains');
 const qLength = document.getElementById('q-length');
-const btnSearch = document.getElementById('btn-search');
 const queryResults = document.getElementById('query-results');
+
+const hintsContainer = document.getElementById('hints-container');
+const lettersSetup = document.getElementById('letters-setup');
+const letterButtons = document.getElementById('letter-buttons');
+const btnEditHints = document.getElementById('btn-edit-hints');
+const nytLink = document.getElementById('nyt-link');
+
+// Set dynamic NYT Link
+const d = new Date();
+const m = String(d.getMonth() + 1).padStart(2, '0');
+const day = String(d.getDate()).padStart(2, '0');
+nytLink.href = `https://www.nytimes.com/${d.getFullYear()}/${m}/${day}/crosswords/spelling-bee-forum.html`;
 
 async function loadDictionary() {
     statusMsg.innerText = 'Loading universal dictionary...';
@@ -40,12 +51,13 @@ async function loadDictionary() {
 
 hintsInput.addEventListener('input', parseHints);
 foundInput.addEventListener('input', updateState);
-btnSearch.addEventListener('click', runQuery);
+btnEditHints.addEventListener('click', () => {
+    lettersSetup.classList.add('hidden');
+    hintsContainer.classList.remove('hidden');
+});
 
 [qStart, qContains, qLength].forEach(el => {
-    el.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') runQuery();
-    });
+    el.addEventListener('input', runQuery);
 });
 
 function parseHints() {
@@ -110,13 +122,35 @@ function parseHints() {
     }
 
     if (parsedState.centerLetter) {
-        statusMsg.innerText = `Hints parsed! Center letter: ${parsedState.centerLetter.toUpperCase()}`;
+        statusMsg.innerText = `Hints parsed! Verify your center letter.`;
+        hintsContainer.classList.add('hidden');
+        lettersSetup.classList.remove('hidden');
+        renderLetterButtons();
         prefilterDictionary();
     } else {
         statusMsg.innerText = `Could not detect letters. Ensure they are on their own line separated by spaces.`;
     }
 
     updateState();
+}
+
+function renderLetterButtons() {
+    const all = [parsedState.centerLetter, ...parsedState.outerLetters];
+    letterButtons.innerHTML = '';
+    all.forEach(l => {
+        const btn = document.createElement('button');
+        btn.className = 'letter-btn' + (l === parsedState.centerLetter ? ' center' : '');
+        btn.innerText = l;
+        btn.onclick = () => {
+            // Swap center letter
+            parsedState.outerLetters = all.filter(char => char !== l);
+            parsedState.centerLetter = l;
+            renderLetterButtons();
+            prefilterDictionary();
+            updateState();
+        };
+        letterButtons.appendChild(btn);
+    });
 }
 
 function prefilterDictionary() {
@@ -180,6 +214,7 @@ function updateState() {
 
     renderGrid(remGrid);
     renderTwoLetter(remTwoLetter);
+    runQuery();
 }
 
 function renderGrid(remGrid) {

@@ -220,3 +220,47 @@ hr {
     font-size: 1rem;
     line-height: 1.5;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.letter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.letter-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.letter-btn:hover {
+    border-color: var(--primary);
+}
+
+.letter-btn.center {
+    background: var(--primary);
+    border-color: var(--primary-dark);
+    color: var(--secondary);
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.btn-secondary:hover {
+    background-color: #dde0e3;
+}

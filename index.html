@@ -10,14 +10,21 @@
     <header>
         <h1>Worker Bee 🐝</h1>
         <p>Your NYT Spelling Bee Companion</p>
-        <a href="https://www.nytimes.com/crosswords/spelling-bee-forum" target="_blank" class="btn">Open Today's Hints</a>
+        <a href="#" id="nyt-link" target="_blank" class="btn">Open Today's Hints</a>
     </header>
     <main>
         <div class="panel setup-panel">
             <h2>1. Setup</h2>
-            <label for="hints-input">Paste NYT Hints Here</label>
-            <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+            <div id="hints-container">
+                <label for="hints-input">Paste NYT Hints Here</label>
+                <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+            </div>
             
+            <div id="letters-setup" class="hidden">
+                <label>Confirm Center Letter</label>
+                <div id="letter-buttons" class="letter-buttons"></div>
+                <button id="btn-edit-hints" class="btn btn-small btn-secondary">Edit Hints Text</button>
+            </div>
             <label for="found-input">Paste Found Words</label>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
         </div>
@@ -50,7 +57,6 @@
                     <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
                     <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
                     <input type="number" id="q-length" placeholder="Length (e.g. 5)" min="4">
-                    <button id="btn-search" class="btn btn-small">Search</button>
                 </div>
                 <div id="query-results"></div>
             </div>
