@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Bee - NYT Spelling Bee Aide</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Worker Bee 🐝</h1>
+        <p>Your NYT Spelling Bee Companion</p>
+        <a href="https://www.nytimes.com/crosswords/spelling-bee-forum" target="_blank" class="btn">Open Today's Hints</a>
+    </header>
+    <main>
+        <div class="panel setup-panel">
+            <h2>1. Setup</h2>
+            <label for="hints-input">Paste NYT Hints Here</label>
+            <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+            
+            <label for="found-input">Paste Found Words</label>
+            <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
+        </div>
+        
+        <div class="panel active-panel">
+            <h2>2. Active Aide</h2>
+            <div id="status-container">
+                <p>Status: <span id="status-msg">Waiting for hints...</span></p>
+                <div class="stats">
+                    <div>Words: <span id="words-count">0</span>/<span id="words-total">0</span></div>
+                    <div>Points: <span id="points-count">0</span>/<span id="points-total">0</span></div>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <h3>Remaining Grid</h3>
+                <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
+            </div>
+
+            <div class="two-letter-container">
+                <h3>Remaining Two-Letter List</h3>
+                <div id="two-letter-output"><em>Paste hints to view list</em></div>
+            </div>
+            
+            <hr>
+
+            <div class="query-container">
+                <h3>Dictionary Query</h3>
+                <div class="query-inputs">
+                    <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
+                    <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
+                    <input type="number" id="q-length" placeholder="Length (e.g. 5)" min="4">
+                    <button id="btn-search" class="btn btn-small">Search</button>
+                </div>
+                <div id="query-results"></div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

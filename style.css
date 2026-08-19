@@ -1,0 +1,222 @@
+:root {
+    --bg-color: #f7f9fa;
+    --text-color: #1a1a1a;
+    --panel-bg: #ffffff;
+    --border-color: #e1e4e8;
+    --primary: #f6c039;
+    --primary-dark: #dca31f;
+    --secondary: #2c3e50;
+    --radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    margin: 0 0 0.25rem 0;
+    color: var(--secondary);
+    font-size: 2rem;
+}
+
+header p {
+    margin: 0;
+    color: #666;
+}
+
+.btn {
+    display: inline-block;
+    background-color: var(--primary);
+    color: var(--secondary);
+    padding: 0.6rem 1.2rem;
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-weight: bold;
+    margin-top: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    margin-top: 0;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media(min-width: 800px) {
+    main {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.panel {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    flex: 1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.panel h2 {
+    margin-top: 0;
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+    padding-bottom: 0.25rem;
+}
+
+label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-family: monospace;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(246, 192, 57, 0.2);
+}
+
+#status-container {
+    background: #f1f3f5;
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+}
+
+#status-container p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.stats {
+    display: flex;
+    gap: 1.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.scroll-table {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+}
+
+th, td {
+    padding: 0.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.zero {
+    color: #adb5bd;
+    text-decoration: line-through;
+}
+
+.two-letter-container {
+    margin-top: 1.5rem;
+}
+
+.two-letter-item {
+    display: inline-block;
+    margin-right: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+    font-size: 1.1rem;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.two-letter-item.zero {
+    background: transparent;
+    border-color: transparent;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
+}
+
+.query-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.query-inputs input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    flex: 1;
+    min-width: 120px;
+    font-size: 1rem;
+}
+
+#query-results {
+    max-height: 250px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    font-family: monospace;
+    font-size: 1rem;
+    line-height: 1.5;
+}
