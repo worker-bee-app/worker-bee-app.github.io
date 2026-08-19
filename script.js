@@ -227,15 +227,49 @@ function updateState() {
     const foundText = foundInput.value.toLowerCase();
     const foundWords = foundText.match(/[a-z]{4,}/g) || [];
     const uniqueFoundWords = [...new Set(foundWords)];
+    const allLetters = new Set([parsedState.centerLetter, ...parsedState.outerLetters]);
+
+    // Validate words
+    const invalidWords = [];
+    const validFoundWords = [];
+    uniqueFoundWords.forEach(w => {
+        let reason = null;
+        
+        const invalidChars = [];
+        for (let char of w) {
+            if (!allLetters.has(char)) {
+                if (!invalidChars.includes(char)) invalidChars.push(char);
+            }
+        }
+        
+        if (invalidChars.length > 0) {
+            reason = `invalid letter${invalidChars.length > 1 ? 's' : ''} '${invalidChars.join(', ')}'`;
+        } else if (!w.includes(parsedState.centerLetter)) {
+            reason = `missing center '${parsedState.centerLetter}'`;
+        }
+        
+        if (!reason) {
+            validFoundWords.push(w);
+        } else {
+            invalidWords.push(`${w} (${reason})`);
+        }
+    });
+
+    const foundWarning = document.getElementById('found-warning');
+    if (invalidWords.length > 0) {
+        foundWarning.innerText = `Ignored: ${invalidWords.join(', ')}`;
+        foundWarning.classList.remove('hidden');
+    } else {
+        foundWarning.classList.add('hidden');
+    }
 
     let foundScore = 0;
     let foundPangrams = 0;
     let foundStartLetters = new Set();
     let remGrid = JSON.parse(JSON.stringify(parsedState.grid));
     let remTwoLetter = { ...parsedState.twoLetter };
-    const allLetters = new Set([parsedState.centerLetter, ...parsedState.outerLetters]);
 
-    uniqueFoundWords.forEach(w => {
+    validFoundWords.forEach(w => {
         foundStartLetters.add(w[0]);
         // Points calculation
         if (w.length === 4) foundScore += 1;
@@ -266,7 +300,7 @@ function updateState() {
         }
     });
 
-    wordsCount.innerText = uniqueFoundWords.length;
+    wordsCount.innerText = validFoundWords.length;
     wordsTotal.innerText = parsedState.totals.words || '?';
     pointsCount.innerText = foundScore;
     pointsTotal.innerText = parsedState.totals.points || '?';

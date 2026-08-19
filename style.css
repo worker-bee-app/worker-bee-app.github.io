@@ -376,3 +376,27 @@ hr {
     margin-top: -1rem;
     margin-bottom: 1.5rem;
 }
+
+.warning-text {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.disclaimer-text {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.nyt-style, .nyt-style th, .nyt-style td {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.95rem;
+}
+
+.two-letter-container h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}

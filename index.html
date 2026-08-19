@@ -40,6 +40,7 @@
                 <button id="btn-clear-found" class="btn-text">Clear</button>
             </div>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
+            <div id="found-warning" class="warning-text hidden"></div>
             
             <hr>
 
@@ -66,18 +67,18 @@
                     <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
                     <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
                 </div>
+                <div class="disclaimer-text">Note: Counters track your local progress based on the words you enter, not the live game state.</div>
             </div>
             
             <div class="affordance-text">💡 Click any number or bigram below to instantly search</div>
 
             <div class="grid-container">
-                <h3>Remaining Grid</h3>
-                <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
+                <div id="grid-output" class="scroll-table nyt-style"><em>Paste hints to view grid</em></div>
             </div>
 
             <div class="two-letter-container">
-                <h3>Remaining Two-Letter List</h3>
-                <div id="two-letter-output"><em>Paste hints to view list</em></div>
+                <h3>Two letter tracker:</h3>
+                <div id="two-letter-output" class="nyt-style"><em>Paste hints to view list</em></div>
             </div>
             
         </div>
