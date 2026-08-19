@@ -18,6 +18,14 @@
     <main>
         <div class="panel setup-panel">
             <h2>1. Setup</h2>
+            <details class="how-to">
+                <summary>How to use this tool?</summary>
+                <ul>
+                    <li>Paste the daily NYT hints text (including grid and two-letter list) into the box below and click <strong>Load Hints</strong>.</li>
+                    <li>Paste your discovered words into the <strong>Found Words</strong> box to automatically decrement the counters.</li>
+                    <li>Click any number in the Grid or any Two-Letter bigram to instantly populate the Dictionary Query.</li>
+                </ul>
+            </details>
             <div id="hints-container">
                 <div class="label-row">
                     <label for="hints-input">Paste NYT Hints Here</label>
@@ -40,7 +48,7 @@
                 <button id="btn-clear-found" class="btn-text">Clear</button>
             </div>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
-            <div id="found-warning" class="warning-text hidden"></div>
+            <ul id="found-warning" class="warning-text hidden"></ul>
             
             <hr>
 
@@ -60,6 +68,7 @@
         
         <div class="panel active-panel">
             <h2>2. Active Aide</h2>
+            <div class="disclaimer-text">Note: Counters track your local progress based on the words you enter, not the live game state.</div>
             <div id="status-container">
                 <div class="stats">
                     <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
@@ -67,7 +76,6 @@
                     <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
                     <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
                 </div>
-                <div class="disclaimer-text">Note: Counters track your local progress based on the words you enter, not the live game state.</div>
             </div>
             
             <div class="affordance-text">💡 Click any number or bigram below to instantly search</div>

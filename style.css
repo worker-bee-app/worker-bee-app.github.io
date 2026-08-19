@@ -1,12 +1,12 @@
 :root {
-    --bg-color: #f7f9fa;
+    --bg-color: #ffffff;
     --text-color: #1a1a1a;
     --panel-bg: #ffffff;
-    --border-color: #e1e4e8;
+    --border-color: #ccc;
     --primary: #f6c039;
     --primary-dark: #dca31f;
-    --secondary: #2c3e50;
-    --radius: 8px;
+    --secondary: #111;
+    --radius: 0px;
 }
 
 * {
@@ -76,17 +76,15 @@ main {
 @media(min-width: 800px) {
     main {
         flex-direction: row;
-        align-items: flex-start;
+        align-items: stretch;
     }
 }
 
 .panel {
     background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
     padding: 1.5rem;
     flex: 1;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
 .panel h2 {
@@ -155,19 +153,20 @@ textarea:focus, input:focus {
 }
 
 table {
-    width: 100%;
+    width: max-content;
     border-collapse: collapse;
     margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 
 th, td {
-    padding: 0.5rem;
+    padding: 0.4rem 0.8rem;
     text-align: center;
 }
 
 th {
-    font-weight: 600;
-    color: #666;
+    font-weight: bold;
+    color: #111;
 }
 
 .zero {
@@ -209,8 +208,8 @@ hr {
 .query-inputs input {
     padding: 0.5rem;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    flex: 1;
+    border-radius: 0;
+    background-color: #fff;
     min-width: 120px;
     font-size: 1rem;
 }
@@ -380,7 +379,11 @@ hr {
 .warning-text {
     color: #dc3545;
     font-size: 0.85rem;
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
+    max-height: 120px;
+    overflow-y: auto;
+    padding-left: 1.2rem;
+    margin-bottom: 0;
 }
 
 .disclaimer-text {
@@ -399,4 +402,19 @@ hr {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
+}
+
+/* How to */
+.how-to {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+.how-to summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+.how-to ul {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1.5rem;
 }

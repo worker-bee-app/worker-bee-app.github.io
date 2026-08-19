@@ -108,7 +108,12 @@ cbConstrain.addEventListener('change', runQuery);
         runQuery();
     });
 });
-qLength.addEventListener('input', runQuery);
+qLength.addEventListener('input', (e) => {
+    if (e.target.value !== '' && parseInt(e.target.value) < 4) {
+        e.target.value = 4;
+    }
+    runQuery();
+});
 
 function parseHints() {
     const text = hintsInput.value.toLowerCase();
@@ -257,7 +262,7 @@ function updateState() {
 
     const foundWarning = document.getElementById('found-warning');
     if (invalidWords.length > 0) {
-        foundWarning.innerText = `Ignored: ${invalidWords.join(', ')}`;
+        foundWarning.innerHTML = invalidWords.map(w => `<li>Ignored: ${w}</li>`).join('');
         foundWarning.classList.remove('hidden');
     } else {
         foundWarning.classList.add('hidden');
@@ -353,6 +358,8 @@ function renderGrid(remGrid) {
 function renderTwoLetter(remTwoLetter) {
     let html = '';
     const sortedKeys = Object.keys(remTwoLetter).sort();
+    let currentLetter = '';
+    
     sortedKeys.forEach(k => {
         const count = remTwoLetter[k];
         const clsList = 'two-letter-item ' + (count <= 0 ? 'zero' : 'clickable');
@@ -360,6 +367,12 @@ function renderTwoLetter(remTwoLetter) {
         if (count > 0) {
             onclick = `onclick="qStart.value='${k}'; qLength.value=''; qContains.value=''; runQuery();"`;
         }
+        
+        if (currentLetter && currentLetter !== k[0]) {
+            html += '<br>';
+        }
+        currentLetter = k[0];
+        
         html += `<span class="${clsList}" ${onclick}>${k.toUpperCase()}-${count}</span>`;
     });
     twoLetterOutput.innerHTML = html || '<em>No two-letter data found</em>';
