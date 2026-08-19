@@ -19,25 +19,25 @@ body {
     color: var(--text-color);
     margin: 0;
     padding: 0;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 header {
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 1.5rem;
     background-color: var(--panel-bg);
-    border-bottom: 1px solid var(--border-color);
 }
 
 header h1 {
     margin: 0 0 0.25rem 0;
     color: var(--secondary);
-    font-size: 2rem;
+    font-size: 1.75rem;
 }
 
 header p {
     margin: 0;
     color: #666;
+    font-size: 0.95rem;
 }
 
 .btn {
@@ -64,10 +64,16 @@ header p {
     margin-top: 0;
 }
 
-main {
-    max-width: 1200px;
+.top-section {
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 1rem 1rem 0;
+}
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -87,18 +93,20 @@ main {
     flex: 1;
 }
 
-.panel h2 {
+.panel h2, .letters-header h2 {
     margin-top: 0;
-    border-bottom: 2px solid var(--primary);
-    display: inline-block;
-    padding-bottom: 0.25rem;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--secondary);
 }
 
 label {
     display: block;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
 textarea {
@@ -200,7 +208,6 @@ hr {
 
 .query-inputs {
     display: flex;
-    flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
@@ -210,8 +217,9 @@ hr {
     border: 1px solid var(--border-color);
     border-radius: 0;
     background-color: #fff;
-    min-width: 120px;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    flex: 1;
+    min-width: 0; /* allows shrinking in flex */
 }
 
 #query-results {
@@ -398,10 +406,11 @@ hr {
     font-size: 0.95rem;
 }
 
-.two-letter-container h3 {
-    font-size: 1rem;
+.two-letter-container h3, .query-container h3 {
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
+    color: var(--secondary);
 }
 
 /* How to */

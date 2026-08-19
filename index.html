@@ -15,43 +15,45 @@
             <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
         </div>
     </header>
+
+    <div class="top-section">
+        <details class="how-to">
+            <summary>How to use this tool?</summary>
+            <ul>
+                <li>Paste the daily NYT hints text (including grid and two-letter list) into the box below and click <strong>Load Hints</strong>.</li>
+                <li>Paste your discovered words into the <strong>Found Words</strong> box to automatically decrement the counters.</li>
+                <li>Click any number in the Grid or any Two-Letter bigram to instantly populate the Dictionary Query.</li>
+            </ul>
+        </details>
+
+        <div id="hints-container">
+            <div class="label-row">
+                <label for="hints-input">1. Paste NYT Hints Here</label>
+                <button id="btn-clear-hints" class="btn-text">Clear</button>
+            </div>
+            <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+            <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+        </div>
+        
+        <div id="letters-setup" class="hidden">
+            <div class="letters-header">
+                <h2>1. Setup</h2>
+                <div id="letter-buttons" class="letter-buttons"></div>
+                <button id="btn-edit-hints" class="btn-text btn-small" title="Edit Hints" style="margin-left: 1rem;">Edit Hints Text</button>
+            </div>
+            <div class="help-text">Click a letter below to set it as the Center Letter.</div>
+        </div>
+    </div>
+
     <main>
-        <div class="panel setup-panel">
-            <h2>1. Setup</h2>
-            <details class="how-to">
-                <summary>How to use this tool?</summary>
-                <ul>
-                    <li>Paste the daily NYT hints text (including grid and two-letter list) into the box below and click <strong>Load Hints</strong>.</li>
-                    <li>Paste your discovered words into the <strong>Found Words</strong> box to automatically decrement the counters.</li>
-                    <li>Click any number in the Grid or any Two-Letter bigram to instantly populate the Dictionary Query.</li>
-                </ul>
-            </details>
-            <div id="hints-container">
-                <div class="label-row">
-                    <label for="hints-input">Paste NYT Hints Here</label>
-                    <button id="btn-clear-hints" class="btn-text">Clear</button>
-                </div>
-                <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
-                <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
-            </div>
-            
-            <div id="letters-setup" class="hidden">
-                <div class="letters-header">
-                    <div id="letter-buttons" class="letter-buttons"></div>
-                    <button id="btn-edit-hints" class="btn-text btn-small" title="Edit Hints" style="margin-left: 1rem;">Edit Hints Text</button>
-                </div>
-                <div class="help-text">Center letter is yellow. Click any letter to change it.</div>
-            </div>
-            
-            <div class="label-row" style="margin-top: 1rem;">
+        <div class="panel inputs-panel">
+            <div class="label-row">
                 <label for="found-input">Paste Found Words</label>
                 <button id="btn-clear-found" class="btn-text">Clear</button>
             </div>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
             <ul id="found-warning" class="warning-text hidden"></ul>
             
-            <hr>
-
             <div class="query-container">
                 <h3>Dictionary Query</h3>
                 <div class="query-options">
@@ -88,7 +90,6 @@
                 <h3>Two letter tracker:</h3>
                 <div id="two-letter-output" class="nyt-style"><em>Paste hints to view list</em></div>
             </div>
-            
         </div>
     </main>
     <script src="script.js"></script>
