@@ -81,6 +81,17 @@ btnEditHints.addEventListener('click', () => {
 btnClearHints.addEventListener('click', () => {
     hintsInput.value = '';
     localStorage.removeItem('workerBeeHints');
+    
+    // Reset state
+    parsedState.grid = { lengths: [], rows: {} };
+    parsedState.twoLetter = {};
+    parsedState.totals = { words: 0, points: 0, pangrams: 0, bingo: false };
+    parsedState.centerLetter = '';
+    parsedState.outerLetters = [];
+    
+    hintsContainer.classList.remove('hidden');
+    lettersSetup.classList.add('hidden');
+    updateState();
 });
 
 btnClearFound.addEventListener('click', () => {
