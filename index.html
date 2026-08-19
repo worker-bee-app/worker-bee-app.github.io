@@ -10,28 +10,43 @@
     <header>
         <h1>Worker Bee 🐝</h1>
         <p>Your NYT Spelling Bee Companion</p>
-        <a href="#" id="nyt-link" target="_blank" class="btn">Open Today's Hints</a>
+        <div class="header-actions">
+            <input type="date" id="nyt-date" title="Select a past date">
+            <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
+        </div>
     </header>
     <main>
         <div class="panel setup-panel">
             <h2>1. Setup</h2>
             <div id="hints-container">
-                <label for="hints-input">Paste NYT Hints Here</label>
+                <div class="label-row">
+                    <label for="hints-input">Paste NYT Hints Here</label>
+                    <button id="btn-clear-hints" class="btn-text">Clear</button>
+                </div>
                 <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+                <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
             </div>
             
             <div id="letters-setup" class="hidden">
-                <label>Confirm Center Letter</label>
-                <div id="letter-buttons" class="letter-buttons"></div>
-                <button id="btn-edit-hints" class="btn btn-small btn-secondary">Edit Hints Text</button>
+                <div class="letters-header">
+                    <div id="letter-buttons" class="letter-buttons"></div>
+                    <button id="btn-edit-hints" class="btn-icon" title="Edit Hints">✏️</button>
+                </div>
             </div>
-            <label for="found-input">Paste Found Words</label>
+            
+            <div class="label-row" style="margin-top: 1rem;">
+                <label for="found-input">Paste Found Words</label>
+                <button id="btn-clear-found" class="btn-text">Clear</button>
+            </div>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
             
             <hr>
 
             <div class="query-container">
                 <h3>Dictionary Query</h3>
+                <div class="query-options">
+                    <label class="checkbox-label"><input type="checkbox" id="cb-constrain" checked> Constrain to today's letters</label>
+                </div>
                 <div class="query-inputs">
                     <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
                     <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
@@ -44,14 +59,15 @@
         <div class="panel active-panel">
             <h2>2. Active Aide</h2>
             <div id="status-container">
-                <p>Status: <span id="status-msg">Waiting for hints...</span></p>
                 <div class="stats">
                     <div class="stat-box">Words: <span id="words-count">0</span>/<span id="words-total">0</span></div>
                     <div class="stat-box">Points: <span id="points-count">0</span>/<span id="points-total">0</span></div>
                     <div class="stat-box">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></div>
-                    <div class="stat-box">Bingo: <span id="bingo-status">❌</span></div>
+                    <div class="stat-box bingo-box">Bingo: <span id="bingo-status">N/A</span></div>
                 </div>
             </div>
+            
+            <div class="affordance-text">💡 Click any number or bigram below to instantly search</div>
 
             <div class="grid-container">
                 <h3>Remaining Grid</h3>

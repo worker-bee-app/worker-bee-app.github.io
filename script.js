@@ -10,7 +10,6 @@ let parsedState = {
 
 const hintsInput = document.getElementById('hints-input');
 const foundInput = document.getElementById('found-input');
-const statusMsg = document.getElementById('status-msg');
 const wordsCount = document.getElementById('words-count');
 const wordsTotal = document.getElementById('words-total');
 const pointsCount = document.getElementById('points-count');
@@ -30,34 +29,67 @@ const lettersSetup = document.getElementById('letters-setup');
 const letterButtons = document.getElementById('letter-buttons');
 const btnEditHints = document.getElementById('btn-edit-hints');
 const nytLink = document.getElementById('nyt-link');
+const nytDate = document.getElementById('nyt-date');
+const btnLoadHints = document.getElementById('btn-load-hints');
+const btnClearHints = document.getElementById('btn-clear-hints');
+const btnClearFound = document.getElementById('btn-clear-found');
+const cbConstrain = document.getElementById('cb-constrain');
 
 // Set dynamic NYT Link
 const d = new Date();
 const m = String(d.getMonth() + 1).padStart(2, '0');
 const day = String(d.getDate()).padStart(2, '0');
-nytLink.href = `https://www.nytimes.com/${d.getFullYear()}/${m}/${day}/crosswords/spelling-bee-forum.html`;
+const defaultDate = `${d.getFullYear()}-${m}-${day}`;
+nytDate.value = defaultDate;
+updateNytLink(defaultDate);
+
+nytDate.addEventListener('change', (e) => updateNytLink(e.target.value));
+
+function updateNytLink(dateStr) {
+    if (!dateStr) return;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        nytLink.href = `https://www.nytimes.com/${parts[0]}/${parts[1]}/${parts[2]}/crosswords/spelling-bee-forum.html`;
+    }
+}
 
 async function loadDictionary() {
-    statusMsg.innerText = 'Loading universal dictionary...';
     try {
         const response = await fetch('words.txt');
         if (!response.ok) throw new Error('Dictionary file not found.');
         const text = await response.text();
         dictionary = text.split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length >= 4);
-        statusMsg.innerText = 'Dictionary loaded. Paste hints to begin.';
-        parseHints();
+        
+        // Restore State
+        hintsInput.value = localStorage.getItem('workerBeeHints') || '';
+        foundInput.value = localStorage.getItem('workerBeeFound') || '';
+        if (hintsInput.value.trim()) parseHints();
+        
     } catch (e) {
-        statusMsg.innerText = 'Failed to load dictionary (requires a local server).';
         console.error(e);
+        alert('Failed to load dictionary (requires a local server).');
     }
 }
 
-hintsInput.addEventListener('input', parseHints);
+btnLoadHints.addEventListener('click', parseHints);
 foundInput.addEventListener('input', updateState);
 btnEditHints.addEventListener('click', () => {
     lettersSetup.classList.add('hidden');
     hintsContainer.classList.remove('hidden');
 });
+
+btnClearHints.addEventListener('click', () => {
+    hintsInput.value = '';
+    localStorage.removeItem('workerBeeHints');
+});
+
+btnClearFound.addEventListener('click', () => {
+    foundInput.value = '';
+    localStorage.removeItem('workerBeeFound');
+    updateState();
+});
+
+cbConstrain.addEventListener('change', runQuery);
 
 [qStart, qContains].forEach(el => {
     el.addEventListener('input', (e) => {
@@ -69,6 +101,8 @@ qLength.addEventListener('input', runQuery);
 
 function parseHints() {
     const text = hintsInput.value.toLowerCase();
+    localStorage.setItem('workerBeeHints', hintsInput.value);
+    
     if (!text.trim()) return;
 
     // Reset state
@@ -78,7 +112,7 @@ function parseHints() {
     parsedState.centerLetter = '';
     parsedState.outerLetters = [];
 
-    // Extract Letters. Assumes a line with exactly 7 separated single characters.
+    // Extract Letters
     const lines = text.split('\n').map(l => l.trim());
     for (const line of lines) {
         const letterMatch = line.match(/^([a-z]\s+){6}[a-z]$/i);
@@ -133,13 +167,12 @@ function parseHints() {
     }
 
     if (parsedState.centerLetter) {
-        statusMsg.innerText = `Hints parsed! Verify your center letter.`;
         hintsContainer.classList.add('hidden');
         lettersSetup.classList.remove('hidden');
         renderLetterButtons();
         prefilterDictionary();
     } else {
-        statusMsg.innerText = `Could not detect letters. Ensure they are on their own line separated by spaces.`;
+        alert(`Could not detect letters. Ensure they are on their own line separated by spaces.`);
     }
 
     updateState();
@@ -153,7 +186,6 @@ function renderLetterButtons() {
         btn.className = 'letter-btn' + (l === parsedState.centerLetter ? ' center' : '');
         btn.innerText = l;
         btn.onclick = () => {
-            // Swap center letter
             parsedState.outerLetters = all.filter(char => char !== l);
             parsedState.centerLetter = l;
             renderLetterButtons();
@@ -177,6 +209,8 @@ function prefilterDictionary() {
 }
 
 function updateState() {
+    localStorage.setItem('workerBeeFound', foundInput.value);
+
     if (Object.keys(parsedState.twoLetter).length === 0) return;
 
     const foundText = foundInput.value.toLowerCase();
@@ -229,7 +263,12 @@ function updateState() {
     pangramsTotal.innerText = parsedState.totals.pangrams || '?';
 
     if (parsedState.totals.bingo) {
-        bingoStatus.innerText = foundStartLetters.size === 7 ? '✅' : '❌';
+        if (foundStartLetters.size === 7) {
+            bingoStatus.innerText = '✅ Achieved!';
+        } else {
+            const missing = [...allLetters].filter(l => !foundStartLetters.has(l));
+            bingoStatus.innerText = 'Missing ' + missing.join(', ').toUpperCase();
+        }
     } else {
         bingoStatus.innerText = 'N/A';
     }
@@ -282,11 +321,6 @@ function renderTwoLetter(remTwoLetter) {
 }
 
 function runQuery() {
-    if (!validDailyWords.length) {
-        queryResults.innerHTML = '<em>Awaiting hints or dictionary...</em>';
-        return;
-    }
-
     const start = qStart.value.toLowerCase().trim();
     const contains = qContains.value.toLowerCase().trim();
     const len = parseInt(qLength.value);
@@ -298,7 +332,13 @@ function runQuery() {
     
     queryResults.classList.remove('hidden');
 
-    let results = validDailyWords.filter(w => {
+    const sourceList = cbConstrain.checked ? validDailyWords : dictionary;
+    if (!sourceList.length) {
+        queryResults.innerHTML = '<em>Awaiting hints or dictionary...</em>';
+        return;
+    }
+
+    let results = sourceList.filter(w => {
         if (start && !w.startsWith(start)) return false;
         if (len && w.length !== len) return false;
         if (contains) {

@@ -281,3 +281,93 @@ hr {
 .clickable:hover {
     background-color: rgba(246, 192, 57, 0.2) !important;
 }
+
+.header-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.header-actions .btn {
+    margin-top: 0;
+}
+
+#nyt-date {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.label-row label {
+    margin: 0;
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: var(--secondary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+}
+
+.btn-text:hover {
+    color: var(--primary-dark);
+}
+
+.letters-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.letters-header .letter-buttons {
+    margin: 0;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.btn-icon:hover {
+    background-color: #f1f3f5;
+}
+
+.checkbox-label {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: normal;
+    display: block;
+}
+
+.affordance-text {
+    background: #fff8e1;
+    color: #856404;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ffeeba;
+}
+
+.bingo-box {
+    color: #155724;
+}
