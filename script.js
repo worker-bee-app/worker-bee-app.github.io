@@ -3,7 +3,7 @@ let validDailyWords = [];
 let parsedState = {
     centerLetter: '',
     outerLetters: [],
-    totals: { words: 0, points: 0 },
+    totals: { words: 0, points: 0, pangrams: 0, bingo: false },
     grid: { lengths: [], rows: {} },
     twoLetter: {}
 };
@@ -15,6 +15,9 @@ const wordsCount = document.getElementById('words-count');
 const wordsTotal = document.getElementById('words-total');
 const pointsCount = document.getElementById('points-count');
 const pointsTotal = document.getElementById('points-total');
+const pangramsCount = document.getElementById('pangrams-count');
+const pangramsTotal = document.getElementById('pangrams-total');
+const bingoStatus = document.getElementById('bingo-status');
 const gridOutput = document.getElementById('grid-output');
 const twoLetterOutput = document.getElementById('two-letter-output');
 const qStart = document.getElementById('q-start');
@@ -56,9 +59,13 @@ btnEditHints.addEventListener('click', () => {
     hintsContainer.classList.remove('hidden');
 });
 
-[qStart, qContains, qLength].forEach(el => {
-    el.addEventListener('input', runQuery);
+[qStart, qContains].forEach(el => {
+    el.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '');
+        runQuery();
+    });
 });
+qLength.addEventListener('input', runQuery);
 
 function parseHints() {
     const text = hintsInput.value.toLowerCase();
@@ -67,7 +74,7 @@ function parseHints() {
     // Reset state
     parsedState.grid = { lengths: [], rows: {} };
     parsedState.twoLetter = {};
-    parsedState.totals = { words: 0, points: 0 };
+    parsedState.totals = { words: 0, points: 0, pangrams: 0, bingo: false };
     parsedState.centerLetter = '';
     parsedState.outerLetters = [];
 
@@ -86,8 +93,12 @@ function parseHints() {
     // Extract Totals
     const wordsMatch = text.match(/words:\s*(\d+)/i);
     const pointsMatch = text.match(/points:\s*(\d+)/i);
+    const pMatch = text.match(/pangrams:\s*(\d+)/i);
+    const bMatch = text.match(/bingo/i);
     if (wordsMatch) parsedState.totals.words = parseInt(wordsMatch[1]);
     if (pointsMatch) parsedState.totals.points = parseInt(pointsMatch[1]);
+    if (pMatch) parsedState.totals.pangrams = parseInt(pMatch[1]);
+    if (bMatch) parsedState.totals.bingo = true;
 
     // Extract Grid
     let gridStarted = false;
@@ -173,11 +184,14 @@ function updateState() {
     const uniqueFoundWords = [...new Set(foundWords)];
 
     let foundScore = 0;
+    let foundPangrams = 0;
+    let foundStartLetters = new Set();
     let remGrid = JSON.parse(JSON.stringify(parsedState.grid));
     let remTwoLetter = { ...parsedState.twoLetter };
     const allLetters = new Set([parsedState.centerLetter, ...parsedState.outerLetters]);
 
     uniqueFoundWords.forEach(w => {
+        foundStartLetters.add(w[0]);
         // Points calculation
         if (w.length === 4) foundScore += 1;
         else if (w.length > 4) {
@@ -190,7 +204,7 @@ function updateState() {
                     break;
                 }
             }
-            if (isPangram) foundScore += 7;
+            if (isPangram) { foundScore += 7; foundPangrams++; }
         }
 
         // Decrement Grid
@@ -211,6 +225,14 @@ function updateState() {
     wordsTotal.innerText = parsedState.totals.words || '?';
     pointsCount.innerText = foundScore;
     pointsTotal.innerText = parsedState.totals.points || '?';
+    pangramsCount.innerText = foundPangrams;
+    pangramsTotal.innerText = parsedState.totals.pangrams || '?';
+
+    if (parsedState.totals.bingo) {
+        bingoStatus.innerText = foundStartLetters.size === 7 ? '✅' : '❌';
+    } else {
+        bingoStatus.innerText = 'N/A';
+    }
 
     renderGrid(remGrid);
     renderTwoLetter(remTwoLetter);
@@ -230,9 +252,13 @@ function renderGrid(remGrid) {
         html += `<tr><th>${letter.toUpperCase()}</th>`;
         remGrid.lengths.forEach(l => {
             const count = counts[l] || 0;
-            const cls = count <= 0 ? 'zero' : '';
-            const display = count <= 0 ? '-' : count;
-            html += `<td class="${cls}">${display}</td>`;
+            const tdHtml = count <= 0 ? '-' : count;
+            const clsList = (count <= 0 ? 'zero ' : '') + (count > 0 ? 'clickable' : '');
+            let onclick = '';
+            if (count > 0) {
+                onclick = `onclick="qStart.value='${letter}'; qLength.value='${l}'; qContains.value=''; runQuery();"`;
+            }
+            html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
         });
         html += `</tr>`;
     }
@@ -245,8 +271,12 @@ function renderTwoLetter(remTwoLetter) {
     const sortedKeys = Object.keys(remTwoLetter).sort();
     sortedKeys.forEach(k => {
         const count = remTwoLetter[k];
-        const cls = count <= 0 ? 'zero' : '';
-        html += `<span class="two-letter-item ${cls}">${k.toUpperCase()}-${count}</span>`;
+        const clsList = 'two-letter-item ' + (count <= 0 ? 'zero' : 'clickable');
+        let onclick = '';
+        if (count > 0) {
+            onclick = `onclick="qStart.value='${k}'; qLength.value=''; qContains.value=''; runQuery();"`;
+        }
+        html += `<span class="${clsList}" ${onclick}>${k.toUpperCase()}-${count}</span>`;
     });
     twoLetterOutput.innerHTML = html || '<em>No two-letter data found</em>';
 }
@@ -260,6 +290,13 @@ function runQuery() {
     const start = qStart.value.toLowerCase().trim();
     const contains = qContains.value.toLowerCase().trim();
     const len = parseInt(qLength.value);
+
+    if (!start && !contains && !len) {
+        queryResults.classList.add('hidden');
+        return;
+    }
+    
+    queryResults.classList.remove('hidden');
 
     let results = validDailyWords.filter(w => {
         if (start && !w.startsWith(start)) return false;

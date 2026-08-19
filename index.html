@@ -27,6 +27,18 @@
             </div>
             <label for="found-input">Paste Found Words</label>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
+            
+            <hr>
+
+            <div class="query-container">
+                <h3>Dictionary Query</h3>
+                <div class="query-inputs">
+                    <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
+                    <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
+                    <input type="number" id="q-length" placeholder="Length (e.g. 5)" min="4">
+                </div>
+                <div id="query-results" class="hidden"></div>
+            </div>
         </div>
         
         <div class="panel active-panel">
@@ -34,8 +46,10 @@
             <div id="status-container">
                 <p>Status: <span id="status-msg">Waiting for hints...</span></p>
                 <div class="stats">
-                    <div>Words: <span id="words-count">0</span>/<span id="words-total">0</span></div>
-                    <div>Points: <span id="points-count">0</span>/<span id="points-total">0</span></div>
+                    <div class="stat-box">Words: <span id="words-count">0</span>/<span id="words-total">0</span></div>
+                    <div class="stat-box">Points: <span id="points-count">0</span>/<span id="points-total">0</span></div>
+                    <div class="stat-box">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></div>
+                    <div class="stat-box">Bingo: <span id="bingo-status">❌</span></div>
                 </div>
             </div>
 
@@ -49,17 +63,6 @@
                 <div id="two-letter-output"><em>Paste hints to view list</em></div>
             </div>
             
-            <hr>
-
-            <div class="query-container">
-                <h3>Dictionary Query</h3>
-                <div class="query-inputs">
-                    <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
-                    <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
-                    <input type="number" id="q-length" placeholder="Length (e.g. 5)" min="4">
-                </div>
-                <div id="query-results"></div>
-            </div>
         </div>
     </main>
     <script src="script.js"></script>

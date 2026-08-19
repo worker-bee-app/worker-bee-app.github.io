@@ -135,9 +135,17 @@ textarea:focus, input:focus {
 
 .stats {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius);
 }
 
 .scroll-table {
@@ -263,4 +271,13 @@ hr {
 
 .btn-secondary:hover {
     background-color: #dde0e3;
+}
+
+.clickable {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clickable:hover {
+    background-color: rgba(246, 192, 57, 0.2) !important;
 }
