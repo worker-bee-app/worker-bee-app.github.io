@@ -377,6 +377,7 @@ td {
 
 .checkbox-label input[type="checkbox"] {
     accent-color: var(--primary);
+    margin: 0;
 }
 
 .query-options {
