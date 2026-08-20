@@ -80,6 +80,11 @@ foundInput.addEventListener('input', updateState);
 btnEditHints.addEventListener('click', () => {
     document.getElementById('orbit-wrapper').classList.add('hidden');
     hintsContainer.classList.remove('hidden');
+    
+    document.getElementById('right-pane-title').innerText = 'Paste NYT Hints';
+    btnClearHintsInput.classList.remove('hidden');
+    btnEditHints.classList.add('hidden');
+    btnClearHints.classList.add('hidden');
 });
 
 btnClearHints.addEventListener('click', () => {
@@ -95,6 +100,12 @@ btnClearHints.addEventListener('click', () => {
     
     hintsContainer.classList.remove('hidden');
     document.getElementById('orbit-wrapper').classList.add('hidden');
+    
+    document.getElementById('right-pane-title').innerText = 'Paste NYT Hints';
+    btnClearHintsInput.classList.remove('hidden');
+    btnEditHints.classList.add('hidden');
+    btnClearHints.classList.add('hidden');
+    
     updateState();
 });
 
@@ -197,16 +208,20 @@ function parseHints() {
     if (parsedState.centerLetter) {
         hintsContainer.classList.add('hidden');
         document.getElementById('orbit-wrapper').classList.remove('hidden');
-        const loadedText = document.getElementById('hints-loaded-text');
-        if(loadedText) {
-            let dateStr = document.getElementById('nyt-date').value;
-            let formattedDate = dateStr;
-            if (dateStr) {
-                const dateObj = new Date(dateStr + "T00:00:00");
-                formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '');
-            }
-            loadedText.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
+        
+        const titleEl = document.getElementById('right-pane-title');
+        let dateStr = document.getElementById('nyt-date').value;
+        let formattedDate = dateStr;
+        if (dateStr) {
+            const dateObj = new Date(dateStr + "T00:00:00");
+            formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '');
         }
+        titleEl.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
+        
+        btnClearHintsInput.classList.add('hidden');
+        btnEditHints.classList.remove('hidden');
+        btnClearHints.classList.remove('hidden');
+        
         renderLetterButtons();
         prefilterDictionary();
     } else {

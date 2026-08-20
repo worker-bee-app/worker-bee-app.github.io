@@ -36,7 +36,7 @@
                     <label for="found-input" style="font-size: 0.95rem;">Found Words</label>
                     <button id="btn-clear-found" class="btn-text" style="color: #dc3545; font-size: 0.85rem;">Clear</button>
                 </div>
-                <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
+                <textarea id="found-input" class="tall-textarea" placeholder="Enter words separated by spaces or commas..."></textarea>
                 <div id="ignored-count" class="ignored-count hidden"></div>
                 <ul id="found-warning" class="warning-text hidden"></ul>
                 
@@ -45,8 +45,8 @@
                 </div>
                 <div class="query-container">
                     <div class="query-options">
-                        <label class="checkbox-label"><input type="checkbox" id="cb-constrain" checked> Constrain to today's letters</label>
-                        <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found" checked> Exclude found words</label>
+                        <label class="checkbox-label"><input type="checkbox" id="cb-constrain" checked> Only use today's letters</label>
+                        <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found" checked> Exclude words found</label>
                     </div>
                     <div class="query-inputs">
                         <input type="text" id="q-start" placeholder="Starts (e.g. ro)">
@@ -59,54 +59,64 @@
         </div>
         
         <!-- Right Column -->
-        <div class="col-right active-panel">
-            <!-- State 1: Awaiting Hints -->
-            <div id="hints-container" class="hints-transition">
-                <div class="label-row">
-                    <label for="hints-input" style="font-size: 0.95rem;">Paste NYT Hints</label>
-                    <button id="btn-clear-hints-input" class="btn-text" style="font-size: 0.85rem;">Clear</button>
-                </div>
-                <textarea id="hints-input" placeholder="Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3..." style="height: 400px;"></textarea>
-                <div class="hints-actions">
-                    <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+        <div class="col-right">
+            
+            <!-- Dynamic Header for Right Pane -->
+            <div class="right-pane-header">
+                <div id="right-pane-title" style="font-weight: 600; font-size: 0.95rem; color: var(--secondary);">Paste NYT Hints</div>
+                <div id="right-pane-actions" class="hints-actions-minimal">
+                    <!-- Default state -->
+                    <button id="btn-clear-hints-input" class="btn-text" style="font-size: 0.85rem; color: #dc3545;">Clear</button>
+                    <!-- Loaded state (hidden initially) -->
+                    <button id="btn-edit-hints" class="btn-text hidden" style="font-size: 0.85rem;">Edit</button>
+                    <button id="btn-clear-hints" class="btn-text hidden" style="margin-left: 1rem; color: #dc3545; font-size: 0.85rem;">Clear</button>
                 </div>
             </div>
-            
-            <!-- State 2: Hints Loaded -->
-            <div class="hints-loaded-wrapper hints-transition hidden" id="orbit-wrapper">
-                <div class="loaded-header">
-                    <div id="hints-loaded-text" style="font-weight: 600; color: var(--secondary); font-size: 0.95rem;">Showing hints for...</div>
-                    <div class="hints-actions-minimal">
-                        <button id="btn-edit-hints" class="btn-text" style="font-size: 0.85rem;">Edit</button>
-                        <button id="btn-clear-hints" class="btn-text" style="margin-left: 1rem; color: #dc3545; font-size: 0.85rem;">Clear</button>
+
+            <!-- The Pane itself -->
+            <div class="active-panel" id="main-right-panel">
+                
+                <!-- State 1: Awaiting Hints -->
+                <div id="hints-container" class="hints-transition">
+                    <textarea id="hints-input" placeholder="Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3..." style="min-height: 400px; border: none; padding: 0; outline: none;"></textarea>
+                    <div class="hints-actions" style="margin-top: 1rem;">
+                        <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+                    </div>
+                </div>
+                
+                <!-- State 2: Hints Loaded -->
+                <div class="hints-loaded-wrapper hints-transition hidden" id="orbit-wrapper">
+                    
+                    <div class="letters-linear" id="letter-buttons" style="justify-content: flex-start; letter-spacing: 0.5rem;">
+                        <!-- Letters injected here -->
+                    </div>
+                    <div class="letters-hint" style="text-align: left;">Click a different letter to edit the center letter</div>
+
+                    <div class="qbabm-container" style="text-align: left;">
+                        <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
+                    </div>
+
+                    <div class="stats-row">
+                        <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
+                        <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
+                        <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
+                    </div>
+                    <div class="stats-row" style="margin-top: 0.5rem; margin-bottom: 2rem;">
+                        <span class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
+                    </div>
+
+                    <div class="grid-container">
+                        <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
+                    </div>
+
+                    <div class="two-letter-container">
+                        <h3 style="font-size: 0.95rem;">Two letter tracker</h3>
+                        <div id="two-letter-output"><em>Paste hints to view list</em></div>
                     </div>
                 </div>
 
-                <div class="letters-linear" id="letter-buttons">
-                    <!-- Letters injected here -->
-                </div>
-                <div class="letters-hint">Click a different letter to edit the center letter</div>
+            </div> <!-- /active-panel -->
 
-                <div class="qbabm-container">
-                    <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
-                </div>
-
-                <div class="stats-grid">
-                    <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
-                    <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
-                    <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
-                    <span class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
-                </div>
-
-                <div class="grid-container">
-                    <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
-                </div>
-
-                <div class="two-letter-container">
-                    <h3 style="font-size: 0.95rem;">Two letter tracker</h3>
-                    <div id="two-letter-output"><em>Paste hints to view list</em></div>
-                </div>
-            </div>
         </div>
     </div>
 
