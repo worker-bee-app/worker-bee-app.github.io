@@ -27,6 +27,7 @@ const queryResults = document.getElementById('query-results');
 const hintsContainer = document.getElementById('hints-container');
 const letterButtons = document.getElementById('letter-buttons');
 const btnEditHints = document.getElementById('btn-edit-hints');
+const btnClearHintsInput = document.getElementById('btn-clear-hints-input');
 const orbitWrapper = document.getElementById('orbit-wrapper');
 const nytLink = document.getElementById('nyt-link');
 const nytDate = document.getElementById('nyt-date');
@@ -95,9 +96,15 @@ btnClearHints.addEventListener('click', () => {
     
     hintsContainer.classList.remove('hidden');
     document.getElementById('orbit-wrapper').classList.add('hidden');
-    btnEditHints.parentElement.classList.add('hidden');
     updateState();
 });
+
+if (btnClearHintsInput) {
+    btnClearHintsInput.addEventListener('click', () => {
+        hintsInput.value = '';
+        localStorage.removeItem('workerBeeHints');
+    });
+}
 
 btnClearFound.addEventListener('click', () => {
     foundInput.value = '';
@@ -190,8 +197,11 @@ function parseHints() {
 
     if (parsedState.centerLetter) {
         hintsContainer.classList.add('hidden');
-        btnEditHints.parentElement.classList.remove('hidden');
         document.getElementById('orbit-wrapper').classList.remove('hidden');
+        const loadedText = document.getElementById('hints-loaded-text');
+        if(loadedText) {
+            loadedText.innerText = `Showing hints for ${document.getElementById('nyt-date').value || 'selected date'}`;
+        }
         renderLetterButtons();
         prefilterDictionary();
     } else {
