@@ -100,12 +100,16 @@ header p {
 .col-left {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .col-right {
     flex: 1;
     min-width: 0;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .active-panel {
@@ -345,6 +349,7 @@ td {
     border-radius: 0;
     padding: 1.5rem;
     min-height: 250px;
+    flex: 1;
 }
 
 .two-letter-container h3 {
