@@ -27,7 +27,6 @@ const queryResults = document.getElementById('query-results');
 const hintsContainer = document.getElementById('hints-container');
 const letterButtons = document.getElementById('letter-buttons');
 const btnEditHints = document.getElementById('btn-edit-hints');
-const btnEditCenter = document.getElementById('btn-edit-center');
 const orbitWrapper = document.getElementById('orbit-wrapper');
 const nytLink = document.getElementById('nyt-link');
 const nytDate = document.getElementById('nyt-date');
@@ -81,10 +80,6 @@ btnEditHints.addEventListener('click', () => {
     orbitWrapper.classList.add('hidden');
     btnEditHints.parentElement.classList.add('hidden');
     hintsContainer.classList.remove('hidden');
-});
-
-btnEditCenter.addEventListener('click', () => {
-    alert("Click any outer letter on the hexagon to swap it with the center letter.");
 });
 
 btnClearHints.addEventListener('click', () => {

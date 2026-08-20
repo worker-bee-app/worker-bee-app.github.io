@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>Worker Bee 🐝</h1>
+        <h1>Worker Bee</h1>
         <p>Your NYT Spelling Bee Companion</p>
         <div class="header-actions">
             <input type="date" id="nyt-date" title="Select a past date">
@@ -17,93 +17,94 @@
         <div class="disclaimer-text">Note: Counters track your local progress, not the live game state.</div>
     </header>
 
-    <div class="top-section">
-        <div class="setup-left">
-            <h2>1. Setup</h2>
-            <details class="how-to" open>
-                <summary>How to use this tool?</summary>
-                <ul>
-                    <li>Paste hints, click Load.</li>
-                    <li>Paste found words.</li>
-                    <li>Click numbers/bigrams to search.</li>
-                </ul>
-            </details>
+    <div class="app-container">
+        <!-- Top Row -->
+        <div class="top-row row-split">
+            <div class="col-left">
+                <details class="how-to" open>
+                    <summary>How to use this tool?</summary>
+                    <ul>
+                        <li>Paste hints, click Load.</li>
+                        <li>Paste found words.</li>
+                        <li>Click numbers/bigrams to search.</li>
+                    </ul>
+                </details>
 
-            <div id="hints-container">
-                <div class="label-row">
-                    <label for="hints-input">Paste NYT Hints Here</label>
-                    <button id="btn-clear-hints" class="btn-text">Clear</button>
+                <div id="hints-container">
+                    <label for="hints-input">Paste NYT Hints</label>
+                    <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+                    <div class="hints-actions">
+                        <button id="btn-clear-hints" class="btn-text">Clear</button>
+                        <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+                    </div>
                 </div>
-                <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
-                <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+                
+                <div id="letters-setup" class="hidden">
+                    <button id="btn-edit-hints" class="btn-text btn-small">Edit Hints</button>
+                </div>
             </div>
             
-            <div id="letters-setup" class="hidden">
-                <button id="btn-edit-hints" class="btn-text btn-small">Edit Hints</button>
+            <div class="col-right">
+                <div class="orbit-wrapper hidden" id="orbit-wrapper">
+                    <div class="orbit-container" id="letter-buttons" title="Click any outer letter to set it as the center letter">
+                        <!-- Orbit letters will be injected here via JS -->
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="setup-right">
-            <div class="orbit-wrapper hidden" id="orbit-wrapper">
-                <div class="orbit-container" id="letter-buttons">
-                    <!-- Orbit letters will be injected here via JS -->
+
+        <!-- Middle Row: Unified Stats -->
+        <div class="stats-bar">
+            <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
+            <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
+            <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
+            <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
+            <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="bottom-row row-split">
+            <div class="col-left inputs-panel">
+                <div class="label-row">
+                    <label for="found-input">Found Words</label>
+                    <button id="btn-clear-found" class="btn-text">Clear</button>
                 </div>
-                <button id="btn-edit-center" class="icon-btn" title="Edit Center Letter">✏️</button>
+                <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
+                <div id="ignored-count" class="ignored-count hidden"></div>
+                <ul id="found-warning" class="warning-text hidden"></ul>
+                
+                <div class="query-container">
+                    <h3>Dictionary Query</h3>
+                    <div class="query-options">
+                        <label class="checkbox-label"><input type="checkbox" id="cb-constrain" checked> Constrain to today's letters</label>
+                        <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found" checked> Exclude found words</label>
+                    </div>
+                    <div class="query-inputs">
+                        <input type="text" id="q-start" placeholder="Starts (e.g. ro)">
+                        <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
+                        <input type="number" id="q-length" placeholder="Len (e.g. 5)" min="4">
+                    </div>
+                    <div class="query-results-wrapper">
+                        <div id="query-results" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right active-panel">
+                <div class="affordance-text">Click any number or bigram below to instantly search</div>
+
+                <div class="grid-container">
+                    <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
+                </div>
+
+                <div class="two-letter-container">
+                    <h3>Two letter tracker:</h3>
+                    <div id="two-letter-output"><em>Paste hints to view list</em></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <main>
-        <div class="panel inputs-panel">
-            <div class="label-row">
-                <label for="found-input">Paste Found Words</label>
-                <button id="btn-clear-found" class="btn-text">Clear</button>
-            </div>
-            <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
-            <div id="ignored-count" class="ignored-count hidden"></div>
-            <ul id="found-warning" class="warning-text hidden"></ul>
-            
-            <div class="query-container">
-                <h3>Dictionary Query</h3>
-                <div class="query-options">
-                    <label class="checkbox-label"><input type="checkbox" id="cb-constrain" checked> Constrain to today's letters</label>
-                    <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found" checked> Exclude found words</label>
-                </div>
-                <div class="query-inputs">
-                    <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
-                    <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
-                    <input type="number" id="q-length" placeholder="Length (e.g. 5)" min="4">
-                </div>
-                <div id="query-results" class="hidden"></div>
-            </div>
-        </div>
-        
-        <div class="panel active-panel">
-            <div class="aide-header">
-                <h2>2. Active Aide</h2>
-                <div id="qbabm-message" class="qbabm-msg hidden">👑 Queen Bee Achieved!</div>
-            </div>
-            <div id="status-container">
-                <div class="stats">
-                    <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
-                    <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
-                    <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
-                    <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
-                </div>
-            </div>
-            
-            <div class="affordance-text">💡 Click any number or bigram below to instantly search</div>
-
-            <div class="grid-container">
-                <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
-            </div>
-
-            <div class="two-letter-container">
-                <h3>Two letter tracker:</h3>
-                <div id="two-letter-output"><em>Paste hints to view list</em></div>
-            </div>
-        </div>
-    </main>
     <script src="script.js"></script>
 </body>
 </html>
