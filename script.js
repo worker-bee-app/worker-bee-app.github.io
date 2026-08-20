@@ -255,6 +255,11 @@ function updateState() {
     // Validate words
     const invalidWords = [];
     const validFoundWords = [];
+    
+    // Create temporary trackers to ensure we don't exceed allowed bounds
+    let tempGrid = JSON.parse(JSON.stringify(parsedState.grid));
+    let tempTwoLetter = { ...parsedState.twoLetter };
+    
     uniqueFoundWords.forEach(w => {
         let reason = null;
         
@@ -269,6 +274,25 @@ function updateState() {
             reason = `invalid letter${invalidChars.length > 1 ? 's' : ''} '${invalidChars.join(', ')}'`;
         } else if (!w.includes(parsedState.centerLetter)) {
             reason = `missing center '${parsedState.centerLetter}'`;
+        }
+        
+        if (!reason) {
+            const first = w[0];
+            const len = w.length;
+            if (!tempGrid.rows[first] || !tempGrid.rows[first][len] || tempGrid.rows[first][len] <= 0) {
+                reason = `exceeds grid limits`;
+            } else {
+                tempGrid.rows[first][len]--;
+            }
+        }
+        
+        if (!reason) {
+            const prefix = w.substring(0, 2);
+            if (!tempTwoLetter[prefix] || tempTwoLetter[prefix] <= 0) {
+                reason = `exceeds bigram limits`;
+            } else {
+                tempTwoLetter[prefix]--;
+            }
         }
         
         if (!reason) {
@@ -362,14 +386,24 @@ function renderGrid(remGrid) {
     }
     let html = '<table><thead><tr><th></th>';
     remGrid.lengths.forEach(l => html += `<th>${l}</th>`);
-    html += '</tr></thead><tbody>';
+    html += '<th>Σ</th></tr></thead><tbody>';
+
+    const colTotals = {};
+    let totalSigma = 0;
 
     for (const [letter, counts] of Object.entries(remGrid.rows)) {
         html += `<tr><th>${letter.toUpperCase()}</th>`;
+        let rowSigma = 0;
         remGrid.lengths.forEach(l => {
             const count = counts[l] || 0;
             const origCount = parsedState.grid.rows[letter] && parsedState.grid.rows[letter][l] ? parsedState.grid.rows[letter][l] : 0;
             
+            if (count > 0) {
+                rowSigma += count;
+                colTotals[l] = (colTotals[l] || 0) + count;
+                totalSigma += count;
+            }
+
             let tdHtml = '-';
             let clsList = '';
             let onclick = '';
@@ -386,8 +420,16 @@ function renderGrid(remGrid) {
             }
             html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
         });
-        html += `</tr>`;
+        html += `<th>${rowSigma || 0}</th></tr>`;
     }
+
+    // Bottom Sigma Row
+    html += `<tr><th>Σ</th>`;
+    remGrid.lengths.forEach(l => {
+        html += `<th>${colTotals[l] || 0}</th>`;
+    });
+    html += `<th>${totalSigma}</th></tr>`;
+    
     html += '</tbody></table>';
     gridOutput.innerHTML = html;
 }
