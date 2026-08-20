@@ -203,7 +203,7 @@ function parseHints() {
             let formattedDate = dateStr;
             if (dateStr) {
                 const dateObj = new Date(dateStr + "T00:00:00");
-                formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+                formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '');
             }
             loadedText.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
         }

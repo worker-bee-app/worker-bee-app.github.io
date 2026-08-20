@@ -12,79 +12,36 @@
         <p>Your NYT Spelling Bee Companion</p>
     </header>
 
-    <div class="app-container">
-        <!-- Top Row -->
-        <div class="top-row row-split">
-            <div class="col-left">
-                <div class="how-to">
-                    <p style="font-weight: 600; margin-top: 0;">How to use this tool</p>
-                    <ul>
-                        <li>Pick a date, open hints, and paste the grid and bigrams.</li>
-                        <li>Paste or type in words found.</li>
-                        <li>Clear hints and words entries to start afresh.</li>
-                    </ul>
-                </div>
-                
-                <div class="header-actions">
-                    <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
-                    <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
-                </div>
+    <div class="app-container row-split">
+        <!-- Left Column -->
+        <div class="col-left">
+            <div class="how-to">
+                <p style="font-weight: 600; margin-top: 0; font-size: 0.95rem;">How to use this tool</p>
+                <ul>
+                    <li>Pick a date, open hints, and paste the grid and bigrams.</li>
+                    <li>Paste or type in words found.</li>
+                    <li>Clear hints and words entries to start afresh.</li>
+                </ul>
             </div>
             
-            <div class="col-right">
-                <!-- State 1: Awaiting Hints -->
-                <div id="hints-container">
-                    <div class="label-row">
-                        <label for="hints-input" style="font-size: 1.1rem;">Paste NYT Hints</label>
-                        <button id="btn-clear-hints-input" class="btn-text">Clear</button>
-                    </div>
-                    <textarea id="hints-input" placeholder="Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3..."></textarea>
-                    <div class="hints-actions">
-                        <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
-                    </div>
-                </div>
-                
-                <!-- State 2: Hints Loaded -->
-                <div class="letters-wrapper hidden" id="orbit-wrapper">
-                    <div id="hints-loaded-text" style="font-weight: 600; color: var(--secondary); margin-bottom: 0.5rem; text-align: center;">Showing hints for...</div>
-                    <div class="hints-actions" style="justify-content: center; margin-bottom: 2rem; margin-top: 0;">
-                        <button id="btn-edit-hints" class="btn-text" style="font-size: 0.85rem;">Edit Hints</button>
-                        <button id="btn-clear-hints" class="btn-text" style="margin-left: 1rem; color: #dc3545; font-size: 0.85rem;">Clear Hints</button>
-                    </div>
-
-                    <div class="letters-linear" id="letter-buttons">
-                        <!-- Letters injected here -->
-                    </div>
-                    <div class="letters-hint">Click a different letter to edit the center letter</div>
-                </div>
+            <div class="header-actions">
+                <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
+                <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
             </div>
-        </div>
 
-        <!-- Middle Row: Unified Stats -->
-        <div class="stats-wrapper">
             <div class="disclaimer-text">This app is not the actual game. These counters are indicative.</div>
-            <div class="stats-bar">
-                <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
-                <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
-                <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
-                <span class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
-                <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
-            </div>
-        </div>
 
-        <!-- Bottom Row -->
-        <div class="bottom-row row-split">
-            <div class="col-left inputs-panel">
+            <div class="inputs-panel" style="margin-top: 2rem;">
                 <div class="label-row">
-                    <label for="found-input">Found Words</label>
-                    <button id="btn-clear-found" class="btn-text" style="color: #dc3545;">Clear</button>
+                    <label for="found-input" style="font-size: 0.95rem;">Found Words</label>
+                    <button id="btn-clear-found" class="btn-text" style="color: #dc3545; font-size: 0.85rem;">Clear</button>
                 </div>
                 <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
                 <div id="ignored-count" class="ignored-count hidden"></div>
                 <ul id="found-warning" class="warning-text hidden"></ul>
                 
                 <div class="label-row" style="margin-top: 1.5rem;">
-                    <label for="q-start" style="font-size: 1.1rem; color: var(--secondary); margin-bottom: 0;">Look up</label>
+                    <label for="q-start" style="font-size: 0.95rem; color: var(--secondary); margin-bottom: 0;">Look up</label>
                 </div>
                 <div class="query-container">
                     <div class="query-options">
@@ -99,16 +56,54 @@
                     <div id="query-results" class="hidden"></div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-right active-panel">
+            <!-- State 1: Awaiting Hints -->
+            <div id="hints-container" class="hints-transition">
+                <div class="label-row">
+                    <label for="hints-input" style="font-size: 0.95rem;">Paste NYT Hints</label>
+                    <button id="btn-clear-hints-input" class="btn-text" style="font-size: 0.85rem;">Clear</button>
+                </div>
+                <textarea id="hints-input" placeholder="Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3..." style="height: 400px;"></textarea>
+                <div class="hints-actions">
+                    <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+                </div>
+            </div>
             
-            <div class="col-right active-panel">
-                <div class="affordance-text">Click any number or bigram below to initiate a search</div>
+            <!-- State 2: Hints Loaded -->
+            <div class="hints-loaded-wrapper hints-transition hidden" id="orbit-wrapper">
+                <div class="loaded-header">
+                    <div id="hints-loaded-text" style="font-weight: 600; color: var(--secondary); font-size: 0.95rem;">Showing hints for...</div>
+                    <div class="hints-actions-minimal">
+                        <button id="btn-edit-hints" class="btn-text" style="font-size: 0.85rem;">Edit</button>
+                        <button id="btn-clear-hints" class="btn-text" style="margin-left: 1rem; color: #dc3545; font-size: 0.85rem;">Clear</button>
+                    </div>
+                </div>
+
+                <div class="letters-linear" id="letter-buttons">
+                    <!-- Letters injected here -->
+                </div>
+                <div class="letters-hint">Click a different letter to edit the center letter</div>
+
+                <div class="qbabm-container">
+                    <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
+                </div>
+
+                <div class="stats-grid">
+                    <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
+                    <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
+                    <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
+                    <span class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
+                </div>
 
                 <div class="grid-container">
                     <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
                 </div>
 
                 <div class="two-letter-container">
-                    <h3>Two letter tracker:</h3>
+                    <h3 style="font-size: 0.95rem;">Two letter tracker</h3>
                     <div id="two-letter-output"><em>Paste hints to view list</em></div>
                 </div>
             </div>

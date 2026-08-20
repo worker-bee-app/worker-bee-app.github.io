@@ -48,8 +48,8 @@ header p {
 .disclaimer-text {
     font-size: 0.85rem;
     color: #b58900;
-    margin-top: 0.5rem;
-    text-align: center;
+    margin-top: 1.5rem;
+    text-align: left;
 }
 
 .btn {
@@ -97,9 +97,15 @@ header p {
     }
 }
 
-.col-left, .col-right {
+.col-left {
     flex: 1;
     min-width: 0;
+}
+
+.col-right {
+    flex: 1;
+    min-width: 0;
+    position: relative;
 }
 
 .active-panel {
@@ -109,17 +115,11 @@ header p {
 }
 
 /* Stats Bar */
-.stats-wrapper {
-    margin: 1rem 0;
-}
-
-.stats-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 1rem 0;
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 2.5rem 0;
 }
 
 .stat-item {
@@ -137,12 +137,17 @@ header p {
     font-weight: bold;
 }
 
+.qbabm-container {
+    text-align: center;
+    margin: 2rem 0 1rem;
+}
+
 .qbabm-msg {
     font-weight: bold;
     color: var(--primary);
-    -webkit-text-stroke: 0.5px #000;
-    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
-    font-size: 1rem;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+    font-size: 1.25rem;
 }
 
 label {
@@ -152,13 +157,8 @@ label {
     font-size: 0.95rem;
 }
 
-#hints-container {
-    max-width: 380px;
-}
-
 textarea {
     width: 100%;
-    min-height: 180px;
     padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -214,7 +214,27 @@ textarea:focus, input:focus {
     justify-content: flex-start;
     gap: 1rem;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+}
+
+.hints-transition {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hints-transition.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    visibility: hidden !important;
+    display: block !important;
+    transform: translateY(-10px);
+}
+
+.loaded-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
 }
 
 /* Linear Letters Setup */
@@ -380,7 +400,7 @@ td {
 
 #nyt-date {
     padding: 0.4rem 0.8rem;
-    border: 2px solid var(--primary);
+    border: 1px solid var(--primary);
     border-radius: var(--radius);
     font-size: 0.95rem;
     font-family: inherit;
@@ -391,7 +411,7 @@ td {
 }
 
 #nyt-date::-webkit-calendar-picker-indicator {
-    filter: invert(72%) sepia(87%) saturate(583%) hue-rotate(345deg) brightness(101%) contrast(92%); 
+    filter: invert(72%) sepia(60%) saturate(1483%) hue-rotate(345deg) brightness(101%) contrast(100%); 
     cursor: pointer;
 }
 
