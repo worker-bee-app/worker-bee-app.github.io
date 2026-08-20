@@ -180,6 +180,9 @@ editCenterInput.addEventListener('keydown', (e) => {
 });
 
 function parseHints() {
+    const errorDiv = document.getElementById('hints-error');
+    if (errorDiv) errorDiv.classList.add('hidden');
+
     const text = hintsInput.value.toLowerCase();
     localStorage.setItem('workerBeeHints', hintsInput.value);
     
@@ -244,6 +247,23 @@ function parseHints() {
     const tlMatches = text.matchAll(/([a-z]{2})-(\d+)/g);
     for (const match of tlMatches) {
         parsedState.twoLetter[match[1]] = parseInt(match[2]);
+    }
+
+    const hasLetters = !!parsedState.centerLetter;
+    const hasGrid = Object.keys(parsedState.grid.rows).length > 0;
+    const hasTwoLetter = Object.keys(parsedState.twoLetter).length > 0;
+
+    if (!hasLetters || !hasGrid || !hasTwoLetter) {
+        let missing = [];
+        if (!hasLetters) missing.push('letters');
+        if (!hasGrid) missing.push('grid');
+        if (!hasTwoLetter) missing.push('two letter list');
+        
+        if (errorDiv) {
+            errorDiv.textContent = `Validation failed. Missing: ${missing.join(', ')}. Please copy the entire hints section.`;
+            errorDiv.classList.remove('hidden');
+        }
+        return;
     }
 
     if (parsedState.centerLetter) {
