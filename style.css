@@ -299,7 +299,6 @@ textarea:focus, input:focus {
     gap: 0.5rem;
     font-size: 2.2rem;
     text-transform: uppercase;
-    cursor: pointer;
     user-select: none;
     letter-spacing: 0.5rem;
     line-height: 1;

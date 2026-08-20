@@ -91,10 +91,21 @@
                 <!-- State 2: Hints Loaded -->
                 <div class="hints-loaded-wrapper hints-transition hidden active-panel" id="orbit-wrapper" style="flex: 1; overflow-y: auto;">
                     
-                    <div class="letters-linear" id="letter-buttons" style="justify-content: flex-start; letter-spacing: 0.5rem;">
-                        <!-- Letters injected here -->
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="letters-linear" id="letter-buttons" style="justify-content: flex-start; letter-spacing: 0.5rem;">
+                            <!-- Letters injected here -->
+                        </div>
+                        <div id="edit-center-ui" class="hidden" style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="edit-center-input" maxlength="1" style="width: 2.5rem; text-align: center; text-transform: uppercase; font-weight: bold; padding: 0.2rem; border: 1px solid var(--border-color); border-radius: 4px;">
+                            <button id="btn-save-center" class="btn btn-small" style="padding: 0.2rem 0.5rem;">Save</button>
+                        </div>
                     </div>
-                    <div class="letters-hint" style="text-align: left;">Click a different letter to edit the center letter</div>
+                    
+                    <div class="letters-hint" style="text-align: left; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                        <span>Center letter is in yellow</span>
+                        <span>&middot;</span>
+                        <a href="#" id="link-edit-center" style="color: var(--primary); text-decoration: none; font-weight: 600;">Edit center letter</a>
+                    </div>
 
                     <div class="qbabm-container" style="text-align: left;">
                         <span id="qbabm-message" class="qbabm-msg qbabm-hidden">Queen Bee Achieved!</span>
@@ -106,7 +117,7 @@
                         <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
                     </div>
                     <div class="stats-row" style="margin-top: 0.5rem; margin-bottom: 2rem;">
-                        <span class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
+                        <span id="bingo-label" class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
                     </div>
 
                     <div class="grid-container">

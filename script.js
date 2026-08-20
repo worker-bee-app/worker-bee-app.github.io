@@ -142,6 +142,43 @@ qLength.addEventListener('input', (e) => {
     runQuery();
 });
 
+const linkEditCenter = document.getElementById('link-edit-center');
+const editCenterUi = document.getElementById('edit-center-ui');
+const editCenterInput = document.getElementById('edit-center-input');
+const btnSaveCenter = document.getElementById('btn-save-center');
+
+linkEditCenter.addEventListener('click', (e) => {
+    e.preventDefault();
+    editCenterUi.classList.toggle('hidden');
+    if (!editCenterUi.classList.contains('hidden')) {
+        editCenterInput.value = '';
+        editCenterInput.focus();
+    }
+});
+
+btnSaveCenter.addEventListener('click', () => {
+    let newCenter = editCenterInput.value.toLowerCase().trim();
+    if (!newCenter || !/^[a-z]$/.test(newCenter)) {
+        editCenterUi.classList.add('hidden');
+        return;
+    }
+    
+    const all = [parsedState.centerLetter, ...parsedState.outerLetters];
+    if (all.includes(newCenter)) {
+        parsedState.outerLetters = all.filter(char => char !== newCenter);
+        parsedState.centerLetter = newCenter;
+        renderLetterButtons();
+        prefilterDictionary();
+        updateState();
+    }
+    editCenterUi.classList.add('hidden');
+});
+
+editCenterInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') btnSaveCenter.click();
+    if (e.key === 'Escape') editCenterUi.classList.add('hidden');
+});
+
 function parseHints() {
     const text = hintsInput.value.toLowerCase();
     localStorage.setItem('workerBeeHints', hintsInput.value);
@@ -245,13 +282,6 @@ function renderLetterButtons() {
         const btn = document.createElement('div');
         btn.className = 'linear-letter' + (l === parsedState.centerLetter ? ' linear-center' : '');
         btn.innerText = l;
-        btn.onclick = () => {
-            parsedState.outerLetters = all.filter(char => char !== l);
-            parsedState.centerLetter = l;
-            renderLetterButtons();
-            prefilterDictionary();
-            updateState();
-        };
         letterButtons.appendChild(btn);
     });
 }
@@ -382,16 +412,16 @@ function updateState() {
     pointsTotal.innerText = parsedState.totals.points || '?';
     pangramsCount.innerText = foundPangrams;
     pangramsTotal.innerText = parsedState.totals.pangrams || '?';
-
+    const bingoLabel = document.getElementById('bingo-label');
     if (parsedState.totals.bingo) {
         if (foundStartLetters.size === 7) {
-            bingoStatus.innerText = 'Achieved!';
+            bingoLabel.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
         } else {
             const missing = [...allLetters].filter(l => !foundStartLetters.has(l));
-            bingoStatus.innerText = 'Missing ' + missing.join(', ').toUpperCase();
+            bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">' + missing.join(', ').toUpperCase() + '</span>';
         }
     } else {
-        bingoStatus.innerText = 'N/A';
+        bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
     }
 
     if (parsedState.totals.words > 0 && validFoundWords.length >= parsedState.totals.words) {
