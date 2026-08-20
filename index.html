@@ -8,25 +8,25 @@
 </head>
 <body>
     <header>
-        <h1>Worker Bee</h1>
+        <h1>Worker Bee 🐝</h1>
         <p>Your NYT Spelling Bee Companion</p>
-        <div class="header-actions">
-            <input type="date" id="nyt-date" title="Select a past date">
-            <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
-        </div>
-        <div class="disclaimer-text">Note: Counters track your local progress, not the live game state.</div>
     </header>
 
     <div class="app-container">
         <!-- Top Row -->
         <div class="top-row row-split">
             <div class="col-left">
+                <div class="header-actions">
+                    <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
+                    <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
+                </div>
+
                 <details class="how-to" open>
                     <summary>How to use this tool?</summary>
                     <ul>
-                        <li>Paste hints, click Load.</li>
-                        <li>Paste found words.</li>
-                        <li>Click numbers/bigrams to search.</li>
+                        <li>Open hints, and paste it in first.</li>
+                        <li>Paste or type the found words.</li>
+                        <li>Clear hints and words entries to start anew.</li>
                     </ul>
                 </details>
 
@@ -45,21 +45,25 @@
             </div>
             
             <div class="col-right">
-                <div class="orbit-wrapper hidden" id="orbit-wrapper">
-                    <div class="orbit-container" id="letter-buttons" title="Click any outer letter to set it as the center letter">
-                        <!-- Orbit letters will be injected here via JS -->
+                <div class="letters-wrapper hidden" id="orbit-wrapper">
+                    <div class="letters-linear" id="letter-buttons">
+                        <!-- Letters injected here -->
                     </div>
+                    <div class="letters-hint">Click a different letter to edit the center letter</div>
                 </div>
             </div>
         </div>
 
         <!-- Middle Row: Unified Stats -->
-        <div class="stats-bar">
-            <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
-            <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
-            <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
-            <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
-            <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
+        <div class="stats-wrapper">
+            <div class="stats-bar">
+                <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
+                <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
+                <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
+                <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
+                <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
+            </div>
+            <div class="disclaimer-text">This app is not the actual game. These counters are indicators.</div>
         </div>
 
         <!-- Bottom Row -->
@@ -84,9 +88,7 @@
                         <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
                         <input type="number" id="q-length" placeholder="Len (e.g. 5)" min="4">
                     </div>
-                    <div class="query-results-wrapper">
-                        <div id="query-results" class="hidden"></div>
-                    </div>
+                    <div id="query-results" class="hidden"></div>
                 </div>
             </div>
             

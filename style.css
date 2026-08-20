@@ -6,7 +6,7 @@
     --primary-dark: #dca31f;
     --secondary: #111;
     --radius: 4px;
-    --sans-font: "Open Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --sans-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -30,7 +30,6 @@ h1, h2, h3, h4, h5, h6 {
 header {
     text-align: center;
     padding: 2rem 1rem 1rem;
-    border-bottom: 1px solid var(--border-color);
     margin-bottom: 1rem;
 }
 
@@ -49,7 +48,8 @@ header p {
 .disclaimer-text {
     font-size: 0.85rem;
     color: #777;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    text-align: center;
 }
 
 .btn {
@@ -102,7 +102,6 @@ header p {
     min-width: 0;
 }
 
-/* Left panel gets no border, right gets border */
 .active-panel {
     border: 1px solid var(--border-color);
     padding: 1.5rem;
@@ -110,6 +109,10 @@ header p {
 }
 
 /* Stats Bar */
+.stats-wrapper {
+    margin: 1rem 0;
+}
+
 .stats-bar {
     display: flex;
     flex-wrap: wrap;
@@ -117,8 +120,6 @@ header p {
     justify-content: center;
     gap: 1.5rem;
     padding: 1rem 0;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
 }
 
 .stat-item {
@@ -198,68 +199,41 @@ textarea:focus, input:focus {
     margin-top: 0.5rem;
 }
 
-/* Orbit Grid NYT Circular */
-.orbit-wrapper {
+/* Linear Letters Setup */
+.letters-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
 }
 
-.orbit-container {
-    position: relative;
-    width: 200px;
-    height: 200px;
-}
-
-.orbit-center, .orbit-letter {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+.letters-linear {
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 700;
+    gap: 0.5rem;
+    font-size: 2.2rem;
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.1s;
+    letter-spacing: 0.5rem;
 }
 
-.orbit-center:active, .orbit-letter:active {
-    transform: scale(0.95);
+.linear-letter {
+    color: var(--text-color);
 }
 
-.orbit-center {
-    top: 75px;
-    left: 75px;
-    background-color: var(--primary);
-    color: var(--secondary);
-    z-index: 2;
+.linear-center {
+    color: var(--primary-dark);
+    font-weight: 700;
 }
 
-.orbit-letter {
-    background-color: #e8e8e8;
-    color: var(--secondary);
+.letters-hint {
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 1rem;
+    text-align: center;
 }
-
-.orbit-letter:hover {
-    background-color: #ddd;
-}
-
-.orbit-center:hover {
-    background-color: var(--primary-dark);
-}
-
-/* Layout for 6 surrounding circular orbits */
-.orbit-letter:nth-child(1) { top: 10px; left: 75px; } /* Top */
-.orbit-letter:nth-child(2) { top: 42px; left: 131px; } /* Top Right */
-.orbit-letter:nth-child(3) { top: 107px; left: 131px; } /* Bottom Right */
-.orbit-letter:nth-child(4) { top: 140px; left: 75px; } /* Bottom */
-.orbit-letter:nth-child(5) { top: 107px; left: 19px; } /* Bottom Left */
-.orbit-letter:nth-child(6) { top: 42px; left: 19px; } /* Top Left */
 
 /* Grid & Bigrams */
 .scroll-table {
@@ -325,6 +299,10 @@ td {
 /* Dictionary Inputs */
 .query-container {
     margin-top: 2rem;
+    background-color: #fdfdf5; /* Pale airy background distinct from everything else */
+    border: 1px solid #e8e8e0;
+    border-radius: 8px;
+    padding: 1.5rem;
 }
 
 .query-container h3, .two-letter-container h3 {
@@ -366,13 +344,6 @@ td {
     min-width: 0;
 }
 
-.query-results-wrapper {
-    background-color: #f8f9fa; /* Neat non-gray but subtly tinted background */
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 0.5rem;
-}
-
 #query-results {
     font-family: var(--sans-font);
     max-height: 250px;
@@ -383,10 +354,10 @@ td {
 
 .header-actions {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     align-items: center;
-    margin-top: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 #nyt-date {
@@ -425,7 +396,7 @@ td {
 
 /* How to */
 .how-to {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     font-size: 0.9rem;
     color: #444;
 }

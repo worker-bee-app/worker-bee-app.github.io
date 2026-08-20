@@ -94,7 +94,7 @@ btnClearHints.addEventListener('click', () => {
     parsedState.outerLetters = [];
     
     hintsContainer.classList.remove('hidden');
-    orbitWrapper.classList.add('hidden');
+    document.getElementById('orbit-wrapper').classList.add('hidden');
     btnEditHints.parentElement.classList.add('hidden');
     updateState();
 });
@@ -191,7 +191,7 @@ function parseHints() {
     if (parsedState.centerLetter) {
         hintsContainer.classList.add('hidden');
         btnEditHints.parentElement.classList.remove('hidden');
-        orbitWrapper.classList.remove('hidden');
+        document.getElementById('orbit-wrapper').classList.remove('hidden');
         renderLetterButtons();
         prefilterDictionary();
     } else {
@@ -205,14 +205,9 @@ function renderLetterButtons() {
     const all = [parsedState.centerLetter, ...parsedState.outerLetters];
     letterButtons.innerHTML = '';
     
-    const centerBtn = document.createElement('div');
-    centerBtn.className = 'orbit-center';
-    centerBtn.innerText = parsedState.centerLetter;
-    letterButtons.appendChild(centerBtn);
-
-    parsedState.outerLetters.forEach(l => {
+    all.forEach(l => {
         const btn = document.createElement('div');
-        btn.className = 'orbit-letter';
+        btn.className = 'linear-letter' + (l === parsedState.centerLetter ? ' linear-center' : '');
         btn.innerText = l;
         btn.onclick = () => {
             parsedState.outerLetters = all.filter(char => char !== l);
@@ -330,7 +325,7 @@ function updateState() {
 
     if (parsedState.totals.bingo) {
         if (foundStartLetters.size === 7) {
-            bingoStatus.innerText = '✅ Achieved!';
+            bingoStatus.innerText = 'Achieved!';
         } else {
             const missing = [...allLetters].filter(l => !foundStartLetters.has(l));
             bingoStatus.innerText = 'Missing ' + missing.join(', ').toUpperCase();
