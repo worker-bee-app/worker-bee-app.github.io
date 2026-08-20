@@ -135,6 +135,7 @@ header p {
     border-color: var(--primary);
 }
 
+
 .col-left {
     flex: 1;
     min-width: 0;

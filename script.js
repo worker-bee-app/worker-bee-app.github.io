@@ -345,7 +345,7 @@ function updateState() {
         if (!reason) {
             const prefix = w.substring(0, 2);
             if (!tempTwoLetter[prefix] || tempTwoLetter[prefix] <= 0) {
-                reason = `exceeds bigram limits`;
+                reason = `exceeds two letter list limits`;
             } else {
                 tempTwoLetter[prefix]--;
             }

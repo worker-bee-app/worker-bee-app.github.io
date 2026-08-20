@@ -17,15 +17,15 @@
         <div class="col-left">
             <div class="how-to">
                 <p style="font-weight: 600; margin-top: 0; margin-bottom: 0.75rem; font-size: 0.95rem;">How to use this tool</p>
-                <ul style="margin: 0.75rem 0;">
-                    <li>Pick a date, open hints, and paste the spelling bee grid.</li>
+                <ul style="margin: 0.75rem 0 0 0;">
+                    <li>Open hints in a new tab and paste spelling bee grid on the right.</li>
                     <li>Paste or type in words found.</li>
+                    <li>Use Look up to search the dictionary for valid words.</li>
                     <li>Clear hints and words entries to start afresh.</li>
                 </ul>
-                <div class="disclaimer-text" style="margin-top: 0.75rem;">This app is not the actual game. Trackers are indicative.</div>
             </div>
             
-            <div class="header-actions">
+            <div class="header-actions" style="margin: 2rem 0;">
                 <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
                 <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
                 <div id="chevron-indicator" class="chevron-indicator">
@@ -35,9 +35,9 @@
 
 
 
-            <div class="inputs-panel" style="margin-top: 2rem; display: flex; flex-direction: column; flex: 1;">
+            <div class="inputs-panel" style="display: flex; flex-direction: column; flex: 1;">
                 <div class="label-row">
-                    <label for="found-input" style="font-size: 0.95rem;">Found Words</label>
+                    <label for="found-input" style="font-size: 0.95rem;">Words found</label>
                     <button id="btn-clear-found" class="btn-text" style="color: #dc3545; font-size: 0.85rem;">Clear</button>
                 </div>
                 <textarea id="found-input" class="tall-textarea" placeholder="Enter words separated by spaces or commas..."></textarea>
@@ -72,8 +72,8 @@
                     <!-- Default state -->
                     <button id="btn-clear-hints-input" class="btn-text" style="font-size: 0.85rem; color: #dc3545;">Clear</button>
                     <!-- Loaded state (hidden initially) -->
-                    <button id="btn-edit-hints" class="btn-text hidden" style="font-size: 0.85rem;">Edit</button>
-                    <button id="btn-clear-hints" class="btn-text hidden" style="margin-left: 1rem; color: #dc3545; font-size: 0.85rem;">Clear</button>
+                    <button id="btn-edit-hints" class="btn-text hidden" style="font-size: 0.85rem; color: var(--secondary);">Edit</button>
+                    <button id="btn-clear-hints" class="btn-text hidden" style="margin-left: 0.75rem; color: #dc3545; font-size: 0.85rem;">Clear</button>
                 </div>
             </div>
 
@@ -104,7 +104,7 @@
                     <div class="letters-hint" style="text-align: left; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
                         <span>Center letter is in yellow</span>
                         <span>&middot;</span>
-                        <a href="#" id="link-edit-center" style="color: var(--primary); text-decoration: none; font-weight: 600;">Edit center letter</a>
+                        <a href="#" id="link-edit-center" style="color: var(--primary); text-decoration: underline; text-underline-offset: 2px; font-weight: 600;">Edit center letter</a>
                     </div>
 
                     <div class="qbabm-container" style="text-align: left;">
@@ -133,6 +133,12 @@
 
             </div> <!-- /active-panel -->
 
+        </div>
+    </div>
+    
+    <div style="max-width: 1000px; margin: -1rem auto 2rem auto; text-align: center;">
+        <div style="display: inline-block; border: 1px solid #b58900; color: #b58900; font-size: 0.95rem; font-weight: 500; padding: 0.4rem 0.8rem; border-radius: 4px;">
+            This app is not the actual game. Values shown here are a close match.
         </div>
     </div>
 
