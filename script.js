@@ -79,7 +79,6 @@ btnLoadHints.addEventListener('click', parseHints);
 foundInput.addEventListener('input', updateState);
 btnEditHints.addEventListener('click', () => {
     document.getElementById('orbit-wrapper').classList.add('hidden');
-    btnEditHints.parentElement.classList.add('hidden');
     hintsContainer.classList.remove('hidden');
 });
 
@@ -200,7 +199,13 @@ function parseHints() {
         document.getElementById('orbit-wrapper').classList.remove('hidden');
         const loadedText = document.getElementById('hints-loaded-text');
         if(loadedText) {
-            loadedText.innerText = `Showing hints for ${document.getElementById('nyt-date').value || 'selected date'}`;
+            let dateStr = document.getElementById('nyt-date').value;
+            let formattedDate = dateStr;
+            if (dateStr) {
+                const dateObj = new Date(dateStr + "T00:00:00");
+                formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            }
+            loadedText.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
         }
         renderLetterButtons();
         prefilterDictionary();
@@ -420,15 +425,16 @@ function renderGrid(remGrid) {
             }
             html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
         });
-        html += `<th>${rowSigma || 0}</th></tr>`;
+        html += `<th class="${rowSigma <= 0 ? 'zero' : ''}">${rowSigma || 0}</th></tr>`;
     }
 
     // Bottom Sigma Row
     html += `<tr><th>Σ</th>`;
     remGrid.lengths.forEach(l => {
-        html += `<th>${colTotals[l] || 0}</th>`;
+        const cTotal = colTotals[l] || 0;
+        html += `<th class="${cTotal <= 0 ? 'zero' : ''}">${cTotal}</th>`;
     });
-    html += `<th>${totalSigma}</th></tr>`;
+    html += `<th class="${totalSigma <= 0 ? 'zero' : ''}">${totalSigma}</th></tr>`;
     
     html += '</tbody></table>';
     gridOutput.innerHTML = html;

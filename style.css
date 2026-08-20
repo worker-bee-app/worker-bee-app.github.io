@@ -47,7 +47,7 @@ header p {
 
 .disclaimer-text {
     font-size: 0.85rem;
-    color: #777;
+    color: #b58900;
     margin-top: 0.5rem;
     text-align: center;
 }
@@ -152,6 +152,10 @@ label {
     font-size: 0.95rem;
 }
 
+#hints-container {
+    max-width: 380px;
+}
+
 textarea {
     width: 100%;
     min-height: 180px;
@@ -245,7 +249,7 @@ textarea:focus, input:focus {
 .letters-hint {
     font-size: 0.85rem;
     color: #777;
-    margin-top: 1rem;
+    margin-top: 0.25rem;
     text-align: center;
 }
 
@@ -312,13 +316,13 @@ td {
 
 /* Dictionary Inputs */
 .query-container {
-    margin-top: 2rem;
+    margin-top: 0.5rem;
     background-color: rgba(246, 192, 57, 0.1); 
     border-radius: 0;
     padding: 1.5rem;
 }
 
-.query-container h3, .two-letter-container h3 {
+.two-letter-container h3 {
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 0.8rem;
@@ -341,6 +345,10 @@ td {
     margin: 0;
 }
 
+.checkbox-label input[type="checkbox"] {
+    accent-color: var(--primary);
+}
+
 .query-inputs {
     display: flex;
     gap: 0.5rem;
@@ -358,8 +366,8 @@ td {
 }
 
 .query-inputs input:focus {
-    border: 1px solid var(--primary-dark);
-    box-shadow: inset 0 0 0 1px var(--primary-dark);
+    border: 1px solid var(--primary);
+    box-shadow: inset 0 0 0 1px var(--primary);
 }
 
 #query-results {
@@ -372,12 +380,18 @@ td {
 
 #nyt-date {
     padding: 0.4rem 0.8rem;
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--primary);
     border-radius: var(--radius);
     font-size: 0.95rem;
     font-family: inherit;
     color: var(--secondary);
     background: #fff;
+    cursor: pointer;
+    outline: none;
+}
+
+#nyt-date::-webkit-calendar-picker-indicator {
+    filter: invert(72%) sepia(87%) saturate(583%) hue-rotate(345deg) brightness(101%) contrast(92%); 
     cursor: pointer;
 }
 
@@ -388,7 +402,7 @@ td {
 }
 
 .warning-text {
-    color: #dc3545;
+    color: #b58900;
     font-size: 0.85rem;
     margin-top: 0;
     max-height: 120px;
@@ -398,7 +412,7 @@ td {
 }
 
 .ignored-count {
-    color: #dc3545;
+    color: #b58900;
     font-size: 0.85rem;
     font-weight: 600;
     margin-top: 0.5rem;
