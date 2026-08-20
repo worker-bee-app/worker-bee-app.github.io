@@ -85,6 +85,8 @@ btnEditHints.addEventListener('click', () => {
     btnClearHintsInput.classList.remove('hidden');
     btnEditHints.classList.add('hidden');
     btnClearHints.classList.add('hidden');
+    const chevronInd = document.getElementById('chevron-indicator');
+    if (chevronInd) chevronInd.classList.remove('hidden');
 });
 
 btnClearHints.addEventListener('click', () => {
@@ -105,6 +107,8 @@ btnClearHints.addEventListener('click', () => {
     btnClearHintsInput.classList.remove('hidden');
     btnEditHints.classList.add('hidden');
     btnClearHints.classList.add('hidden');
+    const chevronInd = document.getElementById('chevron-indicator');
+    if (chevronInd) chevronInd.classList.remove('hidden');
     
     updateState();
 });
@@ -221,6 +225,8 @@ function parseHints() {
         btnClearHintsInput.classList.add('hidden');
         btnEditHints.classList.remove('hidden');
         btnClearHints.classList.remove('hidden');
+        const chevronInd = document.getElementById('chevron-indicator');
+        if (chevronInd) chevronInd.classList.add('hidden');
         
         renderLetterButtons();
         prefilterDictionary();
