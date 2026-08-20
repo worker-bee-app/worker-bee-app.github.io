@@ -48,8 +48,9 @@ header p {
 .disclaimer-text {
     font-size: 0.85rem;
     color: #b58900;
-    margin-top: 1.5rem;
+    margin-top: 0.5rem;
     text-align: left;
+    font-weight: bold;
 }
 
 .btn {
@@ -95,6 +96,33 @@ header p {
         flex-direction: row;
         align-items: stretch;
     }
+}
+
+.hints-loaded-wrapper {
+    flex-grow: 1;
+}
+
+.chevron-indicator {
+    position: absolute;
+    left: -2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 0.2rem;
+    font-size: 2rem;
+    color: rgba(246, 192, 57, 0.2);
+    pointer-events: none;
+}
+.chevron-indicator span {
+    animation: chevron-pulse 1.5s infinite;
+}
+.chevron-indicator span:nth-child(1) { animation-delay: 0s; }
+.chevron-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.chevron-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes chevron-pulse {
+    0%, 100% { color: rgba(246, 192, 57, 0.2); }
+    50% { color: rgba(246, 192, 57, 1); }
 }
 
 .col-left {
@@ -257,12 +285,14 @@ textarea:focus, input:focus {
 .letters-linear {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 0.5rem;
     font-size: 2.2rem;
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
     letter-spacing: 0.5rem;
+    line-height: 1;
 }
 
 .linear-letter {
@@ -276,8 +306,10 @@ textarea:focus, input:focus {
 
 .qbabm-container {
     text-align: left;
-    margin: 2rem 0 1rem;
-    min-height: 2rem;
+    margin: 1.5rem 0;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
 }
 
 .qbabm-msg {
