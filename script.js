@@ -324,7 +324,7 @@ function updateState() {
 
     const foundWarning = document.getElementById('found-warning');
     if (invalidWords.length > 0) {
-        ignoredCount.innerText = `(${invalidWords.length} ignored)`;
+        ignoredCount.innerText = `${invalidWords.length} ignored`;
         ignoredCount.classList.remove('hidden');
         foundWarning.innerHTML = invalidWords.map(w => `<li>Ignored: ${w}</li>`).join('');
         foundWarning.classList.remove('hidden');
@@ -389,9 +389,9 @@ function updateState() {
     }
 
     if (parsedState.totals.words > 0 && validFoundWords.length >= parsedState.totals.words) {
-        qbabmMessage.classList.remove('hidden');
+        qbabmMessage.classList.remove('qbabm-hidden');
     } else {
-        qbabmMessage.classList.add('hidden');
+        qbabmMessage.classList.add('qbabm-hidden');
     }
 
     renderGrid(remGrid);
