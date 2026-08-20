@@ -14,34 +14,42 @@
             <input type="date" id="nyt-date" title="Select a past date">
             <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
         </div>
+        <div class="disclaimer-text">Note: Counters track your local progress, not the live game state.</div>
     </header>
 
     <div class="top-section">
-        <details class="how-to">
-            <summary>How to use this tool?</summary>
-            <ul>
-                <li>Paste the daily NYT hints text (including grid and two-letter list) into the box below and click <strong>Load Hints</strong>.</li>
-                <li>Paste your discovered words into the <strong>Found Words</strong> box to automatically decrement the counters.</li>
-                <li>Click any number in the Grid or any Two-Letter bigram to instantly populate the Dictionary Query.</li>
-            </ul>
-        </details>
+        <div class="setup-left">
+            <h2>1. Setup</h2>
+            <details class="how-to" open>
+                <summary>How to use this tool?</summary>
+                <ul>
+                    <li>Paste hints, click Load.</li>
+                    <li>Paste found words.</li>
+                    <li>Click numbers/bigrams to search.</li>
+                </ul>
+            </details>
 
-        <div id="hints-container">
-            <div class="label-row">
-                <label for="hints-input">1. Paste NYT Hints Here</label>
-                <button id="btn-clear-hints" class="btn-text">Clear</button>
+            <div id="hints-container">
+                <div class="label-row">
+                    <label for="hints-input">Paste NYT Hints Here</label>
+                    <button id="btn-clear-hints" class="btn-text">Clear</button>
+                </div>
+                <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
+                <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
             </div>
-            <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
-            <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+            
+            <div id="letters-setup" class="hidden">
+                <button id="btn-edit-hints" class="btn-text btn-small">Edit Hints</button>
+            </div>
         </div>
         
-        <div id="letters-setup" class="hidden">
-            <div class="letters-header">
-                <h2>1. Setup</h2>
-                <div id="letter-buttons" class="letter-buttons"></div>
-                <button id="btn-edit-hints" class="btn-text btn-small" title="Edit Hints" style="margin-left: 1rem;">Edit Hints Text</button>
+        <div class="setup-right">
+            <div class="orbit-wrapper hidden" id="orbit-wrapper">
+                <div class="orbit-container" id="letter-buttons">
+                    <!-- Orbit letters will be injected here via JS -->
+                </div>
+                <button id="btn-edit-center" class="icon-btn" title="Edit Center Letter">✏️</button>
             </div>
-            <div class="help-text">Click a letter below to set it as the Center Letter.</div>
         </div>
     </div>
 
@@ -52,12 +60,14 @@
                 <button id="btn-clear-found" class="btn-text">Clear</button>
             </div>
             <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
+            <div id="ignored-count" class="ignored-count hidden"></div>
             <ul id="found-warning" class="warning-text hidden"></ul>
             
             <div class="query-container">
                 <h3>Dictionary Query</h3>
                 <div class="query-options">
                     <label class="checkbox-label"><input type="checkbox" id="cb-constrain" checked> Constrain to today's letters</label>
+                    <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found" checked> Exclude found words</label>
                 </div>
                 <div class="query-inputs">
                     <input type="text" id="q-start" placeholder="Starts with (e.g. ro)">
@@ -69,8 +79,10 @@
         </div>
         
         <div class="panel active-panel">
-            <h2>2. Active Aide</h2>
-            <div class="disclaimer-text">Note: Counters track your local progress based on the words you enter, not the live game state.</div>
+            <div class="aide-header">
+                <h2>2. Active Aide</h2>
+                <div id="qbabm-message" class="qbabm-msg hidden">👑 Queen Bee Achieved!</div>
+            </div>
             <div id="status-container">
                 <div class="stats">
                     <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
@@ -83,12 +95,12 @@
             <div class="affordance-text">💡 Click any number or bigram below to instantly search</div>
 
             <div class="grid-container">
-                <div id="grid-output" class="scroll-table nyt-style"><em>Paste hints to view grid</em></div>
+                <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
             </div>
 
             <div class="two-letter-container">
                 <h3>Two letter tracker:</h3>
-                <div id="two-letter-output" class="nyt-style"><em>Paste hints to view list</em></div>
+                <div id="two-letter-output"><em>Paste hints to view list</em></div>
             </div>
         </div>
     </main>

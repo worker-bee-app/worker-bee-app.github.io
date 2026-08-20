@@ -25,15 +25,19 @@ const qLength = document.getElementById('q-length');
 const queryResults = document.getElementById('query-results');
 
 const hintsContainer = document.getElementById('hints-container');
-const lettersSetup = document.getElementById('letters-setup');
 const letterButtons = document.getElementById('letter-buttons');
 const btnEditHints = document.getElementById('btn-edit-hints');
+const btnEditCenter = document.getElementById('btn-edit-center');
+const orbitWrapper = document.getElementById('orbit-wrapper');
 const nytLink = document.getElementById('nyt-link');
 const nytDate = document.getElementById('nyt-date');
 const btnLoadHints = document.getElementById('btn-load-hints');
 const btnClearHints = document.getElementById('btn-clear-hints');
 const btnClearFound = document.getElementById('btn-clear-found');
 const cbConstrain = document.getElementById('cb-constrain');
+const cbExcludeFound = document.getElementById('cb-exclude-found');
+const ignoredCount = document.getElementById('ignored-count');
+const qbabmMessage = document.getElementById('qbabm-message');
 
 // Set dynamic NYT Link
 const d = new Date();
@@ -74,8 +78,13 @@ async function loadDictionary() {
 btnLoadHints.addEventListener('click', parseHints);
 foundInput.addEventListener('input', updateState);
 btnEditHints.addEventListener('click', () => {
-    lettersSetup.classList.add('hidden');
+    orbitWrapper.classList.add('hidden');
+    btnEditHints.parentElement.classList.add('hidden');
     hintsContainer.classList.remove('hidden');
+});
+
+btnEditCenter.addEventListener('click', () => {
+    alert("Click any outer letter on the hexagon to swap it with the center letter.");
 });
 
 btnClearHints.addEventListener('click', () => {
@@ -90,7 +99,8 @@ btnClearHints.addEventListener('click', () => {
     parsedState.outerLetters = [];
     
     hintsContainer.classList.remove('hidden');
-    lettersSetup.classList.add('hidden');
+    orbitWrapper.classList.add('hidden');
+    btnEditHints.parentElement.classList.add('hidden');
     updateState();
 });
 
@@ -101,6 +111,7 @@ btnClearFound.addEventListener('click', () => {
 });
 
 cbConstrain.addEventListener('change', runQuery);
+cbExcludeFound.addEventListener('change', runQuery);
 
 [qStart, qContains].forEach(el => {
     el.addEventListener('input', (e) => {
@@ -184,7 +195,8 @@ function parseHints() {
 
     if (parsedState.centerLetter) {
         hintsContainer.classList.add('hidden');
-        lettersSetup.classList.remove('hidden');
+        btnEditHints.parentElement.classList.remove('hidden');
+        orbitWrapper.classList.remove('hidden');
         renderLetterButtons();
         prefilterDictionary();
     } else {
@@ -197,9 +209,15 @@ function parseHints() {
 function renderLetterButtons() {
     const all = [parsedState.centerLetter, ...parsedState.outerLetters];
     letterButtons.innerHTML = '';
-    all.forEach(l => {
-        const btn = document.createElement('button');
-        btn.className = 'letter-btn' + (l === parsedState.centerLetter ? ' center' : '');
+    
+    const centerBtn = document.createElement('div');
+    centerBtn.className = 'orbit-center';
+    centerBtn.innerText = parsedState.centerLetter;
+    letterButtons.appendChild(centerBtn);
+
+    parsedState.outerLetters.forEach(l => {
+        const btn = document.createElement('div');
+        btn.className = 'orbit-letter';
         btn.innerText = l;
         btn.onclick = () => {
             parsedState.outerLetters = all.filter(char => char !== l);
@@ -262,9 +280,12 @@ function updateState() {
 
     const foundWarning = document.getElementById('found-warning');
     if (invalidWords.length > 0) {
+        ignoredCount.innerText = `(${invalidWords.length} ignored)`;
+        ignoredCount.classList.remove('hidden');
         foundWarning.innerHTML = invalidWords.map(w => `<li>Ignored: ${w}</li>`).join('');
         foundWarning.classList.remove('hidden');
     } else {
+        ignoredCount.classList.add('hidden');
         foundWarning.classList.add('hidden');
     }
 
@@ -323,6 +344,12 @@ function updateState() {
         bingoStatus.innerText = 'N/A';
     }
 
+    if (parsedState.totals.words > 0 && validFoundWords.length >= parsedState.totals.words) {
+        qbabmMessage.classList.remove('hidden');
+    } else {
+        qbabmMessage.classList.add('hidden');
+    }
+
     renderGrid(remGrid);
     renderTwoLetter(remTwoLetter);
     runQuery();
@@ -341,11 +368,21 @@ function renderGrid(remGrid) {
         html += `<tr><th>${letter.toUpperCase()}</th>`;
         remGrid.lengths.forEach(l => {
             const count = counts[l] || 0;
-            const tdHtml = count <= 0 ? '-' : count;
-            const clsList = (count <= 0 ? 'zero ' : '') + (count > 0 ? 'clickable' : '');
+            const origCount = parsedState.grid.rows[letter] && parsedState.grid.rows[letter][l] ? parsedState.grid.rows[letter][l] : 0;
+            
+            let tdHtml = '-';
+            let clsList = '';
             let onclick = '';
-            if (count > 0) {
-                onclick = `onclick="qStart.value='${letter}'; qLength.value='${l}'; qContains.value=''; runQuery();"`;
+
+            if (origCount > 0) {
+                if (count <= 0) {
+                    tdHtml = '0';
+                    clsList = 'zero';
+                } else {
+                    tdHtml = count;
+                    clsList = 'clickable';
+                    onclick = `onclick="qStart.value='${letter}'; qLength.value='${l}'; qContains.value=''; runQuery();"`;
+                }
             }
             html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
         });
@@ -390,9 +427,14 @@ function runQuery() {
     
     queryResults.classList.remove('hidden');
 
-    const sourceList = cbConstrain.checked ? validDailyWords : dictionary;
+    let sourceList = cbConstrain.checked ? validDailyWords : dictionary;
+    if (cbExcludeFound.checked) {
+        const foundSet = new Set((foundInput.value.toLowerCase().match(/[a-z]{4,}/g) || []));
+        sourceList = sourceList.filter(w => !foundSet.has(w));
+    }
+    
     if (!sourceList.length) {
-        queryResults.innerHTML = '<em>Awaiting hints or dictionary...</em>';
+        queryResults.innerHTML = '<em>Awaiting hints, or all valid words are already found!</em>';
         return;
     }
 
