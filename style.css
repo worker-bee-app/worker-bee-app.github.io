@@ -514,7 +514,6 @@ td {
     font-family: var(--sans-font);
     max-height: 250px;
     overflow-y: auto;
-    font-size: 0.9rem;
     padding: 0.25rem 0;
 }
 
