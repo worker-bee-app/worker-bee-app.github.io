@@ -16,11 +16,6 @@
         <!-- Top Row -->
         <div class="top-row row-split">
             <div class="col-left">
-                <div class="header-actions">
-                    <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
-                    <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
-                </div>
-
                 <details class="how-to" open>
                     <summary>How to use this tool?</summary>
                     <ul>
@@ -29,41 +24,45 @@
                         <li>Clear hints and words entries to start anew.</li>
                     </ul>
                 </details>
+            </div>
+            
+            <div class="col-right">
+                <div class="header-actions">
+                    <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
+                    <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
+                </div>
 
                 <div id="hints-container">
                     <label for="hints-input">Paste NYT Hints</label>
                     <textarea id="hints-input" placeholder="Paste the grid and two-letter list..."></textarea>
                     <div class="hints-actions">
-                        <button id="btn-clear-hints" class="btn-text">Clear</button>
                         <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
                     </div>
                 </div>
                 
-                <div id="letters-setup" class="hidden">
-                    <button id="btn-edit-hints" class="btn-text btn-small">Edit Hints</button>
-                </div>
-            </div>
-            
-            <div class="col-right">
                 <div class="letters-wrapper hidden" id="orbit-wrapper">
                     <div class="letters-linear" id="letter-buttons">
                         <!-- Letters injected here -->
                     </div>
                     <div class="letters-hint">Click a different letter to edit the center letter</div>
+                    <div class="hints-actions" style="margin-top: 1rem; justify-content: center;">
+                        <button id="btn-edit-hints" class="btn-text">Edit Hints</button>
+                        <button id="btn-clear-hints" class="btn-text" style="margin-left: 1rem; color: #dc3545;">Clear Hints</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Middle Row: Unified Stats -->
         <div class="stats-wrapper">
+            <div class="disclaimer-text">This app is not the actual game. These counters are indicative.</div>
             <div class="stats-bar">
                 <span class="stat-item">Words: <span id="words-count">0</span>/<span id="words-total">0</span></span>
                 <span class="stat-item">Points: <span id="points-count">0</span>/<span id="points-total">0</span></span>
                 <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span id="pangrams-total">0</span></span>
-                <span class="stat-item bingo-box">Bingo: <span id="bingo-status">N/A</span></span>
+                <span class="stat-item">Bingo: <span id="bingo-status" class="bingo-val">N/A</span></span>
                 <span id="qbabm-message" class="qbabm-msg hidden">Queen Bee Achieved!</span>
             </div>
-            <div class="disclaimer-text">This app is not the actual game. These counters are indicators.</div>
         </div>
 
         <!-- Bottom Row -->
@@ -71,7 +70,7 @@
             <div class="col-left inputs-panel">
                 <div class="label-row">
                     <label for="found-input">Found Words</label>
-                    <button id="btn-clear-found" class="btn-text">Clear</button>
+                    <button id="btn-clear-found" class="btn-text" style="color: #dc3545;">Clear</button>
                 </div>
                 <textarea id="found-input" placeholder="Enter words separated by spaces or commas..."></textarea>
                 <div id="ignored-count" class="ignored-count hidden"></div>

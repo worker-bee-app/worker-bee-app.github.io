@@ -77,7 +77,7 @@ async function loadDictionary() {
 btnLoadHints.addEventListener('click', parseHints);
 foundInput.addEventListener('input', updateState);
 btnEditHints.addEventListener('click', () => {
-    orbitWrapper.classList.add('hidden');
+    document.getElementById('orbit-wrapper').classList.add('hidden');
     btnEditHints.parentElement.classList.add('hidden');
     hintsContainer.classList.remove('hidden');
 });
