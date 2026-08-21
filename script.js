@@ -1,225 +1,132 @@
-let dictionary = [];
-let validDailyWords = [];
-let parsedState = {
-    centerLetter: '',
-    outerLetters: [],
-    totals: { words: 0, points: 0, pangrams: 0, bingo: false },
-    grid: { lengths: [], rows: {} },
-    twoLetter: {}
+/* State Management */
+const State = {
+    dictionary: [],
+    validDailyWords: [],
+    
+    // Core parsed state from hints text
+    parsed: {
+        isLoaded: false,
+        centerLetter: '',
+        outerLetters: [],
+        totals: { words: 0, points: 0, pangrams: 0, bingo: false },
+        grid: { lengths: [], rows: {} },
+        twoLetter: {}
+    },
+    
+    // Computed states (calculated from parsed + found words)
+    computed: {
+        invalidWords: [],
+        validFoundWords: [],
+        score: 0,
+        pangrams: 0,
+        bingoStatus: 'N/A', // 'N/A', 'Bingo!', or missing letters
+        grid: { lengths: [], rows: {} },
+        twoLetter: {},
+        gridColTotals: {},
+        gridTotalSigma: 0
+    },
+    
+    // Inputs
+    foundText: '',
+    query: {
+        start: '',
+        contains: '',
+        len: 0,
+        constrain: false,
+        excludeFound: false
+    }
 };
 
-const hintsInput = document.getElementById('hints-input');
-const foundInput = document.getElementById('found-input');
-const wordsCount = document.getElementById('words-count');
-const wordsTotal = document.getElementById('words-total');
-const pointsCount = document.getElementById('points-count');
-const pointsTotal = document.getElementById('points-total');
-const pangramsCount = document.getElementById('pangrams-count');
-const pangramsTotal = document.getElementById('pangrams-total');
-const bingoStatus = document.getElementById('bingo-status');
-const gridOutput = document.getElementById('grid-output');
-const twoLetterOutput = document.getElementById('two-letter-output');
-const qStart = document.getElementById('q-start');
-const qContains = document.getElementById('q-contains');
-const qLength = document.getElementById('q-length');
-const queryResults = document.getElementById('query-results');
+/* DOM Caching Helper */
+const $ = id => document.getElementById(id);
 
-const hintsContainer = document.getElementById('hints-container');
-const letterButtons = document.getElementById('letter-buttons');
-const btnEditHints = document.getElementById('btn-edit-hints');
-const orbitWrapper = document.getElementById('orbit-wrapper');
-const nytLink = document.getElementById('nyt-link');
-const nytDate = document.getElementById('nyt-date');
-const btnLoadHints = document.getElementById('btn-load-hints');
-const btnClearHints = document.getElementById('btn-clear-hints');
-const btnClearFound = document.getElementById('btn-clear-found');
-const cbConstrain = document.getElementById('cb-constrain');
-const cbExcludeFound = document.getElementById('cb-exclude-found');
-const ignoredCount = document.getElementById('ignored-count');
-const qbabmMessage = document.getElementById('qbabm-message');
-
-// Set dynamic NYT Link
-const d = new Date();
-const m = String(d.getMonth() + 1).padStart(2, '0');
-const day = String(d.getDate()).padStart(2, '0');
-const defaultDate = `${d.getFullYear()}-${m}-${day}`;
-nytDate.value = defaultDate;
-updateNytLink(defaultDate);
-
-nytDate.addEventListener('change', (e) => updateNytLink(e.target.value));
-
-function updateNytLink(dateStr) {
-    if (!dateStr) return;
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-        nytLink.href = `https://www.nytimes.com/${parts[0]}/${parts[1]}/${parts[2]}/crosswords/spelling-bee-forum.html`;
-    }
-}
-
-async function loadDictionary() {
-    try {
-        const response = await fetch('words.txt');
-        if (!response.ok) throw new Error('Dictionary file not found.');
-        const text = await response.text();
-        dictionary = text.split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length >= 4);
-        
-        // Restore State
-        hintsInput.value = localStorage.getItem('workerBeeHints') || '';
-        foundInput.value = localStorage.getItem('workerBeeFound') || '';
-        if (hintsInput.value.trim()) parseHints();
-        
-    } catch (e) {
-        console.error(e);
-        alert('Failed to load dictionary (requires a local server).');
-    }
-}
-
-btnLoadHints.addEventListener('click', parseHints);
-foundInput.addEventListener('input', updateState);
-btnEditHints.addEventListener('click', () => {
-    document.getElementById('orbit-wrapper').classList.add('hidden');
-    hintsContainer.classList.remove('hidden');
+const UI = {
+    hintsInput: $('hints-input'),
+    foundInput: $('found-input'),
+    wordsCount: $('words-count'),
+    wordsTotal: $('words-total'),
+    pointsCount: $('points-count'),
+    pointsTotal: $('points-total'),
+    pangramsCount: $('pangrams-count'),
+    pangramsTotal: $('pangrams-total'),
+    bingoLabel: $('bingo-label'),
+    gridOutput: $('grid-output'),
+    twoLetterOutput: $('two-letter-output'),
+    qStart: $('q-start'),
+    qContains: $('q-contains'),
+    qLength: $('q-length'),
+    queryResults: $('query-results'),
+    cbConstrain: $('cb-constrain'),
+    cbExcludeFound: $('cb-exclude-found'),
     
-    document.getElementById('right-pane-title').innerText = 'Paste NYT Hints';
-    btnEditHints.classList.add('hidden');
-    const chevronInd = document.getElementById('chevron-indicator');
-    if (chevronInd) chevronInd.classList.remove('hidden');
-});
-
-btnClearHints.addEventListener('click', () => {
-    hintsInput.value = '';
-    localStorage.removeItem('workerBeeHints');
+    hintsContainer: $('hints-container'),
+    orbitWrapper: $('orbit-wrapper'),
+    letterButtons: $('letter-buttons'),
     
-    // Reset state
-    parsedState.grid = { lengths: [], rows: {} };
-    parsedState.twoLetter = {};
-    parsedState.totals = { words: 0, points: 0, pangrams: 0, bingo: false };
-    parsedState.centerLetter = '';
-    parsedState.outerLetters = [];
+    btnLoadHints: $('btn-load-hints'),
+    btnEditHints: $('btn-edit-hints'),
+    btnClearHints: $('btn-clear-hints'),
+    btnClearFound: $('btn-clear-found'),
+    btnSaveCenter: $('btn-save-center'),
     
-    hintsContainer.classList.remove('hidden');
-    document.getElementById('orbit-wrapper').classList.add('hidden');
+    nytLink: $('nyt-link'),
+    nytDate: $('nyt-date'),
     
-    document.getElementById('right-pane-title').innerText = 'Paste NYT Hints';
-    btnEditHints.classList.add('hidden');
-    const chevronInd = document.getElementById('chevron-indicator');
-    if (chevronInd) chevronInd.classList.remove('hidden');
+    ignoredCount: $('ignored-count'),
+    foundWarning: $('found-warning'),
+    qbabmMessage: $('qbabm-message'),
+    hintsError: $('hints-error'),
+    chevronInd: $('chevron-indicator'),
+    rightPaneTitle: $('right-pane-title'),
     
-    updateState();
-});
+    editCenterUi: $('edit-center-ui'),
+    editCenterInput: $('edit-center-input'),
+    linkEditCenter: $('link-edit-center')
+};
 
+/* --- PURE FUNCTIONS (Logic) --- */
 
-btnClearFound.addEventListener('click', () => {
-    foundInput.value = '';
-    localStorage.removeItem('workerBeeFound');
-    updateState();
-});
-
-cbConstrain.addEventListener('change', runQuery);
-cbExcludeFound.addEventListener('change', runQuery);
-
-[qStart, qContains].forEach(el => {
-    el.addEventListener('input', (e) => {
-        e.target.value = e.target.value.replace(/[^a-zA-Z]/g, '');
-        runQuery();
-    });
-});
-qLength.addEventListener('input', (e) => {
-    if (e.target.value !== '' && parseInt(e.target.value) < 4) {
-        e.target.value = 4;
-    }
-    runQuery();
-});
-
-const linkEditCenter = document.getElementById('link-edit-center');
-const editCenterUi = document.getElementById('edit-center-ui');
-const editCenterInput = document.getElementById('edit-center-input');
-const btnSaveCenter = document.getElementById('btn-save-center');
-
-linkEditCenter.addEventListener('click', (e) => {
-    e.preventDefault();
-    editCenterUi.classList.toggle('hidden');
-    if (!editCenterUi.classList.contains('hidden')) {
-        editCenterInput.value = '';
-        editCenterInput.focus();
-    }
-});
-
-btnSaveCenter.addEventListener('click', () => {
-    let newCenter = editCenterInput.value.toLowerCase().trim();
-    if (!newCenter || !/^[a-z]$/.test(newCenter)) {
-        editCenterUi.classList.add('hidden');
-        return;
-    }
+function parseHintsText(text) {
+    if (!text || !text.trim()) return { error: 'Paste hints to proceed.' };
     
-    const all = [parsedState.centerLetter, ...parsedState.outerLetters];
-    if (all.includes(newCenter)) {
-        parsedState.outerLetters = all.filter(char => char !== newCenter);
-        parsedState.centerLetter = newCenter;
-        renderLetterButtons();
-        prefilterDictionary();
-        updateState();
-    }
-    editCenterUi.classList.add('hidden');
-});
+    const p = {
+        centerLetter: '',
+        outerLetters: [],
+        totals: { words: 0, points: 0, pangrams: 0, bingo: false },
+        grid: { lengths: [], rows: {} },
+        twoLetter: {}
+    };
 
-editCenterInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') btnSaveCenter.click();
-    if (e.key === 'Escape') editCenterUi.classList.add('hidden');
-});
-
-function parseHints() {
-    const errorDiv = document.getElementById('hints-error');
-    if (errorDiv) errorDiv.classList.add('hidden');
-
-    const text = hintsInput.value.toLowerCase();
-    localStorage.setItem('workerBeeHints', hintsInput.value);
+    const lines = text.split('\n').map(l => l.trim().toLowerCase());
     
-    if (!text.trim()) {
-        if (errorDiv) {
-            errorDiv.textContent = 'Paste hints to proceed.';
-            errorDiv.classList.remove('hidden');
-        }
-        return;
-    }
-
-    // Reset state
-    parsedState.grid = { lengths: [], rows: {} };
-    parsedState.twoLetter = {};
-    parsedState.totals = { words: 0, points: 0, pangrams: 0, bingo: false };
-    parsedState.centerLetter = '';
-    parsedState.outerLetters = [];
-
-    // Extract Letters
-    const lines = text.split('\n').map(l => l.trim());
+    // Letters
     for (const line of lines) {
         const letterMatch = line.match(/^([a-z]\s+){6}[a-z]$/i);
         if (letterMatch) {
             const letters = line.replace(/\s+/g, '').split('');
-            parsedState.centerLetter = letters[0];
-            parsedState.outerLetters = letters.slice(1);
+            p.centerLetter = letters[0];
+            p.outerLetters = letters.slice(1);
             break;
         }
     }
 
-    // Extract Totals
+    // Totals
     const wordsMatch = text.match(/words:\s*(\d+)/i);
     const pointsMatch = text.match(/points:\s*(\d+)/i);
     const pMatch = text.match(/pangrams:\s*(\d+)/i);
     const bMatch = text.match(/bingo/i);
-    if (wordsMatch) parsedState.totals.words = parseInt(wordsMatch[1]);
-    if (pointsMatch) parsedState.totals.points = parseInt(pointsMatch[1]);
-    if (pMatch) parsedState.totals.pangrams = parseInt(pMatch[1]);
-    if (bMatch) parsedState.totals.bingo = true;
+    if (wordsMatch) p.totals.words = parseInt(wordsMatch[1]);
+    if (pointsMatch) p.totals.points = parseInt(pointsMatch[1]);
+    if (pMatch) p.totals.pangrams = parseInt(pMatch[1]);
+    if (bMatch) p.totals.bingo = true;
 
-    // Extract Grid
+    // Grid
     let gridStarted = false;
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+    for (const line of lines) {
         if (!gridStarted) {
-            if (line.match(/^(?:\d+\s+)+[σΣ]/i) || (line.includes('4') && line.includes('5') && line.includes('Σ'))) {
+            if (line.match(/^(?:\d+\s+)+[σΣ]/i) || (line.includes('4') && line.includes('5') && line.includes('Σ') && line.match(/\d/))) {
                 gridStarted = true;
-                parsedState.grid.lengths = line.match(/\d+/g).map(Number);
+                p.grid.lengths = line.match(/\d+/g).map(Number);
             }
         } else {
             if (line.includes('Σ') || line.includes('sigma')) break;
@@ -227,107 +134,62 @@ function parseHints() {
             if (rowMatch) {
                 const letter = rowMatch[1];
                 const parts = rowMatch[2].split(/\s+/);
-                parsedState.grid.rows[letter] = {};
-                for (let j = 0; j < parsedState.grid.lengths.length; j++) {
+                p.grid.rows[letter] = {};
+                for (let j = 0; j < p.grid.lengths.length; j++) {
                     const val = parts[j];
                     if (val && val !== '-') {
-                        parsedState.grid.rows[letter][parsedState.grid.lengths[j]] = parseInt(val) || 0;
+                        p.grid.rows[letter][p.grid.lengths[j]] = parseInt(val) || 0;
                     }
                 }
             }
         }
     }
 
-    // Extract Two-Letter List
+    // Two Letter
     const tlMatches = text.matchAll(/([a-z]{2})-(\d+)/g);
     for (const match of tlMatches) {
-        parsedState.twoLetter[match[1]] = parseInt(match[2]);
+        p.twoLetter[match[1]] = parseInt(match[2]);
     }
 
-    const hasLetters = !!parsedState.centerLetter;
-    const hasGrid = Object.keys(parsedState.grid.rows).length > 0;
-    const hasTwoLetter = Object.keys(parsedState.twoLetter).length > 0;
+    const hasLetters = !!p.centerLetter;
+    const hasGrid = Object.keys(p.grid.rows).length > 0;
+    const hasTwoLetter = Object.keys(p.twoLetter).length > 0;
 
     if (!hasLetters || !hasGrid || !hasTwoLetter) {
         let missing = [];
         if (!hasLetters) missing.push('letters');
         if (!hasGrid) missing.push('grid');
         if (!hasTwoLetter) missing.push('two letter list');
-        
-        if (errorDiv) {
-            errorDiv.textContent = `Validation failed. Missing: ${missing.join(', ')}. Please copy the entire hints section.`;
-            errorDiv.classList.remove('hidden');
-        }
-        return;
+        return { error: `Validation failed. Missing: ${missing.join(', ')}. Please copy the entire hints section.` };
     }
 
-    if (parsedState.centerLetter) {
-        hintsContainer.classList.add('hidden');
-        document.getElementById('orbit-wrapper').classList.remove('hidden');
-        
-        const titleEl = document.getElementById('right-pane-title');
-        let dateStr = document.getElementById('nyt-date').value;
-        let formattedDate = dateStr;
-        if (dateStr) {
-            const dateObj = new Date(dateStr + "T00:00:00");
-            formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '');
-        }
-        titleEl.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
-        btnEditHints.classList.remove('hidden');
-        const chevronInd = document.getElementById('chevron-indicator');
-        if (chevronInd) chevronInd.classList.add('hidden');
-        
-        renderLetterButtons();
-        prefilterDictionary();
-    } else {
-        alert(`Could not detect letters. Ensure they are on their own line separated by spaces.`);
-    }
-
-    updateState();
+    p.isLoaded = true;
+    return p;
 }
 
-function renderLetterButtons() {
-    const all = [parsedState.centerLetter, ...parsedState.outerLetters];
-    letterButtons.innerHTML = '';
-    
-    all.forEach(l => {
-        const btn = document.createElement('div');
-        btn.className = 'linear-letter' + (l === parsedState.centerLetter ? ' linear-center' : '');
-        btn.innerText = l;
-        letterButtons.appendChild(btn);
-    });
-}
+function computeState(parsed, foundText) {
+    const computed = {
+        invalidWords: [],
+        validFoundWords: [],
+        score: 0,
+        pangrams: 0,
+        bingoStatus: 'N/A',
+        grid: { lengths: [...parsed.grid.lengths], rows: JSON.parse(JSON.stringify(parsed.grid.rows)) },
+        twoLetter: { ...parsed.twoLetter },
+        gridColTotals: {},
+        gridTotalSigma: 0
+    };
 
-function prefilterDictionary() {
-    if (!dictionary.length || !parsedState.centerLetter) return;
-    const allLetters = new Set([parsedState.centerLetter, ...parsedState.outerLetters]);
-    validDailyWords = dictionary.filter(w => {
-        if (!w.includes(parsedState.centerLetter)) return false;
-        for (let char of w) {
-            if (!allLetters.has(char)) return false;
-        }
-        return true;
-    });
-}
+    if (!parsed.isLoaded) return computed;
 
-function updateState() {
-    localStorage.setItem('workerBeeFound', foundInput.value);
-
-    if (Object.keys(parsedState.twoLetter).length === 0) return;
-
-    const foundText = foundInput.value.toLowerCase();
-    const foundWords = foundText.match(/[a-z]{4,}/g) || [];
+    const allLetters = new Set([parsed.centerLetter, ...parsed.outerLetters]);
+    const foundWords = foundText.toLowerCase().match(/[a-z]{4,}/g) || [];
     const uniqueFoundWords = [...new Set(foundWords)];
-    const allLetters = new Set([parsedState.centerLetter, ...parsedState.outerLetters]);
 
-    // Validate words
-    const invalidWords = [];
-    const validFoundWords = [];
-    
-    // Create temporary trackers to ensure we don't exceed allowed bounds
-    let tempGrid = JSON.parse(JSON.stringify(parsedState.grid));
-    let tempTwoLetter = { ...parsedState.twoLetter };
-    
+    let tempGrid = JSON.parse(JSON.stringify(parsed.grid));
+    let tempTwoLetter = { ...parsed.twoLetter };
+    let foundStartLetters = new Set();
+
     uniqueFoundWords.forEach(w => {
         let reason = null;
         
@@ -340,8 +202,8 @@ function updateState() {
         
         if (invalidChars.length > 0) {
             reason = `invalid letter${invalidChars.length > 1 ? 's' : ''} '${invalidChars.join(', ')}'`;
-        } else if (!w.includes(parsedState.centerLetter)) {
-            reason = `missing center '${parsedState.centerLetter}'`;
+        } else if (!w.includes(parsed.centerLetter)) {
+            reason = `missing center '${parsed.centerLetter}'`;
         }
         
         if (!reason) {
@@ -364,113 +226,174 @@ function updateState() {
         }
         
         if (!reason) {
-            validFoundWords.push(w);
-        } else {
-            invalidWords.push(`${w} (${reason})`);
-        }
-    });
-
-    const foundWarning = document.getElementById('found-warning');
-    if (invalidWords.length > 0) {
-        ignoredCount.innerText = `${invalidWords.length} ignored`;
-        ignoredCount.classList.remove('hidden');
-        foundWarning.innerHTML = invalidWords.map(w => `<li>${w}</li>`).join('');
-        foundWarning.classList.remove('hidden');
-    } else {
-        ignoredCount.classList.add('hidden');
-        foundWarning.classList.add('hidden');
-    }
-
-    let foundScore = 0;
-    let foundPangrams = 0;
-    let foundStartLetters = new Set();
-    let remGrid = JSON.parse(JSON.stringify(parsedState.grid));
-    let remTwoLetter = { ...parsedState.twoLetter };
-
-    validFoundWords.forEach(w => {
-        foundStartLetters.add(w[0]);
-        // Points calculation
-        if (w.length === 4) foundScore += 1;
-        else if (w.length > 4) {
-            foundScore += w.length;
-            const uniqueChars = new Set(w);
-            let isPangram = true;
-            for (let l of allLetters) {
-                if (!uniqueChars.has(l)) {
-                    isPangram = false;
-                    break;
+            computed.validFoundWords.push(w);
+            foundStartLetters.add(w[0]);
+            
+            // Score & Pangram
+            if (w.length === 4) computed.score += 1;
+            else if (w.length > 4) {
+                computed.score += w.length;
+                const uniqueChars = new Set(w);
+                let isPangram = true;
+                for (let l of allLetters) {
+                    if (!uniqueChars.has(l)) { isPangram = false; break; }
                 }
+                if (isPangram) { computed.score += 7; computed.pangrams++; }
             }
-            if (isPangram) { foundScore += 7; foundPangrams++; }
-        }
 
-        // Decrement Grid
-        const first = w[0];
-        const len = w.length;
-        if (remGrid.rows[first] && remGrid.rows[first][len]) {
-            remGrid.rows[first][len]--;
-        }
+            // Decrement remaining states
+            computed.grid.rows[w[0]][w.length]--;
+            computed.twoLetter[w.substring(0, 2)]--;
 
-        // Decrement Two-Letter
-        const prefix = w.substring(0, 2);
-        if (remTwoLetter[prefix]) {
-            remTwoLetter[prefix]--;
+        } else {
+            computed.invalidWords.push(`${w} (${reason})`);
         }
     });
 
-    wordsCount.innerText = validFoundWords.length;
-    wordsTotal.innerText = parsedState.totals.words || '?';
-    pointsCount.innerText = foundScore;
-    pointsTotal.innerText = parsedState.totals.points || '?';
-    pangramsCount.innerText = foundPangrams;
-    pangramsTotal.innerText = parsedState.totals.pangrams || '?';
-    const bingoLabel = document.getElementById('bingo-label');
-    if (parsedState.totals.bingo) {
+    // Bingo
+    if (parsed.totals.bingo) {
         if (foundStartLetters.size === 7) {
-            bingoLabel.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
+            computed.bingoStatus = 'Bingo!';
         } else {
             const missing = [...allLetters].filter(l => !foundStartLetters.has(l));
-            bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">' + missing.join(', ').toUpperCase() + '</span>';
+            computed.bingoStatus = missing.join(', ').toUpperCase();
         }
-    } else {
-        bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
     }
 
-    if (parsedState.totals.words > 0 && validFoundWords.length >= parsedState.totals.words) {
-        qbabmMessage.classList.remove('qbabm-hidden');
-    } else {
-        qbabmMessage.classList.add('qbabm-hidden');
+    // Grid totals
+    for (const [letter, counts] of Object.entries(computed.grid.rows)) {
+        computed.grid.lengths.forEach(l => {
+            const count = counts[l] || 0;
+            if (count > 0) {
+                computed.gridColTotals[l] = (computed.gridColTotals[l] || 0) + count;
+                computed.gridTotalSigma += count;
+            }
+        });
     }
 
-    renderGrid(remGrid);
-    renderTwoLetter(remTwoLetter);
-    runQuery();
+    return computed;
 }
 
-function renderGrid(remGrid) {
-    if (!remGrid.lengths.length) {
-        gridOutput.innerHTML = '<em>No grid data found</em>';
+function getValidDailyWords(dictionary, centerLetter, outerLetters) {
+    if (!dictionary.length || !centerLetter) return [];
+    const allLetters = new Set([centerLetter, ...outerLetters]);
+    return dictionary.filter(w => {
+        if (!w.includes(centerLetter)) return false;
+        for (let char of w) {
+            if (!allLetters.has(char)) return false;
+        }
+        return true;
+    });
+}
+
+/* --- RENDER FUNCTION --- */
+
+function render() {
+    // 1. Inputs Sync
+    if (UI.hintsInput.value !== localStorage.getItem('workerBeeHints')) {
+        localStorage.setItem('workerBeeHints', UI.hintsInput.value);
+    }
+    if (UI.foundInput.value !== State.foundText) {
+        UI.foundInput.value = State.foundText;
+        localStorage.setItem('workerBeeFound', State.foundText);
+    }
+    
+    // 2. View Toggle
+    if (State.parsed.isLoaded) {
+        UI.hintsContainer.classList.add('hidden');
+        UI.orbitWrapper.classList.remove('hidden');
+        UI.btnEditHints.classList.remove('hidden');
+        if (UI.chevronInd) UI.chevronInd.classList.add('hidden');
+        
+        let dateStr = UI.nytDate.value;
+        let formattedDate = dateStr;
+        if (dateStr) {
+            const dateObj = new Date(dateStr + "T00:00:00");
+            formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '');
+        }
+        UI.rightPaneTitle.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
+    } else {
+        UI.hintsContainer.classList.remove('hidden');
+        UI.orbitWrapper.classList.add('hidden');
+        UI.btnEditHints.classList.add('hidden');
+        if (UI.chevronInd) UI.chevronInd.classList.remove('hidden');
+        UI.rightPaneTitle.innerText = 'Paste Hints';
+    }
+
+    // 3. Hints Error
+    if (State.hintsError) {
+        UI.hintsError.textContent = State.hintsError;
+        UI.hintsError.classList.remove('hidden');
+    } else {
+        UI.hintsError.classList.add('hidden');
+    }
+
+    if (!State.parsed.isLoaded) return; // Skip remaining render if not loaded
+
+    // 4. Letters
+    const allLetters = [State.parsed.centerLetter, ...State.parsed.outerLetters];
+    UI.letterButtons.innerHTML = allLetters.map(l => 
+        `<div class="linear-letter${l === State.parsed.centerLetter ? ' linear-center' : ''}">${l}</div>`
+    ).join('');
+
+    // 5. Ignored / Warnings
+    if (State.computed.invalidWords.length > 0) {
+        UI.ignoredCount.innerText = `${State.computed.invalidWords.length} ignored`;
+        UI.ignoredCount.classList.remove('hidden');
+        UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li>${w}</li>`).join('');
+        UI.foundWarning.classList.remove('hidden');
+    } else {
+        UI.ignoredCount.classList.add('hidden');
+        UI.foundWarning.classList.add('hidden');
+    }
+
+    // 6. Stats & QBABM
+    UI.wordsCount.innerText = State.computed.validFoundWords.length;
+    UI.wordsTotal.innerText = State.parsed.totals.words || '?';
+    UI.pointsCount.innerText = State.computed.score;
+    UI.pointsTotal.innerText = State.parsed.totals.points || '?';
+    UI.pangramsCount.innerText = State.computed.pangrams;
+    UI.pangramsTotal.innerText = State.parsed.totals.pangrams || '?';
+    
+    if (State.computed.bingoStatus === 'Bingo!') {
+        UI.bingoLabel.innerHTML = 'Bingo: <span style="color: #28a745; font-weight: bold;">Bingo!</span>';
+    } else if (State.computed.bingoStatus !== 'N/A') {
+        UI.bingoLabel.innerHTML = `Bingo: <span style="color: var(--text-color); font-weight: 500;">${State.computed.bingoStatus}</span>`;
+    } else {
+        UI.bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
+    }
+
+    if (State.parsed.totals.words > 0 && State.computed.validFoundWords.length >= State.parsed.totals.words) {
+        UI.qbabmMessage.classList.remove('qbabm-hidden');
+    } else {
+        UI.qbabmMessage.classList.add('qbabm-hidden');
+    }
+
+    // 7. Grid & Two Letter
+    renderGridUI();
+    renderTwoLetterUI();
+    renderQueryUI();
+}
+
+function renderGridUI() {
+    const grid = State.computed.grid;
+    if (!grid.lengths.length) {
+        UI.gridOutput.innerHTML = '<em>No grid data found</em>';
         return;
     }
+    
     let html = '<table><thead><tr><th></th>';
-    remGrid.lengths.forEach(l => html += `<th>${l}</th>`);
+    grid.lengths.forEach(l => html += `<th>${l}</th>`);
     html += '<th>Σ</th></tr></thead><tbody>';
 
-    const colTotals = {};
-    let totalSigma = 0;
-
-    for (const [letter, counts] of Object.entries(remGrid.rows)) {
+    for (const [letter, counts] of Object.entries(grid.rows)) {
         html += `<tr><th>${letter.toUpperCase()}</th>`;
         let rowSigma = 0;
-        remGrid.lengths.forEach(l => {
+        
+        grid.lengths.forEach(l => {
             const count = counts[l] || 0;
-            const origCount = parsedState.grid.rows[letter] && parsedState.grid.rows[letter][l] ? parsedState.grid.rows[letter][l] : 0;
-            
-            if (count > 0) {
-                rowSigma += count;
-                colTotals[l] = (colTotals[l] || 0) + count;
-                totalSigma += count;
-            }
+            const origCount = State.parsed.grid.rows[letter]?.[l] || 0;
+            if (count > 0) rowSigma += count;
 
             let tdHtml = '-';
             let clsList = '';
@@ -483,7 +406,7 @@ function renderGrid(remGrid) {
                 } else {
                     tdHtml = count;
                     clsList = 'clickable';
-                    onclick = `onclick="qStart.value='${letter}'; qLength.value='${l}'; qContains.value=''; runQuery();"`;
+                    onclick = `onclick="handleGridClick('${letter}', ${l})"`;
                 }
             }
             html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
@@ -491,81 +414,232 @@ function renderGrid(remGrid) {
         html += `<th class="${rowSigma <= 0 ? 'zero' : ''}">${rowSigma || 0}</th></tr>`;
     }
 
-    // Bottom Sigma Row
     html += `<tr><th>Σ</th>`;
-    remGrid.lengths.forEach(l => {
-        const cTotal = colTotals[l] || 0;
+    grid.lengths.forEach(l => {
+        const cTotal = State.computed.gridColTotals[l] || 0;
         html += `<th class="${cTotal <= 0 ? 'zero' : ''}">${cTotal}</th>`;
     });
-    html += `<th class="${totalSigma <= 0 ? 'zero' : ''}">${totalSigma}</th></tr>`;
-    
+    html += `<th class="${State.computed.gridTotalSigma <= 0 ? 'zero' : ''}">${State.computed.gridTotalSigma}</th></tr>`;
     html += '</tbody></table>';
-    gridOutput.innerHTML = html;
+    
+    UI.gridOutput.innerHTML = html;
 }
 
-function renderTwoLetter(remTwoLetter) {
+function renderTwoLetterUI() {
+    const twoLetter = State.computed.twoLetter;
     let html = '';
-    const sortedKeys = Object.keys(remTwoLetter).sort();
     let currentLetter = '';
     
-    sortedKeys.forEach(k => {
-        const count = remTwoLetter[k];
+    Object.keys(twoLetter).sort().forEach(k => {
+        const count = twoLetter[k];
         const clsList = 'two-letter-item ' + (count <= 0 ? 'zero' : 'clickable');
-        let onclick = '';
-        if (count > 0) {
-            onclick = `onclick="qStart.value='${k}'; qLength.value=''; qContains.value=''; runQuery();"`;
-        }
+        const onclick = count > 0 ? `onclick="handleTwoLetterClick('${k}')"` : '';
         
-        if (currentLetter && currentLetter !== k[0]) {
-            html += '<br>';
-        }
+        if (currentLetter && currentLetter !== k[0]) html += '<br>';
         currentLetter = k[0];
         
         html += `<span class="${clsList}" ${onclick}>${k.toUpperCase()}-${count}</span>`;
     });
-    twoLetterOutput.innerHTML = html || '<em>No two-letter data found</em>';
+    
+    UI.twoLetterOutput.innerHTML = html || '<em>No two-letter data found</em>';
 }
 
-function runQuery() {
-    const start = qStart.value.toLowerCase().trim();
-    const contains = qContains.value.toLowerCase().trim();
-    const len = parseInt(qLength.value);
-
+function renderQueryUI() {
+    const { start, contains, len, constrain, excludeFound } = State.query;
+    
     if (!start && !contains && !len) {
-        queryResults.classList.add('hidden');
+        UI.queryResults.classList.add('hidden');
         return;
     }
-    
-    queryResults.classList.remove('hidden');
+    UI.queryResults.classList.remove('hidden');
 
-    let sourceList = cbConstrain.checked ? validDailyWords : dictionary;
-    if (cbExcludeFound.checked) {
-        const foundSet = new Set((foundInput.value.toLowerCase().match(/[a-z]{4,}/g) || []));
+    let sourceList = constrain ? State.validDailyWords : State.dictionary;
+    if (excludeFound) {
+        const foundSet = new Set(State.computed.validFoundWords);
         sourceList = sourceList.filter(w => !foundSet.has(w));
     }
     
     if (!sourceList.length) {
-        queryResults.innerHTML = '<em>Awaiting hints, or all valid words are already found!</em>';
+        UI.queryResults.innerHTML = '<em>Awaiting hints, or all valid words are already found!</em>';
         return;
     }
 
-    let results = sourceList.filter(w => {
+    const results = sourceList.filter(w => {
         if (start && !w.startsWith(start)) return false;
         if (len && w.length !== len) return false;
         if (contains) {
-            const chars = contains.split('');
-            for (let c of chars) {
+            for (let c of contains.split('')) {
                 if (!w.includes(c)) return false;
             }
         }
         return true;
     });
 
-    if (results.length === 0) {
-        queryResults.innerHTML = '<em>No matching words found in valid set.</em>';
-    } else {
-        queryResults.innerHTML = results.join('<br>');
+    UI.queryResults.innerHTML = results.length === 0 
+        ? '<em>No matching words found in valid set.</em>' 
+        : results.join('<br>');
+}
+
+/* --- EVENT HANDLERS (Mutate State -> Render) --- */
+
+async function init() {
+    // Dynamic NYT Link
+    const d = new Date();
+    const defaultDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    UI.nytDate.value = defaultDate;
+    updateNytLink(defaultDate);
+    
+    // Restore raw inputs
+    UI.hintsInput.value = localStorage.getItem('workerBeeHints') || '';
+    State.foundText = localStorage.getItem('workerBeeFound') || '';
+
+    // Load Dictionary
+    try {
+        const response = await fetch('words.txt');
+        if (!response.ok) throw new Error();
+        State.dictionary = (await response.text()).split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length >= 4);
+    } catch (e) {
+        console.error(e);
+        // Fallback or ignore
+    }
+
+    // Hydrate State if hints exist
+    if (UI.hintsInput.value.trim()) {
+        const parsed = parseHintsText(UI.hintsInput.value);
+        if (!parsed.error) {
+            State.parsed = parsed;
+            State.validDailyWords = getValidDailyWords(State.dictionary, parsed.centerLetter, parsed.outerLetters);
+        }
+    }
+    
+    State.computed = computeState(State.parsed, State.foundText);
+    render();
+}
+
+function updateNytLink(dateStr) {
+    if (!dateStr) return;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        UI.nytLink.href = `https://www.nytimes.com/${parts[0]}/${parts[1]}/${parts[2]}/crosswords/spelling-bee-forum.html`;
     }
 }
 
-loadDictionary();
+// Global UI clicks from dynamic HTML
+window.handleGridClick = (letter, len) => {
+    State.query.start = letter;
+    State.query.len = len;
+    State.query.contains = '';
+    UI.qStart.value = letter;
+    UI.qLength.value = len;
+    UI.qContains.value = '';
+    render();
+};
+
+window.handleTwoLetterClick = (prefix) => {
+    State.query.start = prefix;
+    State.query.len = 0;
+    State.query.contains = '';
+    UI.qStart.value = prefix;
+    UI.qLength.value = '';
+    UI.qContains.value = '';
+    render();
+};
+
+/* Attach Listeners */
+UI.nytDate.addEventListener('change', e => {
+    updateNytLink(e.target.value);
+    render(); 
+});
+
+UI.btnLoadHints.addEventListener('click', () => {
+    const parsed = parseHintsText(UI.hintsInput.value);
+    if (parsed.error) {
+        State.hintsError = parsed.error;
+    } else {
+        State.hintsError = null;
+        State.parsed = parsed;
+        State.validDailyWords = getValidDailyWords(State.dictionary, parsed.centerLetter, parsed.outerLetters);
+        State.computed = computeState(State.parsed, State.foundText);
+    }
+    render();
+});
+
+UI.btnEditHints.addEventListener('click', () => {
+    State.parsed.isLoaded = false; // Just toggle view
+    render();
+});
+
+UI.btnClearHints.addEventListener('click', () => {
+    UI.hintsInput.value = '';
+    State.hintsError = null;
+    State.parsed = { isLoaded: false, centerLetter: '', outerLetters: [], totals: { words: 0, points: 0, pangrams: 0, bingo: false }, grid: { lengths: [], rows: {} }, twoLetter: {} };
+    State.computed = computeState(State.parsed, State.foundText);
+    render();
+});
+
+UI.foundInput.addEventListener('input', e => {
+    State.foundText = e.target.value;
+    State.computed = computeState(State.parsed, State.foundText);
+    render();
+});
+
+UI.btnClearFound.addEventListener('click', () => {
+    State.foundText = '';
+    State.computed = computeState(State.parsed, State.foundText);
+    render();
+});
+
+// Edit Center UI Flow
+UI.linkEditCenter.addEventListener('click', e => {
+    e.preventDefault();
+    UI.editCenterUi.classList.toggle('hidden');
+    if (!UI.editCenterUi.classList.contains('hidden')) {
+        UI.editCenterInput.value = '';
+        UI.editCenterInput.focus();
+    }
+});
+
+UI.btnSaveCenter.addEventListener('click', () => {
+    let newCenter = UI.editCenterInput.value.toLowerCase().trim();
+    if (newCenter && /^[a-z]$/.test(newCenter)) {
+        const all = [State.parsed.centerLetter, ...State.parsed.outerLetters];
+        if (all.includes(newCenter)) {
+            State.parsed.outerLetters = all.filter(char => char !== newCenter);
+            State.parsed.centerLetter = newCenter;
+            State.validDailyWords = getValidDailyWords(State.dictionary, State.parsed.centerLetter, State.parsed.outerLetters);
+            State.computed = computeState(State.parsed, State.foundText);
+            render();
+        }
+    }
+    UI.editCenterUi.classList.add('hidden');
+});
+
+UI.editCenterInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') UI.btnSaveCenter.click();
+    if (e.key === 'Escape') UI.editCenterUi.classList.add('hidden');
+});
+
+// Query Listeners
+const updateQueryState = () => {
+    State.query.start = UI.qStart.value.toLowerCase().replace(/[^a-z]/g, '');
+    State.query.contains = UI.qContains.value.toLowerCase().replace(/[^a-z]/g, '');
+    UI.qStart.value = State.query.start;
+    UI.qContains.value = State.query.contains;
+    
+    let len = parseInt(UI.qLength.value);
+    if (UI.qLength.value !== '' && len < 4) { len = 4; UI.qLength.value = 4; }
+    State.query.len = len || 0;
+    
+    State.query.constrain = UI.cbConstrain.checked;
+    State.query.excludeFound = UI.cbExcludeFound.checked;
+    render();
+};
+
+UI.qStart.addEventListener('input', updateQueryState);
+UI.qContains.addEventListener('input', updateQueryState);
+UI.qLength.addEventListener('input', updateQueryState);
+UI.cbConstrain.addEventListener('change', updateQueryState);
+UI.cbExcludeFound.addEventListener('change', updateQueryState);
+
+// Bootstrap
+init();
