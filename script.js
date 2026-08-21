@@ -175,7 +175,13 @@ function parseHints() {
     const text = hintsInput.value.toLowerCase();
     localStorage.setItem('workerBeeHints', hintsInput.value);
     
-    if (!text.trim()) return;
+    if (!text.trim()) {
+        if (errorDiv) {
+            errorDiv.textContent = 'Paste hints to proceed.';
+            errorDiv.classList.remove('hidden');
+        }
+        return;
+    }
 
     // Reset state
     parsedState.grid = { lengths: [], rows: {} };
@@ -368,7 +374,7 @@ function updateState() {
     if (invalidWords.length > 0) {
         ignoredCount.innerText = `${invalidWords.length} ignored`;
         ignoredCount.classList.remove('hidden');
-        foundWarning.innerHTML = invalidWords.map(w => `<li>Ignored: ${w}</li>`).join('');
+        foundWarning.innerHTML = invalidWords.map(w => `<li>${w}</li>`).join('');
         foundWarning.classList.remove('hidden');
     } else {
         ignoredCount.classList.add('hidden');
