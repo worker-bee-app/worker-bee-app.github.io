@@ -15,11 +15,10 @@
     </header>
 
     <div class="app-container row-split">
-        <!-- Left Column -->
-        <div class="col-left">
+                <div class="col-left">
             <div class="how-to">
-                <p style="font-weight: 600; margin-top: 0; margin-bottom: 0.75rem; font-size: 0.95rem;">How to use</p>
-                <ul style="margin: 0.75rem 0 0 0;">
+                <p class="how-to-title">How to use</p>
+                <ul class="how-to-list">
                     <li>Open hints in a new tab and paste spelling bee grid on the right.</li>
                     <li>Paste or type in words found.</li>
                     <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
@@ -27,7 +26,7 @@
                 </ul>
             </div>
 
-            <div class="header-actions" style="margin: 2rem 0;">
+            <div class="header-actions">
                 <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
                 <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
                 <div id="chevron-indicator" class="chevron-indicator">
@@ -37,20 +36,18 @@
 
 
 
-            <div class="inputs-panel" style="display: flex; flex-direction: column; flex: 1;">
+            <div class="inputs-panel">
                 <div class="label-row">
-                    <label for="found-input" style="font-size: 0.95rem;">Words found</label>
-                    <button id="btn-clear-found" class="btn-text"
-                        style="color: #dc3545; font-size: 0.85rem;">Clear</button>
+                    <label for="found-input" class="panel-label">Words found</label>
+                    <button id="btn-clear-found" class="btn-text btn-danger">Clear</button>
                 </div>
                 <textarea id="found-input" class="tall-textarea"
                     placeholder="Enter words separated by spaces or commas..."></textarea>
                 <div id="ignored-count" class="ignored-count hidden"></div>
                 <ul id="found-warning" class="warning-text hidden"></ul>
 
-                <div class="label-row" style="margin-top: 1.5rem;">
-                    <label for="q-start" style="font-size: 0.95rem; color: var(--secondary); margin-bottom: 0;">Look
-                        up</label>
+                <div class="label-row mt-1-5">
+                    <label for="q-start" class="panel-label lookup-label">Look up</label>
                 </div>
                 <div class="query-container">
                     <div class="query-options">
@@ -69,69 +66,49 @@
             </div>
         </div>
 
-        <!-- Right Column -->
-        <div class="col-right">
+                <div class="col-right">
 
-            <!-- Dynamic Header for Right Pane -->
-            <div class="right-pane-header">
-                <div id="right-pane-title" style="font-weight: 600; font-size: 0.95rem; color: var(--secondary);">Paste
-                    Hints</div>
+                        <div class="right-pane-header">
+                <div id="right-pane-title" class="pane-title">Paste Hints</div>
                 <div id="right-pane-actions" class="hints-actions-minimal">
-                    <!-- Default state -->
-                    <button id="btn-clear-hints-input" class="btn-text"
-                        style="font-size: 0.85rem; color: #dc3545;">Clear</button>
-                    <!-- Loaded state (hidden initially) -->
-                    <button id="btn-edit-hints" class="btn-text hidden"
-                        style="font-size: 0.85rem; color: var(--secondary);">Edit</button>
-                    <button id="btn-clear-hints" class="btn-text hidden"
-                        style="margin-left: 0.75rem; color: #dc3545; font-size: 0.85rem;">Clear</button>
+                    <button id="btn-edit-hints" class="btn-text hidden">Edit</button>
+                    <button id="btn-clear-hints" class="btn-text btn-danger">Clear</button>
                 </div>
             </div>
 
-            <!-- The Pane itself -->
-            <div id="main-right-panel" style="display: flex; flex-direction: column; flex: 1;">
+                        <div id="main-right-panel">
 
-                <!-- State 1: Awaiting Hints -->
-                <div id="hints-container" class="hints-transition"
-                    style="display: flex; flex-direction: column; position: relative;">
+                                <div id="hints-container" class="hints-transition">
                     <textarea id="hints-input"
                         placeholder="Copy and paste the entire hints section that looks like:&#10;&#10;Spelling Bee Grid&#10;&#10;Center letter is in bold.&#10;&#10;P A C E H K Y&#10;&#10;WORDS: 30, POINTS: 107, PANGRAMS: 1, BINGO&#10;&#10;         4	  5	  6	  8	  Σ&#10;A:	  -	  1	  -	  -	  1&#10;C:	  2	  2	  -	  -	  4&#10;E:	  1	  -	  -	  -	1&#10;H:	  2	  1	  -	  -	  3&#10;K:	  1	  1	  -	  -	2&#10;P:	  8	  6	  3	  1	18&#10;Y:	  -	  1	  -	  -	  1&#10;Σ:	14	12	  3	  1	30&#10;&#10;Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3&#10;EP-1&#10;HA-1 HE-1 HY-1&#10;KA-1 KE-1&#10;PA-8 PE-10&#10;YA-1"
-                        style="height: 505px; resize: vertical;"></textarea>
-                    <div id="hints-error" class="hidden"
-                        style="color: #dc3545; font-size: 0.85rem; margin-top: 0.5rem; text-align: left;"></div>
-                    <div class="hints-actions" style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+                        class="hints-textarea"></textarea>
+                    <div id="hints-error" class="hidden error-text"></div>
+                    <div class="hints-actions">
                         <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
                     </div>
                 </div>
 
-                <!-- State 2: Hints Loaded -->
-                <div class="hints-loaded-wrapper hints-transition hidden active-panel" id="orbit-wrapper"
-                    style="flex: 1; overflow-y: auto;">
+                                <div class="hints-loaded-wrapper hints-transition hidden active-panel" id="orbit-wrapper">
 
-                    <div style="display: flex; align-items: center; gap: 1.5rem;">
-                        <div class="letters-linear" id="letter-buttons"
-                            style="justify-content: flex-start; letter-spacing: 0.5rem;">
-                            <!-- Letters injected here -->
-                        </div>
-                        <div id="edit-center-ui" class="hidden"
-                            style="display: flex; gap: 0.5rem; align-items: center;">
+                    <div class="letters-header">
+                        <div class="letters-linear" id="letter-buttons">
+                                                    </div>
+                        <div id="edit-center-ui" class="hidden">
                             <input type="text" id="edit-center-input" maxlength="1"
-                                style="width: 2.5rem; text-align: center; text-transform: uppercase; font-weight: bold; padding: 0.2rem; border: 1px solid var(--border-color); border-radius: 4px;">
-                            <button id="btn-save-center" class="btn btn-small"
-                                style="padding: 0.2rem 0.5rem;">Save</button>
+                                class="edit-center-input">
+                            <button id="btn-save-center" class="btn btn-small btn-save">Save</button>
                         </div>
                     </div>
 
-                    <div class="letters-hint"
-                        style="text-align: left; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                    <div class="letters-hint">
                         <span>Center letter is in yellow</span>
                         <span>&middot;</span>
                         <a href="#" id="link-edit-center"
-                            style="color: var(--primary); text-decoration: underline; text-underline-offset: 2px; font-weight: 600;">Edit
+                            class="link-edit-center">Edit
                             center letter</a>
                     </div>
 
-                    <div class="qbabm-container" style="text-align: left;">
+                    <div class="qbabm-container">
                         <span id="qbabm-message" class="qbabm-msg qbabm-hidden">Queen Bee Achieved!</span>
                     </div>
 
@@ -143,30 +120,28 @@
                         <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span
                                 id="pangrams-total">0</span></span>
                     </div>
-                    <div class="stats-row" style="margin-top: 0.5rem; margin-bottom: 2rem;">
+                    <div class="stats-row stats-row-bingo">
                         <span id="bingo-label" class="stat-item">Bingo: <span id="bingo-status"
                                 class="bingo-val">N/A</span></span>
                     </div>
 
                     <div class="grid-container">
-                        <h3 style="font-size: 0.95rem;">Grid tracker</h3>
+                        <h3 class="tracker-title">Grid tracker</h3>
                         <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
                     </div>
 
-                    <div class="two-letter-container" style="margin-top: 1rem;">
-                        <h3 style="font-size: 0.95rem;">Two letter tracker</h3>
+                    <div class="two-letter-container">
+                        <h3 class="tracker-title">Two letter tracker</h3>
                         <div id="two-letter-output"><em>Paste hints to view list</em></div>
                     </div>
                 </div>
 
-            </div> <!-- /active-panel -->
-
+            </div> 
         </div>
     </div>
 
-    <div style="max-width: 1000px; margin: -1rem auto 2rem auto; text-align: center;">
-        <div
-            style="display: inline-block; border: 1px solid #b58900; color: #b58900; font-size: 0.85rem; font-weight: 500; padding: 0.4rem 0.8rem; margin-top: 2rem;">
+    <div class="footer-container">
+        <div class="footer-disclaimer">
             This is just a scratchpad! Verify your words in the actual game.
         </div>
     </div>

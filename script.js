@@ -27,7 +27,6 @@ const queryResults = document.getElementById('query-results');
 const hintsContainer = document.getElementById('hints-container');
 const letterButtons = document.getElementById('letter-buttons');
 const btnEditHints = document.getElementById('btn-edit-hints');
-const btnClearHintsInput = document.getElementById('btn-clear-hints-input');
 const orbitWrapper = document.getElementById('orbit-wrapper');
 const nytLink = document.getElementById('nyt-link');
 const nytDate = document.getElementById('nyt-date');
@@ -82,9 +81,7 @@ btnEditHints.addEventListener('click', () => {
     hintsContainer.classList.remove('hidden');
     
     document.getElementById('right-pane-title').innerText = 'Paste NYT Hints';
-    btnClearHintsInput.classList.remove('hidden');
     btnEditHints.classList.add('hidden');
-    btnClearHints.classList.add('hidden');
     const chevronInd = document.getElementById('chevron-indicator');
     if (chevronInd) chevronInd.classList.remove('hidden');
 });
@@ -104,21 +101,13 @@ btnClearHints.addEventListener('click', () => {
     document.getElementById('orbit-wrapper').classList.add('hidden');
     
     document.getElementById('right-pane-title').innerText = 'Paste NYT Hints';
-    btnClearHintsInput.classList.remove('hidden');
     btnEditHints.classList.add('hidden');
-    btnClearHints.classList.add('hidden');
     const chevronInd = document.getElementById('chevron-indicator');
     if (chevronInd) chevronInd.classList.remove('hidden');
     
     updateState();
 });
 
-if (btnClearHintsInput) {
-    btnClearHintsInput.addEventListener('click', () => {
-        hintsInput.value = '';
-        localStorage.removeItem('workerBeeHints');
-    });
-}
 
 btnClearFound.addEventListener('click', () => {
     foundInput.value = '';
@@ -278,10 +267,7 @@ function parseHints() {
             formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '');
         }
         titleEl.innerText = `Showing hints for ${formattedDate || 'selected date'}`;
-        
-        btnClearHintsInput.classList.add('hidden');
         btnEditHints.classList.remove('hidden');
-        btnClearHints.classList.remove('hidden');
         const chevronInd = document.getElementById('chevron-indicator');
         if (chevronInd) chevronInd.classList.add('hidden');
         
