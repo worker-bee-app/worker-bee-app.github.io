@@ -444,7 +444,7 @@ td {
 }
 
 /* Dictionary Inputs */
-.query-container {
+.lookup-container {
     margin-top: 0.5rem;
     background-color: rgba(246, 192, 57, 0.1);
     border-radius: 0;
@@ -460,7 +460,7 @@ td {
     color: var(--secondary);
 }
 
-.query-options {
+.lookup-options {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
@@ -481,21 +481,21 @@ td {
     margin: 0;
 }
 
-.query-options {
+.lookup-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.query-inputs {
+.lookup-inputs {
     display: flex;
     justify-content: space-between;
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
 
-.query-inputs input {
+.lookup-inputs input {
     padding: 0.5rem 0.6rem;
     border: 1px solid #e0e0e0;
     border-radius: 0;
@@ -505,12 +505,12 @@ td {
     min-width: 0;
 }
 
-.query-inputs input:focus {
+.lookup-inputs input:focus {
     border-color: var(--primary);
     outline: none;
 }
 
-#query-results {
+#lookup-results {
     font-family: var(--sans-font);
     max-height: 250px;
     overflow-y: auto;

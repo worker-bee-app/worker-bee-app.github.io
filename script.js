@@ -52,10 +52,10 @@ const UI = {
     bingoLabel: $('bingo-label'),
     gridOutput: $('grid-output'),
     twoLetterOutput: $('two-letter-output'),
-    qStart: $('q-start'),
-    qContains: $('q-contains'),
-    qLength: $('q-length'),
-    queryResults: $('query-results'),
+    luStart: $('lu-start'),
+    luContains: $('lu-contains'),
+    luLength: $('lu-length'),
+    lookupResults: $('lookup-results'),
     cbConstrain: $('cb-constrain'),
     cbExcludeFound: $('cb-exclude-found'),
     
@@ -372,7 +372,7 @@ function render() {
     // 7. Grid & Two Letter
     renderGridUI();
     renderTwoLetterUI();
-    renderQueryUI();
+    renderLookupUI();
 }
 
 function renderGridUI() {
@@ -444,8 +444,8 @@ function renderTwoLetterUI() {
     UI.twoLetterOutput.innerHTML = html || '<em>No two-letter data found</em>';
 }
 
-function renderQueryUI() {
-    const { start, contains, len, constrain, excludeFound } = State.query;
+function renderLookupUI() {
+    const { start, contains, len, constrain, excludeFound } = State.lookup;
     
     if (!start && !contains && !len) {
         UI.queryResults.classList.add('hidden');
@@ -526,9 +526,9 @@ function updateNytLink(dateStr) {
 
 // Global UI clicks from dynamic HTML
 window.handleGridClick = (letter, len) => {
-    State.query.start = letter;
-    State.query.len = len;
-    State.query.contains = '';
+    State.lookup.start = letter;
+    State.lookup.len = len;
+    State.lookup.contains = '';
     UI.qStart.value = letter;
     UI.qLength.value = len;
     UI.qContains.value = '';
@@ -536,9 +536,9 @@ window.handleGridClick = (letter, len) => {
 };
 
 window.handleTwoLetterClick = (prefix) => {
-    State.query.start = prefix;
-    State.query.len = 0;
-    State.query.contains = '';
+    State.lookup.start = prefix;
+    State.lookup.len = 0;
+    State.lookup.contains = '';
     UI.qStart.value = prefix;
     UI.qLength.value = '';
     UI.qContains.value = '';
@@ -620,26 +620,26 @@ UI.editCenterInput.addEventListener('keydown', e => {
 });
 
 // Query Listeners
-const updateQueryState = () => {
-    State.query.start = UI.qStart.value.toLowerCase().replace(/[^a-z]/g, '');
-    State.query.contains = UI.qContains.value.toLowerCase().replace(/[^a-z]/g, '');
-    UI.qStart.value = State.query.start;
-    UI.qContains.value = State.query.contains;
+const updateLookupState = () => {
+    State.lookup.start = UI.qStart.value.toLowerCase().replace(/[^a-z]/g, '');
+    State.lookup.contains = UI.qContains.value.toLowerCase().replace(/[^a-z]/g, '');
+    UI.qStart.value = State.lookup.start;
+    UI.qContains.value = State.lookup.contains;
     
     let len = parseInt(UI.qLength.value);
     if (UI.qLength.value !== '' && len < 4) { len = 4; UI.qLength.value = 4; }
-    State.query.len = len || 0;
+    State.lookup.len = len || 0;
     
-    State.query.constrain = UI.cbConstrain.checked;
-    State.query.excludeFound = UI.cbExcludeFound.checked;
+    State.lookup.constrain = UI.cbConstrain.checked;
+    State.lookup.excludeFound = UI.cbExcludeFound.checked;
     render();
 };
 
-UI.qStart.addEventListener('input', updateQueryState);
-UI.qContains.addEventListener('input', updateQueryState);
-UI.qLength.addEventListener('input', updateQueryState);
-UI.cbConstrain.addEventListener('change', updateQueryState);
-UI.cbExcludeFound.addEventListener('change', updateQueryState);
+UI.qStart.addEventListener('input', updateLookupState);
+UI.qContains.addEventListener('input', updateLookupState);
+UI.qLength.addEventListener('input', updateLookupState);
+UI.cbConstrain.addEventListener('change', updateLookupState);
+UI.cbExcludeFound.addEventListener('change', updateLookupState);
 
 // Bootstrap
 init();

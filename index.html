@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worker Bee - NYT Spelling Bee Aide</title>
+    <title>Worker Bee - NYT Spelling Bee Companion</title>
+    <meta name="description" content="A powerful companion tool for NYT Spelling Bee to track your grid, two-letter list, and score.">
+    <meta property="og:title" content="Worker Bee - NYT Spelling Bee Companion">
+    <meta property="og:description" content="Elevate your NYT Spelling Bee game. Track, Practice, Excel.">
+    <meta property="og:image" content="og-image.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -47,21 +53,21 @@
                 <ul id="found-warning" class="warning-text hidden"></ul>
 
                 <div class="label-row mt-1-5">
-                    <label for="q-start" class="panel-label lookup-label">Look up</label>
+                    <label for="lu-start" class="panel-label lookup-label">Look up</label>
                 </div>
-                <div class="query-container">
-                    <div class="query-options">
+                <div class="lookup-container">
+                    <div class="lookup-options">
                         <label class="checkbox-label"><input type="checkbox" id="cb-constrain"> Include only
                             letters of the day</label>
                         <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found"> Exclude
                             words found</label>
                     </div>
-                    <div class="query-inputs">
-                        <input type="text" id="q-start" placeholder="Starts (e.g. ro)">
-                        <input type="text" id="q-contains" placeholder="Contains (e.g. v)">
-                        <input type="number" id="q-length" placeholder="Len (e.g. 5)" min="4">
+                    <div class="lookup-inputs">
+                        <input type="text" id="lu-start" placeholder="Starts (e.g. ro)">
+                        <input type="text" id="lu-contains" placeholder="Contains (e.g. v)">
+                        <input type="number" id="lu-length" placeholder="Len (e.g. 5)" min="4">
                     </div>
-                    <div id="query-results" class="hidden"></div>
+                    <div id="lookup-results" class="hidden"></div>
                 </div>
             </div>
         </div>
