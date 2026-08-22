@@ -28,7 +28,7 @@ const State = {
     
     // Inputs
     foundText: '',
-    query: {
+    lookup: {
         start: '',
         contains: '',
         len: 0,
@@ -448,10 +448,10 @@ function renderLookupUI() {
     const { start, contains, len, constrain, excludeFound } = State.lookup;
     
     if (!start && !contains && !len) {
-        UI.queryResults.classList.add('hidden');
+        UI.lookupResults.classList.add('hidden');
         return;
     }
-    UI.queryResults.classList.remove('hidden');
+    UI.lookupResults.classList.remove('hidden');
 
     let sourceList = constrain ? State.validDailyWords : State.dictionary;
     if (excludeFound) {
@@ -460,7 +460,7 @@ function renderLookupUI() {
     }
     
     if (!sourceList.length) {
-        UI.queryResults.innerHTML = '<em>Awaiting hints, or all valid words are already found!</em>';
+        UI.lookupResults.innerHTML = '<em>Awaiting hints, or all valid words are already found!</em>';
         return;
     }
 
@@ -475,7 +475,7 @@ function renderLookupUI() {
         return true;
     });
 
-    UI.queryResults.innerHTML = results.length === 0 
+    UI.lookupResults.innerHTML = results.length === 0 
         ? '<em>No matching words found in valid set.</em>' 
         : results.join('<br>');
 }
@@ -529,9 +529,9 @@ window.handleGridClick = (letter, len) => {
     State.lookup.start = letter;
     State.lookup.len = len;
     State.lookup.contains = '';
-    UI.qStart.value = letter;
-    UI.qLength.value = len;
-    UI.qContains.value = '';
+    UI.luStart.value = letter;
+    UI.luLength.value = len;
+    UI.luContains.value = '';
     render();
 };
 
@@ -539,9 +539,9 @@ window.handleTwoLetterClick = (prefix) => {
     State.lookup.start = prefix;
     State.lookup.len = 0;
     State.lookup.contains = '';
-    UI.qStart.value = prefix;
-    UI.qLength.value = '';
-    UI.qContains.value = '';
+    UI.luStart.value = prefix;
+    UI.luLength.value = '';
+    UI.luContains.value = '';
     render();
 };
 
@@ -621,13 +621,13 @@ UI.editCenterInput.addEventListener('keydown', e => {
 
 // Query Listeners
 const updateLookupState = () => {
-    State.lookup.start = UI.qStart.value.toLowerCase().replace(/[^a-z]/g, '');
-    State.lookup.contains = UI.qContains.value.toLowerCase().replace(/[^a-z]/g, '');
-    UI.qStart.value = State.lookup.start;
-    UI.qContains.value = State.lookup.contains;
+    State.lookup.start = UI.luStart.value.toLowerCase().replace(/[^a-z]/g, '');
+    State.lookup.contains = UI.luContains.value.toLowerCase().replace(/[^a-z]/g, '');
+    UI.luStart.value = State.lookup.start;
+    UI.luContains.value = State.lookup.contains;
     
-    let len = parseInt(UI.qLength.value);
-    if (UI.qLength.value !== '' && len < 4) { len = 4; UI.qLength.value = 4; }
+    let len = parseInt(UI.luLength.value);
+    if (UI.luLength.value !== '' && len < 4) { len = 4; UI.luLength.value = 4; }
     State.lookup.len = len || 0;
     
     State.lookup.constrain = UI.cbConstrain.checked;
@@ -635,9 +635,9 @@ const updateLookupState = () => {
     render();
 };
 
-UI.qStart.addEventListener('input', updateLookupState);
-UI.qContains.addEventListener('input', updateLookupState);
-UI.qLength.addEventListener('input', updateLookupState);
+UI.luStart.addEventListener('input', updateLookupState);
+UI.luContains.addEventListener('input', updateLookupState);
+UI.luLength.addEventListener('input', updateLookupState);
 UI.cbConstrain.addEventListener('change', updateLookupState);
 UI.cbExcludeFound.addEventListener('change', updateLookupState);
 
