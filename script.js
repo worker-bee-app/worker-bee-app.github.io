@@ -46,6 +46,8 @@ const UI = {
     wordsCount: $('words-count'),
     wordsCountMob: $('words-count-mob'),
     wordsTotalMob: $('words-total-mob'),
+    wordsCountMob: $('words-count-mob'),
+    bingoLabelMob: $('bingo-label-mob'),
     wordsTotal: $('words-total'),
     pointsCount: $('points-count'),
     pointsCountMob: $('points-count-mob'),
@@ -368,6 +370,7 @@ function render() {
     UI.wordsCount.innerText = State.computed.validFoundWords.length;
     UI.wordsTotal.innerText = State.parsed.totals.words || '?';
     if(UI.wordsTotalMob) UI.wordsTotalMob.innerText = State.parsed.totals.words || '?';
+    if(UI.wordsCountMob) UI.wordsCountMob.innerText = State.computed.validFoundWords.length;
     UI.pointsCount.innerText = State.computed.score;
     if(UI.pointsCountMob) UI.pointsCountMob.innerText = State.computed.score;
     UI.pointsTotal.innerText = State.parsed.totals.points || '?';
@@ -378,11 +381,14 @@ function render() {
     if(UI.pangramsTotalMob) UI.pangramsTotalMob.innerText = State.parsed.totals.pangrams || '?';
     
     if (State.computed.bingoStatus === 'Bingo!') {
-        UI.bingoLabel.innerHTML = 'Bingo: <span style="color: #28a745; font-weight: bold;">Bingo!</span>';
+        UI.bingoLabel.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
+        if(UI.bingoLabelMob) UI.bingoLabelMob.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
     } else if (State.computed.bingoStatus !== 'N/A') {
         UI.bingoLabel.innerHTML = `Bingo: <span style="color: var(--text-color); font-weight: 500;">${State.computed.bingoStatus}</span>`;
+        if(UI.bingoLabelMob) UI.bingoLabelMob.innerHTML = `Bingo: <span style="color: var(--text-color); font-weight: 500;">${State.computed.bingoStatus}</span>`;
     } else {
         UI.bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
+        if(UI.bingoLabelMob) UI.bingoLabelMob.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
     }
 
     if (State.parsed.totals.words > 0 && State.computed.validFoundWords.length >= State.parsed.totals.words) {
@@ -524,6 +530,7 @@ async function init() {
     // Restore raw inputs
     UI.hintsInput.value = localStorage.getItem('workerBeeHints') || '';
     State.foundText = localStorage.getItem('workerBeeFound') || '';
+    if(UI.foundInput) UI.foundInput.value = State.foundText;
 
     // Load Dictionary
     try {
