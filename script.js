@@ -160,9 +160,9 @@ function parseHintsText(text) {
     }
 
     // Two Letter
-    const tlMatches = text.matchAll(/([a-z]{2})-(\d+)/g);
+    const tlMatches = text.matchAll(/([a-z]{2})-(\d+)/gi);
     for (const match of tlMatches) {
-        p.twoLetter[match[1]] = parseInt(match[2]);
+        p.twoLetter[match[1].toLowerCase()] = parseInt(match[2]);
     }
 
     const hasLetters = !!p.centerLetter;

@@ -1,0 +1,12 @@
+{
+  "name": "worker-bee",
+  "version": "1.0.0",
+  "description": "NYT Spelling Bee Companion",
+  "private": true,
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.0"
+  }
+}
