@@ -1,8 +1,9 @@
 # Node & Playwright
 node_modules/
 .node/
-playwright-report/
-test-results/
+package-lock.json
+tests/playwright-report/
+tests/test-results/
 playwright/.cache/
 
 # OS Files
