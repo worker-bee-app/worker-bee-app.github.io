@@ -309,6 +309,8 @@ function render() {
     }
     if (UI.foundInput.value !== State.foundText) {
         UI.foundInput.value = State.foundText;
+    }
+    if (State.foundText !== localStorage.getItem('workerBeeFound')) {
         localStorage.setItem('workerBeeFound', State.foundText);
     }
     
@@ -532,27 +534,34 @@ async function init() {
     State.foundText = localStorage.getItem('workerBeeFound') || '';
     if(UI.foundInput) UI.foundInput.value = State.foundText;
 
-    // Load Dictionary
-    try {
-        const response = await fetch('words.txt');
-        if (!response.ok) throw new Error();
-        State.dictionary = (await response.text()).split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length >= 4);
-    } catch (e) {
-        console.error(e);
-        // Fallback or ignore
-    }
-
-    // Hydrate State if hints exist
+    // Fast initial hydrate & render (NO DICTIONARY YET)
     if (UI.hintsInput.value.trim()) {
         const parsed = parseHintsText(UI.hintsInput.value);
         if (!parsed.error) {
             State.parsed = parsed;
-            State.validDailyWords = getValidDailyWords(State.dictionary, parsed.centerLetter, parsed.outerLetters);
+            // validDailyWords will be empty array for now
         }
     }
-    
     State.computed = computeState(State.parsed, State.foundText);
     render();
+    
+    // Enable CSS transitions after initial synchronous render
+    setTimeout(() => document.body.classList.add('loaded'), 10);
+
+    // Async Load Dictionary in the background
+    try {
+        const response = await fetch('words.txt');
+        if (!response.ok) throw new Error();
+        State.dictionary = (await response.text()).split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length >= 4);
+        
+        // Once dictionary is loaded, populate valid words and re-render
+        if (State.parsed.isLoaded) {
+            State.validDailyWords = getValidDailyWords(State.dictionary, State.parsed.centerLetter, State.parsed.outerLetters);
+            render();
+        }
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function updateNytLink(dateStr) {
