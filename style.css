@@ -724,7 +724,7 @@ td {
 .dict-defs li { margin-bottom: 0.25rem; }
 .dict-error { color: #dc3545; font-style: italic; }
 
-#lu-start, #lu-contains { text-transform: lowercase; }
+
 
 #chevron-indicator-mob {
     flex-direction: column;

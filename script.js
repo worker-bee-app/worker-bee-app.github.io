@@ -344,6 +344,7 @@ function render() {
         UI.hintsError.classList.add('hidden');
     }
 
+    renderLookupUI(); // Render lookup before the early return!
     if (!State.parsed.isLoaded) return; // Skip remaining render if not loaded
 
     // 4. Letters
@@ -395,7 +396,6 @@ function render() {
     // 7. Grid & Two Letter
     renderGridUI();
     renderTwoLetterUI();
-    renderLookupUI();
 }
 
 function renderGridUI() {
@@ -498,9 +498,17 @@ function renderLookupUI() {
         return true;
     });
 
-    UI.lookupResults.innerHTML = results.length === 0 
-        ? '<em>No matching words found in valid set.</em>' 
-        : results.map(w => `<span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span>`).join(' &middot; ');
+    if (results.length === 0) {
+        UI.lookupResults.innerHTML = '<em>No matching words found in valid set.</em>';
+    } else {
+        const MAX_RESULTS = 100;
+        const displayResults = results.slice(0, MAX_RESULTS);
+        let html = displayResults.map(w => `<span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span>`).join(' &middot; ');
+        if (results.length > MAX_RESULTS) {
+            html += ` <br><em style="color: var(--secondary); font-size: 0.85rem; margin-top: 0.5rem; display: block;">...and ${results.length - MAX_RESULTS} more words. Keep typing to narrow down!</em>`;
+        }
+        UI.lookupResults.innerHTML = html;
+    }
 }
 
 /* --- EVENT HANDLERS (Mutate State -> Render) --- */
@@ -544,7 +552,9 @@ function updateNytLink(dateStr) {
     if (!dateStr) return;
     const parts = dateStr.split('-');
     if (parts.length === 3) {
-        UI.nytLink.href = `https://www.nytimes.com/${parts[0]}/${parts[1]}/${parts[2]}/crosswords/spelling-bee-forum.html`;
+        const url = `https://www.nytimes.com/${parts[0]}/${parts[1]}/${parts[2]}/crosswords/spelling-bee-forum.html`;
+        UI.nytLink.href = url;
+        if(UI.nytLinkMob) UI.nytLinkMob.href = url;
     }
 }
 
