@@ -193784,6 +193784,7 @@ mzee
 mzungu
 naam
 naaman
+naan
 naassenes
 nabak
 nabal
@@ -257138,6 +257139,7 @@ raisiny
 raison
 raisonne
 raisons
+raita
 raiyat
 raja
 rajab

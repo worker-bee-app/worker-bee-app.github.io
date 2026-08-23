@@ -44,12 +44,20 @@ const UI = {
     hintsInput: $('hints-input'),
     foundInput: $('found-input'),
     wordsCount: $('words-count'),
+    wordsCountMob: $('words-count-mob'),
+    wordsTotalMob: $('words-total-mob'),
     wordsTotal: $('words-total'),
     pointsCount: $('points-count'),
+    pointsCountMob: $('points-count-mob'),
+    pointsTotalMob: $('points-total-mob'),
     pointsTotal: $('points-total'),
     pangramsCount: $('pangrams-count'),
+    pangramsCountMob: $('pangrams-count-mob'),
+    pangramsTotalMob: $('pangrams-total-mob'),
     pangramsTotal: $('pangrams-total'),
     bingoLabel: $('bingo-label'),
+    bingoLabelMob: $('bingo-label-mob'),
+    bingoStatusMob: $('bingo-status-mob'),
     gridOutput: $('grid-output'),
     twoLetterOutput: $('two-letter-output'),
     luStart: $('lu-start'),
@@ -70,13 +78,17 @@ const UI = {
     btnSaveCenter: $('btn-save-center'),
     
     nytLink: $('nyt-link'),
+    nytLinkMob: $('nyt-date') ? $('nyt-link-mob') : null,
     nytDate: $('nyt-date'),
+    nytDateMob: $('nyt-date') ? $('nyt-date-mob') : null,
     
     ignoredCount: $('ignored-count'),
     foundWarning: $('found-warning'),
     qbabmMessage: $('qbabm-message'),
+    qbabmMessageMob: $('qbabm-message-mob'),
     hintsError: $('hints-error'),
     chevronInd: $('chevron-indicator'),
+    chevronIndMob: $('chevron-indicator-mob'),
     rightPaneTitle: $('right-pane-title'),
     
     editCenterUi: $('edit-center-ui'),
@@ -302,8 +314,10 @@ function render() {
     if (State.parsed.isLoaded) {
         UI.hintsContainer.classList.add('hidden');
         UI.orbitWrapper.classList.remove('hidden');
+        if($('sticky-stats')) $('sticky-stats').classList.remove('hidden');
         UI.btnEditHints.classList.remove('hidden');
         if (UI.chevronInd) UI.chevronInd.classList.add('hidden');
+        if (UI.chevronIndMob) UI.chevronIndMob.classList.add('hidden');
         
         let dateStr = UI.nytDate.value;
         let formattedDate = dateStr;
@@ -315,8 +329,10 @@ function render() {
     } else {
         UI.hintsContainer.classList.remove('hidden');
         UI.orbitWrapper.classList.add('hidden');
+        if($('sticky-stats')) $('sticky-stats').classList.add('hidden');
         UI.btnEditHints.classList.add('hidden');
         if (UI.chevronInd) UI.chevronInd.classList.remove('hidden');
+        if (UI.chevronIndMob) UI.chevronIndMob.classList.remove('hidden');
         UI.rightPaneTitle.innerText = 'Paste Hints';
     }
 
@@ -340,7 +356,7 @@ function render() {
     if (State.computed.invalidWords.length > 0) {
         UI.ignoredCount.innerText = `${State.computed.invalidWords.length} ignored`;
         UI.ignoredCount.classList.remove('hidden');
-        UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li>${w}</li>`).join('');
+        UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li><span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span></li>`).join('');
         UI.foundWarning.classList.remove('hidden');
     } else {
         UI.ignoredCount.classList.add('hidden');
@@ -350,10 +366,15 @@ function render() {
     // 6. Stats & QBABM
     UI.wordsCount.innerText = State.computed.validFoundWords.length;
     UI.wordsTotal.innerText = State.parsed.totals.words || '?';
+    if(UI.wordsTotalMob) UI.wordsTotalMob.innerText = State.parsed.totals.words || '?';
     UI.pointsCount.innerText = State.computed.score;
+    if(UI.pointsCountMob) UI.pointsCountMob.innerText = State.computed.score;
     UI.pointsTotal.innerText = State.parsed.totals.points || '?';
+    if(UI.pointsTotalMob) UI.pointsTotalMob.innerText = State.parsed.totals.points || '?';
     UI.pangramsCount.innerText = State.computed.pangrams;
+    if(UI.pangramsCountMob) UI.pangramsCountMob.innerText = State.computed.pangrams;
     UI.pangramsTotal.innerText = State.parsed.totals.pangrams || '?';
+    if(UI.pangramsTotalMob) UI.pangramsTotalMob.innerText = State.parsed.totals.pangrams || '?';
     
     if (State.computed.bingoStatus === 'Bingo!') {
         UI.bingoLabel.innerHTML = 'Bingo: <span style="color: #28a745; font-weight: bold;">Bingo!</span>';
@@ -365,8 +386,10 @@ function render() {
 
     if (State.parsed.totals.words > 0 && State.computed.validFoundWords.length >= State.parsed.totals.words) {
         UI.qbabmMessage.classList.remove('qbabm-hidden');
+        if(UI.qbabmMessageMob) UI.qbabmMessageMob.classList.remove('qbabm-hidden');
     } else {
         UI.qbabmMessage.classList.add('qbabm-hidden');
+        if(UI.qbabmMessageMob) UI.qbabmMessageMob.classList.add('qbabm-hidden');
     }
 
     // 7. Grid & Two Letter
@@ -477,7 +500,7 @@ function renderLookupUI() {
 
     UI.lookupResults.innerHTML = results.length === 0 
         ? '<em>No matching words found in valid set.</em>' 
-        : results.join('<br>');
+        : results.map(w => `<span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span>`).join(' &middot; ');
 }
 
 /* --- EVENT HANDLERS (Mutate State -> Render) --- */
@@ -487,6 +510,7 @@ async function init() {
     const d = new Date();
     const defaultDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     UI.nytDate.value = defaultDate;
+    if(UI.nytDateMob) UI.nytDateMob.value = defaultDate;
     updateNytLink(defaultDate);
     
     // Restore raw inputs
@@ -621,10 +645,13 @@ UI.editCenterInput.addEventListener('keydown', e => {
 
 // Query Listeners
 const updateLookupState = () => {
-    State.lookup.start = UI.luStart.value.toLowerCase().replace(/[^a-z]/g, '');
-    State.lookup.contains = UI.luContains.value.toLowerCase().replace(/[^a-z]/g, '');
-    UI.luStart.value = State.lookup.start;
-    UI.luContains.value = State.lookup.contains;
+    const cleanStart = UI.luStart.value.replace(/[^a-zA-Z]/g, '');
+    if(UI.luStart.value !== cleanStart) UI.luStart.value = cleanStart;
+    State.lookup.start = cleanStart.toLowerCase();
+    const cleanContains = UI.luContains.value.replace(/[^a-zA-Z]/g, '');
+    if(UI.luContains.value !== cleanContains) UI.luContains.value = cleanContains;
+    State.lookup.contains = cleanContains.toLowerCase();
+    
     
     let len = parseInt(UI.luLength.value);
     if (UI.luLength.value !== '' && len < 4) { len = 4; UI.luLength.value = 4; }
@@ -643,3 +670,82 @@ UI.cbExcludeFound.addEventListener('change', updateLookupState);
 
 // Bootstrap
 init();
+
+
+/* --- Mobile Tabs Logic --- */
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = {
+    'tab-grid': document.getElementById('tab-grid'),
+    'tab-words': document.getElementById('tab-words')
+};
+
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        Object.values(tabContents).forEach(c => {
+            if(c) c.classList.remove('active-tab');
+        });
+        
+        btn.classList.add('active');
+        const targetId = btn.getAttribute('data-tab');
+        if (tabContents[targetId]) tabContents[targetId].classList.add('active-tab');
+    });
+});
+
+/* --- Dictionary API Logic --- */
+const dictModal = document.getElementById('dict-modal');
+const dictWord = document.getElementById('dict-word');
+const dictPhonetic = document.getElementById('dict-phonetic');
+const dictMeanings = document.getElementById('dict-meanings');
+const dictError = document.getElementById('dict-error');
+const dictClose = document.getElementById('dict-close');
+
+if (dictClose) {
+    dictClose.addEventListener('click', () => dictModal.classList.add('hidden'));
+}
+if (dictModal) {
+    dictModal.addEventListener('click', (e) => {
+        if (e.target === dictModal) dictModal.classList.add('hidden');
+    });
+}
+
+async function fetchDefinition(word) {
+    if (!dictModal) return;
+    dictModal.classList.remove('hidden');
+    dictWord.innerText = word;
+    dictPhonetic.innerText = "Loading...";
+    dictMeanings.innerHTML = "";
+    dictError.classList.add('hidden');
+    
+    try {
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        if (!res.ok) throw new Error("Not found");
+        const data = await res.json();
+        const entry = data[0];
+        
+        dictPhonetic.innerText = entry.phonetic || (entry.phonetics && entry.phonetics.find(p => p.text) ? entry.phonetics.find(p => p.text).text : '');
+        
+        let meaningsHtml = '<ul class="dict-defs">';
+        entry.meanings.forEach(m => {
+            if (m.definitions && m.definitions.length > 0) {
+                meaningsHtml += `<li class="dict-meaning">
+                    <span class="dict-part">${m.partOfSpeech}</span>
+                    <div>${m.definitions[0].definition}</div>
+                </li>`;
+            }
+        });
+        meaningsHtml += '</ul>';
+        dictMeanings.innerHTML = meaningsHtml;
+        
+    } catch (e) {
+        dictPhonetic.innerText = "";
+        dictError.classList.remove('hidden');
+    }
+}
+
+if (UI.nytDateMob) {
+    UI.nytDateMob.addEventListener('change', (e) => {
+        UI.nytDate.value = e.target.value;
+        updateNytLink(e.target.value);
+    });
+}

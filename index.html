@@ -12,7 +12,7 @@
     <meta property="og:image" content="og-image.png">
     <meta property="og:type" content="website">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
@@ -21,9 +21,26 @@
         <p>Your NYT Spelling Bee Companion</p>
     </header>
 
+    
+    <div id="sticky-stats" class="stats-container hidden hidden-desktop">
+        <div class="qbabm-container" style="margin: 0 0 0.5rem 0;"><span id="qbabm-message-mob" class="qbabm-msg qbabm-hidden" style="font-size: 0.95rem;">Queen Bee Achieved!</span></div>
+        <div class="stats-row">
+            <span class="stat-item">Words: <span id="words-count-mob">0</span>/<span id="words-total-mob">0</span></span>
+            <span class="stat-item">Points: <span id="points-count-mob">0</span>/<span id="points-total-mob">0</span></span>
+            <span class="stat-item">Pangrams: <span id="pangrams-count-mob">0</span>/<span id="pangrams-total-mob">0</span></span>
+        </div>
+        <div class="stats-row stats-row-bingo" style="margin-bottom: 0;">
+            <span id="bingo-label-mob" class="stat-item">Bingo: <span id="bingo-status-mob" class="bingo-val">N/A</span></span>
+        </div>
+    </div>
+    <div class="mobile-tabs hidden-desktop">
+        <button class="tab-btn active" data-tab="tab-grid">Grid & Hints</button>
+        <button class="tab-btn" data-tab="tab-words">Words & Look Up</button>
+    </div>
+
     <div class="app-container row-split">
-                <div class="col-left">
-            <div class="how-to">
+                <div class="col-left" id="tab-words">
+            <div class="how-to hidden-mobile">
                 <p class="how-to-title">How to use</p>
                 <ul class="how-to-list">
                     <li>Open hints in a new tab and paste spelling bee grid on the right.</li>
@@ -33,7 +50,8 @@
                 </ul>
             </div>
 
-            <div class="header-actions">
+
+            <div class="header-actions hidden-mobile">
                 <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
                 <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
                 <div id="chevron-indicator" class="chevron-indicator">
@@ -73,7 +91,27 @@
             </div>
         </div>
 
-                <div class="col-right">
+                <div class="col-right active-tab" id="tab-grid">
+
+            <details class="how-to hidden-desktop" style="margin-bottom: 1.5rem;">
+                <summary class="how-to-title" style="cursor: pointer; margin-bottom: 0.5rem;">How to use (tap to expand)</summary>
+                <ul class="how-to-list">
+                    <li>Open hints in a new tab and paste spelling bee grid below.</li>
+                    <li>Paste or type in words found.</li>
+                    <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
+                    <li>Clear hints and words found to start afresh.</li>
+                </ul>
+            </details>
+
+            <div class="header-actions hidden-desktop" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+                <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
+                <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small">Open Hints</a>
+                <div id="chevron-indicator-mob" class="chevron-indicator">
+                    <span>&#10095;</span><span>&#10095;</span>
+                </div>
+            </div>
+
+
 
                         <div class="right-pane-header">
                 <div id="right-pane-title" class="pane-title">Paste Hints</div>
@@ -119,7 +157,7 @@
                         <span id="qbabm-message" class="qbabm-msg qbabm-hidden">Queen Bee Achieved!</span>
                     </div>
 
-                    <div class="stats-row">
+                    <div class="stats-row hidden-mobile">
                         <span class="stat-item">Words: <span id="words-count">0</span>/<span
                                 id="words-total">0</span></span>
                         <span class="stat-item">Points: <span id="points-count">0</span>/<span
@@ -127,7 +165,7 @@
                         <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span
                                 id="pangrams-total">0</span></span>
                     </div>
-                    <div class="stats-row stats-row-bingo">
+                    <div class="stats-row stats-row-bingo hidden-mobile">
                         <span id="bingo-label" class="stat-item">Bingo: <span id="bingo-status"
                                 class="bingo-val">N/A</span></span>
                     </div>
@@ -150,6 +188,21 @@
     <div class="footer-container">
         <div class="footer-disclaimer">
             This is just a scratchpad! Verify your words in the actual game.
+        </div>
+    </div>
+
+    
+    <div id="dict-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="dict-word">Word</h3>
+                <button id="dict-close" class="btn-close">&times;</button>
+            </div>
+            <div id="dict-body">
+                <div id="dict-phonetic" class="dict-phonetic"></div>
+                <div id="dict-meanings" class="dict-meanings"></div>
+                <div id="dict-error" class="dict-error hidden">Definition not found.</div>
+            </div>
         </div>
     </div>
 
