@@ -1,0 +1,14 @@
+# Node & Playwright
+node_modules/
+.node/
+playwright-report/
+test-results/
+playwright/.cache/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Any temporary scripts or data
+*.log
+test_logic.js
