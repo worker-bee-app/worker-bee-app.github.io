@@ -254,6 +254,10 @@ input:focus {
     border-color: var(--secondary);
 }
 
+input, textarea, button, .tab-btn {
+    touch-action: manipulation;
+}
+
 .label-row {
     display: flex;
     justify-content: space-between;
@@ -506,6 +510,8 @@ td {
     font-size: 0.95rem;
     flex: 1;
     min-width: 0;
+    position: relative;
+    z-index: 10;
 }
 
 .lookup-inputs input:focus {
@@ -642,11 +648,15 @@ td {
     .hidden-mobile { display: none !important; }
     .how-to.hidden-desktop { flex-direction: column; }
     
+    input[type="text"], input[type="number"], input[type="date"], textarea {
+        font-size: 16px !important;
+    }
+    
     .col-left, .col-right {
         display: none;
     }
     .col-left.active-tab, .col-right.active-tab {
-        display: block;
+        display: flex;
     }
 
     #sticky-stats {
