@@ -5,165 +5,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Bee - NYT Spelling Bee Companion</title>
-    <meta name="description" content="Worker Bee is a companion tool that makes solving the NYT Spelling Bee quicker and more straightforward. It doesn't give you the answers; instead, it provides a built-in dictionary lookup and tracks your grid and two-letter progress all in one place, so you can focus on the joy of solving.">
-    <meta name="keywords" content="NYT Spelling Bee, Spelling Bee companion, Spelling Bee tracker, dictionary lookup, NYT word game, grid tracker, two-letter tracker">
+    <meta name="description"
+        content="Worker Bee is a companion tool that makes solving the NYT Spelling Bee quicker and more straightforward. It doesn't give you the answers; instead, it provides a built-in dictionary lookup and tracks your grid and two-letter progress all in one place, so you can focus on the joy of solving.">
+    <meta name="keywords"
+        content="NYT Spelling Bee, Spelling Bee companion, Spelling Bee tracker, dictionary lookup, NYT word game, grid tracker, two-letter tracker">
     <meta property="og:title" content="Worker Bee - NYT Spelling Bee Companion">
-    <meta property="og:description" content="Worker Bee is a companion tool that makes solving the NYT Spelling Bee quicker and more straightforward. It doesn't give you the answers; instead, it provides a built-in dictionary lookup and tracks your grid and two-letter progress all in one place, so you can focus on the joy of solving.">
+    <meta property="og:description"
+        content="Worker Bee is a companion tool that makes solving the NYT Spelling Bee quicker and more straightforward. It doesn't give you the answers; instead, it provides a built-in dictionary lookup and tracks your grid and two-letter progress all in one place, so you can focus on the joy of solving.">
     <meta property="og:image" content="og-image.png">
     <meta property="og:type" content="website">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
     <link rel="stylesheet" href="style.css?v=9">
-</head>
 
 <body>
-    <div class="top-nav">
-        <header>
-            <h1>Worker Bee 🐝</h1>
-            <p>Your NYT Spelling Bee Companion</p>
-        </header>
-        <div class="header-actions hidden-desktop">
-            <div class="header-actions-row">
-                <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
-                <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small">Open Hints</a>
-            </div>
-            <a href="#" id="btn-how-to-mob" class="btn-text how-to-trigger">(?) How to use?</a>
-        </div>
-    </div>
-
-    <div class="app-container row-split">
-                <div class="col-left" id="tab-words">
-            <div class="how-to hidden-mobile">
-                <p class="how-to-title">How to use</p>
-                <ul class="how-to-list">
-                    <li>Open hints in a new tab and paste spelling bee grid on the right.</li>
-                    <li>Paste or type in words found.</li>
-                    <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
-                    <li>Clear hints and words found to start afresh.</li>
-                </ul>
-            </div>
-
-
-            <div class="header-actions hidden-mobile">
-                <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
-                <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
-                <div id="chevron-indicator" class="chevron-indicator">
-                    <span>&#10095;</span><span>&#10095;</span><span>&#10095;</span>
+    <div class="app-container">
+        <div class="top-nav">
+            <header>
+                <h1>Worker Bee 🐝</h1>
+                <p>Your NYT Spelling Bee Companion</p>
+            </header>
+            <div class="header-actions hidden-desktop">
+                <div class="header-actions-row">
+                    <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
+                    <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small">Open Hints</a>
                 </div>
-            </div>
-
-
-
-            <div class="inputs-panel">
-                <div class="label-row">
-                    <label for="found-input" class="panel-label">Words found</label>
-                    <button id="btn-clear-found" class="btn-text btn-danger">Clear</button>
-                </div>
-                <textarea id="found-input" class="tall-textarea"
-                    placeholder="Enter words separated by spaces or commas..."></textarea>
-                <div id="ignored-count" class="ignored-count hidden"></div>
-                <ul id="found-warning" class="warning-text hidden"></ul>
-
-                <div class="label-row mt-1-5">
-                    <label for="lu-start" class="panel-label lookup-label">Look up</label>
-                </div>
-                <div class="lookup-container">
-                    <div class="lookup-options">
-                        <label class="checkbox-label"><input type="checkbox" id="cb-constrain"> Include only
-                            letters of the day</label>
-                        <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found"> Exclude
-                            words found</label>
-                    </div>
-                    <div class="lookup-inputs">
-                        <input type="text" id="lu-start" placeholder="Starts (e.g. ro)" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false">
-                        <input type="text" id="lu-contains" placeholder="Contains (e.g. v)" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false">
-                        <input type="number" id="lu-length" placeholder="Len (e.g. 5)" min="4">
-                    </div>
-                    <div id="lookup-results" class="hidden"></div>
-                </div>
+                <a href="#" id="btn-how-to-mob" class="btn-text how-to-trigger">
+                    <svg width="14" height="14" viewBox="0 0 24 24"
+                        style="vertical-align: text-bottom; margin-right: 4px;">
+                        <circle cx="12" cy="12" r="12" fill="var(--text-color)"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="var(--primary)" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17" stroke="var(--primary)" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round"></line>
+                    </svg>How to use
+                </a>
             </div>
         </div>
 
-                <div class="col-right active-tab" id="tab-grid">
-
-
-
-                                    <div class="right-pane-header">
-                <div id="right-pane-title" class="pane-title">Paste Hints</div>
-                <div id="right-pane-actions" class="hints-actions-minimal">
-                    <button id="btn-edit-hints" class="btn-text hidden">Edit</button>
-                    <button id="btn-clear-hints" class="btn-text btn-danger">Clear</button>
+        <div class="row-split">
+            <div class="col-left" id="tab-words">
+                <div class="how-to hidden-mobile">
+                    <p class="how-to-title">How to use</p>
+                    <ul class="how-to-list">
+                        <li>Open hints in a new tab and paste spelling bee grid on the right.</li>
+                        <li>Paste or type in words found.</li>
+                        <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
+                        <li>Clear hints and words found to start afresh.</li>
+                    </ul>
                 </div>
-            </div>
 
-                        <div id="main-right-panel">
 
-                                <div id="hints-container" class="hints-transition">
-                    <textarea id="hints-input"
-                        placeholder="Copy and paste the entire hints section that looks like:&#10;&#10;Spelling Bee Grid&#10;&#10;Center letter is in bold.&#10;&#10;P A C E H K Y&#10;&#10;WORDS: 30, POINTS: 107, PANGRAMS: 1, BINGO&#10;&#10;         4	  5	  6	  8	  Σ&#10;A:	  -	  1	  -	  -	  1&#10;C:	  2	  2	  -	  -	  4&#10;E:	  1	  -	  -	  -	1&#10;H:	  2	  1	  -	  -	  3&#10;K:	  1	  1	  -	  -	2&#10;P:	  8	  6	  3	  1	18&#10;Y:	  -	  1	  -	  -	  1&#10;Σ:	14	12	  3	  1	30&#10;&#10;Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3&#10;EP-1&#10;HA-1 HE-1 HY-1&#10;KA-1 KE-1&#10;PA-8 PE-10&#10;YA-1"
-                        class="hints-textarea"></textarea>
-                    <div id="hints-error" class="hidden error-text"></div>
-                    <div class="hints-actions">
-                        <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+                <div class="header-actions hidden-mobile">
+                    <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
+                    <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
+                    <div id="chevron-indicator" class="chevron-indicator">
+                        <span>&#10095;</span><span>&#10095;</span><span>&#10095;</span>
                     </div>
                 </div>
 
-                                <div class="hints-loaded-wrapper hints-transition hidden active-panel" id="orbit-wrapper">
 
-                    <div class="letters-layout-wrapper">
-                        <div class="letters-left">
-                            <div class="letters-linear" id="letter-buttons"></div>
+
+                <div class="inputs-panel">
+                    <div class="label-row">
+                        <label for="found-input" class="panel-label">Words found</label>
+                        <button id="btn-clear-found" class="btn-text btn-danger">Clear</button>
+                    </div>
+                    <textarea id="found-input" class="tall-textarea"
+                        placeholder="Enter words separated by spaces or commas..."></textarea>
+                    <div id="ignored-count" class="ignored-count hidden"></div>
+                    <ul id="found-warning" class="warning-text hidden"></ul>
+
+                    <div class="label-row mt-1-5">
+                        <label for="lu-start" class="panel-label lookup-label">Look up</label>
+                    </div>
+                    <div class="lookup-container">
+                        <div class="lookup-options">
+                            <label class="checkbox-label"><input type="checkbox" id="cb-constrain"> Include only
+                                letters of the day</label>
+                            <label class="checkbox-label"><input type="checkbox" id="cb-exclude-found"> Exclude
+                                words found</label>
                         </div>
-                        <div class="letters-right">
-                            <div class="letters-hint">Center letter is in yellow</div>
-                            <a href="#" id="link-edit-center" class="link-edit-center">Edit center letter</a>
-                            <div id="edit-center-ui" class="hidden">
-                                <input type="text" id="edit-center-input" maxlength="1" class="edit-center-input">
-                                <button id="btn-save-center" class="btn btn-small btn-save">Save</button>
+                        <div class="lookup-inputs">
+                            <input type="text" id="lu-start" placeholder="Starts (e.g. ro)" autocapitalize="none"
+                                autocomplete="off" autocorrect="off" spellcheck="false">
+                            <input type="text" id="lu-contains" placeholder="Contains (e.g. v)" autocapitalize="none"
+                                autocomplete="off" autocorrect="off" spellcheck="false">
+                            <input type="number" id="lu-length" placeholder="Len (e.g. 5)" min="4">
+                        </div>
+                        <div id="lookup-results" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-right active-tab" id="tab-grid">
+                <div class="right-pane-header">
+                    <div id="right-pane-title" class="pane-title">Paste Hints</div>
+                    <div id="right-pane-actions" class="hints-actions-minimal">
+                        <button id="btn-edit-hints" class="btn-text hidden">Edit</button>
+                        <button id="btn-clear-hints" class="btn-text btn-danger">Clear</button>
+                    </div>
+                </div>
+
+                <div id="main-right-panel">
+
+                    <div id="hints-container" class="hints-transition">
+                        <textarea id="hints-input"
+                            placeholder="Copy and paste the entire hints section that looks like:&#10;&#10;Spelling Bee Grid&#10;&#10;Center letter is in bold.&#10;&#10;P A C E H K Y&#10;&#10;WORDS: 30, POINTS: 107, PANGRAMS: 1, BINGO&#10;&#10;         4	  5	  6	  8	  Σ&#10;A:	  -	  1	  -	  -	  1&#10;C:	  2	  2	  -	  -	  4&#10;E:	  1	  -	  -	  -	1&#10;H:	  2	  1	  -	  -	  3&#10;K:	  1	  1	  -	  -	2&#10;P:	  8	  6	  3	  1	18&#10;Y:	  -	  1	  -	  -	  1&#10;Σ:	14	12	  3	  1	30&#10;&#10;Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3&#10;EP-1&#10;HA-1 HE-1 HY-1&#10;KA-1 KE-1&#10;PA-8 PE-10&#10;YA-1"
+                            class="hints-textarea"></textarea>
+                        <div id="hints-error" class="hidden error-text"></div>
+                        <div class="hints-actions">
+                            <button id="btn-load-hints" class="btn btn-small">Load Hints</button>
+                        </div>
+                    </div>
+
+                    <div class="hints-loaded-wrapper hints-transition hidden active-panel" id="orbit-wrapper">
+
+                        <div class="letters-layout-wrapper">
+                            <div class="letters-left">
+                                <div class="letters-linear" id="letter-buttons"></div>
+                            </div>
+                            <div class="letters-right">
+                                <div class="letters-hint">Center letter is in yellow</div>
+                                <a href="#" id="link-edit-center" class="link-edit-center">Edit center letter</a>
+                                <div id="edit-center-ui" class="hidden">
+                                    <input type="text" id="edit-center-input" maxlength="1" class="edit-center-input">
+                                    <button id="btn-save-center" class="btn btn-small btn-save">Save</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    
-<div id="sticky-stats" class="stats-container hidden hidden-desktop">
-                <div class="qbabm-container" style="margin: 0 0 0.5rem 0;"><span id="qbabm-message-mob" class="qbabm-msg qbabm-hidden" style="font-size: 0.95rem;">Queen Bee Achieved!</span></div>
-                <div class="stats-row">
-                    <span class="stat-item" data-label="Words"><span id="words-count-mob">0</span><span style="color:#888;font-size:0.9em;">/<span id="words-total-mob">0</span></span></span>
-                    <span class="stat-item" data-label="Points"><span id="points-count-mob">0</span><span style="color:#888;font-size:0.9em;">/<span id="points-total-mob">0</span></span></span>
-                    <span class="stat-item" data-label="Pangrams"><span id="pangrams-count-mob">0</span><span style="color:#888;font-size:0.9em;">/<span id="pangrams-total-mob">0</span></span></span>
-                    <span id="bingo-label-mob" class="stat-item" data-label="Bingo"><span id="bingo-status-mob" class="bingo-val">N/A</span></span>
+
+                        <div id="sticky-stats" class="stats-container hidden hidden-desktop">
+                            <div class="qbabm-container" style="margin: 0 0 0.5rem 0;"><span id="qbabm-message-mob"
+                                    class="qbabm-msg qbabm-hidden" style="font-size: 0.95rem;">Queen Bee
+                                    Achieved!</span></div>
+                            <div class="stats-row">
+                                <span class="stat-item" data-label="Words"><span><span
+                                            id="words-count-mob">0</span><span
+                                            style="color:#888;font-size:0.9em;">/<span
+                                                id="words-total-mob">0</span></span></span></span>
+                                <span class="stat-item" data-label="Points"><span><span
+                                            id="points-count-mob">0</span><span
+                                            style="color:#888;font-size:0.9em;">/<span
+                                                id="points-total-mob">0</span></span></span></span>
+                                <span class="stat-item" data-label="Pangrams"><span><span
+                                            id="pangrams-count-mob">0</span><span
+                                            style="color:#888;font-size:0.9em;">/<span
+                                                id="pangrams-total-mob">0</span></span></span></span>
+                                <span id="bingo-label-mob" class="stat-item" data-label="Bingo"><span><span
+                                            id="bingo-status-mob" class="bingo-val">N/A</span></span></span>
+                            </div>
+                        </div>
+
+
+                        <div class="qbabm-container hidden-mobile">
+                            <span id="qbabm-message" class="qbabm-msg qbabm-hidden">Queen Bee Achieved!</span>
+                        </div>
+
+                        <div class="stats-row hidden-mobile">
+                            <span class="stat-item">Words: <span id="words-count">0</span>/<span
+                                    id="words-total">0</span></span>
+                            <span class="stat-item">Points: <span id="points-count">0</span>/<span
+                                    id="points-total">0</span></span>
+                            <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span
+                                    id="pangrams-total">0</span></span>
+                        </div>
+                        <div class="stats-row stats-row-bingo hidden-mobile">
+                            <span id="bingo-label" class="stat-item">Bingo: <span id="bingo-status"
+                                    class="bingo-val">N/A</span></span>
+                        </div>
+
+                        <div class="grid-container">
+                            <h3 class="tracker-title">Grid tracker</h3>
+                            <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
+                        </div>
+
+                        <div class="two-letter-container">
+                            <h3 class="tracker-title">Two letter tracker</h3>
+                            <div id="two-letter-output"><em>Paste hints to view list</em></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
-<div class="qbabm-container hidden-mobile">
-                        <span id="qbabm-message" class="qbabm-msg qbabm-hidden">Queen Bee Achieved!</span>
-                    </div>
-
-                    <div class="stats-row hidden-mobile">
-                        <span class="stat-item">Words: <span id="words-count">0</span>/<span
-                                id="words-total">0</span></span>
-                        <span class="stat-item">Points: <span id="points-count">0</span>/<span
-                                id="points-total">0</span></span>
-                        <span class="stat-item">Pangrams: <span id="pangrams-count">0</span>/<span
-                                id="pangrams-total">0</span></span>
-                    </div>
-                    <div class="stats-row stats-row-bingo hidden-mobile">
-                        <span id="bingo-label" class="stat-item">Bingo: <span id="bingo-status"
-                                class="bingo-val">N/A</span></span>
-                    </div>
-
-                    <div class="grid-container">
-                        <h3 class="tracker-title">Grid tracker</h3>
-                        <div id="grid-output" class="scroll-table"><em>Paste hints to view grid</em></div>
-                    </div>
-
-                    <div class="two-letter-container">
-                        <h3 class="tracker-title">Two letter tracker</h3>
-                        <div id="two-letter-output"><em>Paste hints to view list</em></div>
-                    </div>
-                </div>
-
-            </div> 
         </div>
     </div>
 
@@ -173,7 +197,7 @@
         </div>
     </div>
 
-    
+
     <div id="dict-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
