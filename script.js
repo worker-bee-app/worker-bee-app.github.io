@@ -384,13 +384,13 @@ function render() {
     
     if (State.computed.bingoStatus === 'Bingo!') {
         UI.bingoLabel.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
-        if(UI.bingoLabelMob) UI.bingoLabelMob.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
+        if(UI.bingoStatusMob) UI.bingoStatusMob.innerHTML = '<span style="color: #28a745; font-weight: bold;">Bingo!</span>';
     } else if (State.computed.bingoStatus !== 'N/A') {
         UI.bingoLabel.innerHTML = `Bingo: <span style="color: var(--text-color); font-weight: 500;">${State.computed.bingoStatus}</span>`;
-        if(UI.bingoLabelMob) UI.bingoLabelMob.innerHTML = `Bingo: <span style="color: var(--text-color); font-weight: 500;">${State.computed.bingoStatus}</span>`;
+        if(UI.bingoStatusMob) UI.bingoStatusMob.innerHTML = `<span style="color: var(--text-color); font-weight: 500;">${State.computed.bingoStatus}</span>`;
     } else {
         UI.bingoLabel.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
-        if(UI.bingoLabelMob) UI.bingoLabelMob.innerHTML = 'Bingo: <span style="color: var(--text-color); font-weight: 500;">N/A</span>';
+        if(UI.bingoStatusMob) UI.bingoStatusMob.innerHTML = '<span style="color: var(--text-color); font-weight: 500;">N/A</span>';
     }
 
     if (State.parsed.totals.words > 0 && State.computed.validFoundWords.length >= State.parsed.totals.words) {
@@ -628,7 +628,12 @@ UI.btnClearHints.addEventListener('click', () => {
 });
 
 UI.foundInput.addEventListener('input', e => {
-    State.foundText = e.target.value;
+    // Normalize input: replace all newlines and multiple spaces with a single space
+    const normalized = e.target.value.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ');
+    if (normalized !== e.target.value) {
+        e.target.value = normalized;
+    }
+    State.foundText = normalized;
     State.computed = computeState(State.parsed, State.foundText);
     render();
 });
@@ -698,25 +703,6 @@ UI.cbExcludeFound.addEventListener('change', updateLookupState);
 init();
 
 
-/* --- Mobile Tabs Logic --- */
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabContents = {
-    'tab-grid': document.getElementById('tab-grid'),
-    'tab-words': document.getElementById('tab-words')
-};
-
-tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        tabBtns.forEach(b => b.classList.remove('active'));
-        Object.values(tabContents).forEach(c => {
-            if(c) c.classList.remove('active-tab');
-        });
-        
-        btn.classList.add('active');
-        const targetId = btn.getAttribute('data-tab');
-        if (tabContents[targetId]) tabContents[targetId].classList.add('active-tab');
-    });
-});
 
 /* --- Dictionary API Logic --- */
 const dictModal = document.getElementById('dict-modal');
@@ -775,3 +761,26 @@ if (UI.nytDateMob) {
         updateNytLink(e.target.value);
     });
 }
+
+const btnHowToMob = document.getElementById('btn-how-to-mob');
+const howToModal = document.getElementById('how-to-modal');
+const howToClose = document.getElementById('how-to-close');
+
+if (btnHowToMob) {
+    btnHowToMob.addEventListener('click', (e) => {
+        e.preventDefault();
+        howToModal.classList.remove('hidden');
+    });
+}
+
+if (howToClose) {
+    howToClose.addEventListener('click', () => {
+        howToModal.classList.add('hidden');
+    });
+}
+
+window.addEventListener('click', (e) => {
+    if (e.target === howToModal) {
+        howToModal.classList.add('hidden');
+    }
+});

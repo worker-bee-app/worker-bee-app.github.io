@@ -16,26 +16,18 @@
 </head>
 
 <body>
-    <header>
-        <h1>Worker Bee 🐝</h1>
-        <p>Your NYT Spelling Bee Companion</p>
-    </header>
-
-    
-    <div id="sticky-stats" class="stats-container hidden hidden-desktop">
-        <div class="qbabm-container" style="margin: 0 0 0.5rem 0;"><span id="qbabm-message-mob" class="qbabm-msg qbabm-hidden" style="font-size: 0.95rem;">Queen Bee Achieved!</span></div>
-        <div class="stats-row">
-            <span class="stat-item">Words: <span id="words-count-mob">0</span>/<span id="words-total-mob">0</span></span>
-            <span class="stat-item">Points: <span id="points-count-mob">0</span>/<span id="points-total-mob">0</span></span>
-            <span class="stat-item">Pangrams: <span id="pangrams-count-mob">0</span>/<span id="pangrams-total-mob">0</span></span>
+    <div class="top-nav">
+        <header>
+            <h1>Worker Bee 🐝</h1>
+            <p>Your NYT Spelling Bee Companion</p>
+        </header>
+        <div class="header-actions hidden-desktop">
+            <div class="header-actions-row">
+                <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
+                <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small">Open Hints</a>
+            </div>
+            <a href="#" id="btn-how-to-mob" class="btn-text how-to-trigger">(?) How to use?</a>
         </div>
-        <div class="stats-row stats-row-bingo" style="margin-bottom: 0;">
-            <span id="bingo-label-mob" class="stat-item">Bingo: <span id="bingo-status-mob" class="bingo-val">N/A</span></span>
-        </div>
-    </div>
-    <div class="mobile-tabs hidden-desktop">
-        <button class="tab-btn active" data-tab="tab-grid">Grid & Hints</button>
-        <button class="tab-btn" data-tab="tab-words">Words & Look Up</button>
     </div>
 
     <div class="app-container row-split">
@@ -93,27 +85,9 @@
 
                 <div class="col-right active-tab" id="tab-grid">
 
-            <details class="how-to hidden-desktop" style="margin-bottom: 1.5rem;">
-                <summary class="how-to-title" style="cursor: pointer; margin-bottom: 0.5rem;">How to use (tap to expand)</summary>
-                <ul class="how-to-list">
-                    <li>Open hints in a new tab and paste spelling bee grid below.</li>
-                    <li>Paste or type in words found.</li>
-                    <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
-                    <li>Clear hints and words found to start afresh.</li>
-                </ul>
-            </details>
-
-            <div class="header-actions hidden-desktop" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-                <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
-                <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small">Open Hints</a>
-                <div id="chevron-indicator-mob" class="chevron-indicator">
-                    <span>&#10095;</span><span>&#10095;</span>
-                </div>
-            </div>
 
 
-
-                        <div class="right-pane-header">
+                                    <div class="right-pane-header">
                 <div id="right-pane-title" class="pane-title">Paste Hints</div>
                 <div id="right-pane-actions" class="hints-actions-minimal">
                     <button id="btn-edit-hints" class="btn-text hidden">Edit</button>
@@ -135,25 +109,33 @@
 
                                 <div class="hints-loaded-wrapper hints-transition hidden active-panel" id="orbit-wrapper">
 
-                    <div class="letters-header">
-                        <div class="letters-linear" id="letter-buttons">
-                                                    </div>
-                        <div id="edit-center-ui" class="hidden">
-                            <input type="text" id="edit-center-input" maxlength="1"
-                                class="edit-center-input">
-                            <button id="btn-save-center" class="btn btn-small btn-save">Save</button>
+                    <div class="letters-layout-wrapper">
+                        <div class="letters-left">
+                            <div class="letters-linear" id="letter-buttons"></div>
+                        </div>
+                        <div class="letters-right">
+                            <div class="letters-hint">Center letter is in yellow</div>
+                            <a href="#" id="link-edit-center" class="link-edit-center">Edit center letter</a>
+                            <div id="edit-center-ui" class="hidden">
+                                <input type="text" id="edit-center-input" maxlength="1" class="edit-center-input">
+                                <button id="btn-save-center" class="btn btn-small btn-save">Save</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="letters-hint">
-                        <span>Center letter is in yellow</span>
-                        <span>&middot;</span>
-                        <a href="#" id="link-edit-center"
-                            class="link-edit-center">Edit
-                            center letter</a>
-                    </div>
+                    
+<div id="sticky-stats" class="stats-container hidden hidden-desktop">
+                <div class="qbabm-container" style="margin: 0 0 0.5rem 0;"><span id="qbabm-message-mob" class="qbabm-msg qbabm-hidden" style="font-size: 0.95rem;">Queen Bee Achieved!</span></div>
+                <div class="stats-row">
+                    <span class="stat-item" data-label="Words"><span id="words-count-mob">0</span><span style="color:#888;font-size:0.9em;">/<span id="words-total-mob">0</span></span></span>
+                    <span class="stat-item" data-label="Points"><span id="points-count-mob">0</span><span style="color:#888;font-size:0.9em;">/<span id="points-total-mob">0</span></span></span>
+                    <span class="stat-item" data-label="Pangrams"><span id="pangrams-count-mob">0</span><span style="color:#888;font-size:0.9em;">/<span id="pangrams-total-mob">0</span></span></span>
+                    <span id="bingo-label-mob" class="stat-item" data-label="Bingo"><span id="bingo-status-mob" class="bingo-val">N/A</span></span>
+                </div>
+            </div>
 
-                    <div class="qbabm-container hidden-mobile">
+
+<div class="qbabm-container hidden-mobile">
                         <span id="qbabm-message" class="qbabm-msg qbabm-hidden">Queen Bee Achieved!</span>
                     </div>
 
@@ -203,6 +185,22 @@
                 <div id="dict-meanings" class="dict-meanings"></div>
                 <div id="dict-error" class="dict-error hidden">Definition not found.</div>
             </div>
+        </div>
+    </div>
+
+    <!-- How to use modal for mobile -->
+    <div id="how-to-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>How to use</h3>
+                <button id="how-to-close" class="btn-close">&times;</button>
+            </div>
+            <ul class="how-to-list" style="padding-left:1rem;">
+                <li>Open hints in a new tab and paste spelling bee grid below.</li>
+                <li>Paste or type in words found.</li>
+                <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
+                <li>Clear hints and words found to start afresh.</li>
+            </ul>
         </div>
     </div>
 
