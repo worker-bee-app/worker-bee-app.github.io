@@ -66,15 +66,23 @@
                         <label for="found-input" class="panel-label">Words found</label>
                         <button id="btn-clear-found" class="btn-text btn-danger">Clear</button>
                     </div>
-                    <div class="label-row hidden-desktop" style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
+                    <div class="label-row hidden-desktop"
+                        style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
                         <div>
-                            <a href="#" id="mob-words-found-link" class="panel-label" style="text-decoration: underline;">Words found: <span id="mob-words-found-count">0</span></a>
-                            <a href="#" id="mob-ignored-link" class="panel-label hidden" style="text-decoration: underline; margin-left: 1rem; color: #dc3545;">Ignore: <span id="mob-ignored-count">0</span></a>
+                            <a href="#" id="mob-words-found-link" class="panel-label"
+                                style="color: var(--text-color); font-weight: 700; text-decoration: underline dashed; text-underline-offset: 4px;">Words
+                                found: <span id="mob-words-found-count" style="display: inline-block;">0</span></a>
+                            <a href="#" id="mob-ignored-link" class="panel-label hidden"
+                                style="color: var(--primary-dark); text-decoration: underline dashed; text-underline-offset: 4px; margin-left: 1rem;">Ignore:
+                                <span id="mob-ignored-count" style="display: inline-block;">0</span></a>
                         </div>
                         <button id="btn-clear-found-mob" class="btn-text btn-danger">Clear</button>
                     </div>
-                    <textarea id="found-input" class="tall-textarea"
+                    <textarea id="found-input" class="tall-textarea hidden-mobile"
                         placeholder="Enter words separated by spaces or commas..."></textarea>
+                    <input type="text" id="mob-found-input" class="hidden-desktop"
+                        placeholder="Paste or type in words..." autocomplete="off" spellcheck="false"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 1rem;">
                     <div id="ignored-count" class="ignored-count hidden hidden-mobile"></div>
                     <ul id="found-warning" class="warning-text hidden hidden-mobile"></ul>
 
@@ -251,7 +259,9 @@
                 <button id="ignored-close" class="btn-close">&times;</button>
             </div>
             <div class="modal-body" style="padding: 1rem; max-height: 60vh; overflow-y: auto;">
-                <ul id="ignored-modal-content" class="warning-text" style="display: block;"></ul>
+                <ul id="ignored-modal-content"
+                    style="display: block; color: var(--text-color); font-size: 0.95rem; line-height: 1.4; padding-left: 1rem; margin-top: 0;">
+                </ul>
             </div>
         </div>
     </div>

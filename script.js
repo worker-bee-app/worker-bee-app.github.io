@@ -97,6 +97,7 @@ const UI = {
     editCenterInput: $('edit-center-input'),
     linkEditCenter: $('link-edit-center'),
 
+    mobFoundInput: $('mob-found-input'),
     mobWordsFoundLink: $('mob-words-found-link'),
     mobWordsFoundCount: $('mob-words-found-count'),
     mobIgnoredLink: $('mob-ignored-link'),
@@ -312,6 +313,9 @@ function getValidDailyWords(dictionary, centerLetter, outerLetters) {
     });
 }
 
+let prevWordsCount = -1;
+let prevIgnoredCount = -1;
+
 /* --- RENDER FUNCTION --- */
 
 function render() {
@@ -376,8 +380,15 @@ function render() {
         UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li><span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span></li>`).join('');
         UI.foundWarning.classList.remove('hidden');
         if (UI.mobIgnoredLink) {
-            UI.mobIgnoredCount.innerText = State.computed.invalidWords.length;
+            const curIgnored = State.computed.invalidWords.length;
+            if (prevIgnoredCount !== -1 && curIgnored > prevIgnoredCount) {
+                UI.mobIgnoredCount.classList.remove('pop-anim');
+                void UI.mobIgnoredCount.offsetWidth;
+                UI.mobIgnoredCount.classList.add('pop-anim');
+            }
+            UI.mobIgnoredCount.innerText = curIgnored;
             UI.mobIgnoredLink.classList.remove('hidden');
+            prevIgnoredCount = curIgnored;
         }
     } else {
         UI.ignoredCount.classList.add('hidden');
@@ -385,11 +396,21 @@ function render() {
         if (UI.mobIgnoredLink) {
             UI.mobIgnoredLink.classList.add('hidden');
         }
+        prevIgnoredCount = 0;
     }
 
     // 6. Stats & QBABM
-    if (UI.mobWordsFoundCount) UI.mobWordsFoundCount.innerText = State.computed.validFoundWords.length;
-    UI.wordsCount.innerText = State.computed.validFoundWords.length;
+    const curWords = State.computed.validFoundWords.length;
+    if (UI.mobWordsFoundCount) {
+        if (prevWordsCount !== -1 && curWords > prevWordsCount) {
+            UI.mobWordsFoundCount.classList.remove('pop-anim');
+            void UI.mobWordsFoundCount.offsetWidth;
+            UI.mobWordsFoundCount.classList.add('pop-anim');
+        }
+        UI.mobWordsFoundCount.innerText = curWords;
+        prevWordsCount = curWords;
+    }
+    UI.wordsCount.innerText = curWords;
     UI.wordsTotal.innerText = State.parsed.totals.words || '?';
     if(UI.wordsTotalMob) UI.wordsTotalMob.innerText = State.parsed.totals.words || '?';
     if(UI.wordsCountMob) UI.wordsCountMob.innerText = State.computed.validFoundWords.length;
@@ -653,10 +674,28 @@ UI.foundInput.addEventListener('input', e => {
     if (normalized !== e.target.value) {
         e.target.value = normalized;
     }
-    State.foundText = normalized;
+    State.foundText = e.target.value;
     State.computed = computeState(State.parsed, State.foundText);
     render();
 });
+
+if (UI.mobFoundInput) {
+    const handleMobInput = (e) => {
+        const val = e.target.value;
+        if (e.type === 'blur' || val.includes(' ') || val.includes(',') || val.includes('\n')) {
+            const clean = val.replace(/[\r\n,]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+            if (clean) {
+                State.foundText = (State.foundText + ' ' + clean).trim();
+                if (UI.foundInput) UI.foundInput.value = State.foundText;
+                State.computed = computeState(State.parsed, State.foundText);
+                e.target.value = '';
+                render();
+            }
+        }
+    };
+    UI.mobFoundInput.addEventListener('input', handleMobInput);
+    UI.mobFoundInput.addEventListener('blur', handleMobInput);
+}
 
 UI.btnClearFound.addEventListener('click', () => {
     State.foundText = '';

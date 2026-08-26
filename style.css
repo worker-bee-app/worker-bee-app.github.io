@@ -307,7 +307,17 @@ button,
 }
 
 body.loaded .hints-transition {
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease-in-out;
+}
+
+@keyframes count-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); color: var(--primary); }
+    100% { transform: scale(1); }
+}
+
+.pop-anim {
+    animation: count-pop 0.3s ease-out;
 }
 
 .hints-transition.hidden {
@@ -812,14 +822,6 @@ td {
     input[type="date"],
     textarea {
         font-size: 1rem !important;
-    }
-
-    #found-input {
-        height: 2.5rem !important;
-        min-height: 2.5rem !important;
-        white-space: nowrap;
-        overflow-x: auto;
-        resize: none;
     }
 
     .col-left,
