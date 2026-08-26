@@ -1030,11 +1030,16 @@ td {
     .letters-hint {
         margin: 0;
         line-height: 1.2;
+        font-size: 0.7rem;
     }
 
     .link-edit-center {
         margin: 0;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+    }
+
+    #grid-output>table {
+        margin-bottom: 0;
     }
 
     .tracker-title {

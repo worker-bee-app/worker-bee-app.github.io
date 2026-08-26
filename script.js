@@ -95,7 +95,19 @@ const UI = {
     
     editCenterUi: $('edit-center-ui'),
     editCenterInput: $('edit-center-input'),
-    linkEditCenter: $('link-edit-center')
+    linkEditCenter: $('link-edit-center'),
+
+    mobWordsFoundLink: $('mob-words-found-link'),
+    mobWordsFoundCount: $('mob-words-found-count'),
+    mobIgnoredLink: $('mob-ignored-link'),
+    mobIgnoredCount: $('mob-ignored-count'),
+    btnClearFoundMob: $('btn-clear-found-mob'),
+    wordsFoundModal: $('words-found-modal'),
+    wordsFoundModalContent: $('words-found-modal-content'),
+    wordsFoundClose: $('words-found-close'),
+    ignoredModal: $('ignored-modal'),
+    ignoredModalContent: $('ignored-modal-content'),
+    ignoredClose: $('ignored-close')
 };
 
 /* --- PURE FUNCTIONS (Logic) --- */
@@ -363,12 +375,20 @@ function render() {
         UI.ignoredCount.classList.remove('hidden');
         UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li><span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span></li>`).join('');
         UI.foundWarning.classList.remove('hidden');
+        if (UI.mobIgnoredLink) {
+            UI.mobIgnoredCount.innerText = State.computed.invalidWords.length;
+            UI.mobIgnoredLink.classList.remove('hidden');
+        }
     } else {
         UI.ignoredCount.classList.add('hidden');
         UI.foundWarning.classList.add('hidden');
+        if (UI.mobIgnoredLink) {
+            UI.mobIgnoredLink.classList.add('hidden');
+        }
     }
 
     // 6. Stats & QBABM
+    if (UI.mobWordsFoundCount) UI.mobWordsFoundCount.innerText = State.computed.validFoundWords.length;
     UI.wordsCount.innerText = State.computed.validFoundWords.length;
     UI.wordsTotal.innerText = State.parsed.totals.words || '?';
     if(UI.wordsTotalMob) UI.wordsTotalMob.innerText = State.parsed.totals.words || '?';
@@ -509,7 +529,7 @@ function renderLookupUI() {
     if (results.length === 0) {
         UI.lookupResults.innerHTML = '<em>No matching words found in valid set.</em>';
     } else {
-        const MAX_RESULTS = 100;
+        const MAX_RESULTS = window.innerWidth <= 800 ? 15 : 100;
         const displayResults = results.slice(0, MAX_RESULTS);
         let html = displayResults.map(w => `<span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span>`).join(' &middot; ');
         if (results.length > MAX_RESULTS) {
@@ -783,4 +803,48 @@ window.addEventListener('click', (e) => {
     if (e.target === howToModal) {
         howToModal.classList.add('hidden');
     }
+    if (UI.wordsFoundModal && e.target === UI.wordsFoundModal) {
+        UI.wordsFoundModal.classList.add('hidden');
+    }
+    if (UI.ignoredModal && e.target === UI.ignoredModal) {
+        UI.ignoredModal.classList.add('hidden');
+    }
 });
+
+// Mobile Clear Found
+if (UI.btnClearFoundMob) {
+    UI.btnClearFoundMob.addEventListener('click', () => {
+        State.foundText = '';
+        if (UI.foundInput) UI.foundInput.value = '';
+        State.computed = computeState(State.parsed, State.foundText);
+        render();
+    });
+}
+
+// Words Found Modal
+if (UI.mobWordsFoundLink) {
+    UI.mobWordsFoundLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        UI.wordsFoundModalContent.innerText = State.foundText || 'No words entered.';
+        UI.wordsFoundModal.classList.remove('hidden');
+    });
+}
+if (UI.wordsFoundClose) {
+    UI.wordsFoundClose.addEventListener('click', () => {
+        UI.wordsFoundModal.classList.add('hidden');
+    });
+}
+
+// Ignored Words Modal
+if (UI.mobIgnoredLink) {
+    UI.mobIgnoredLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        UI.ignoredModalContent.innerHTML = UI.foundWarning.innerHTML || '<li>No words ignored.</li>';
+        UI.ignoredModal.classList.remove('hidden');
+    });
+}
+if (UI.ignoredClose) {
+    UI.ignoredClose.addEventListener('click', () => {
+        UI.ignoredModal.classList.add('hidden');
+    });
+}

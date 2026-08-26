@@ -62,14 +62,21 @@
 
 
                 <div class="inputs-panel">
-                    <div class="label-row">
+                    <div class="label-row hidden-mobile">
                         <label for="found-input" class="panel-label">Words found</label>
                         <button id="btn-clear-found" class="btn-text btn-danger">Clear</button>
                     </div>
+                    <div class="label-row hidden-desktop" style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
+                        <div>
+                            <a href="#" id="mob-words-found-link" class="panel-label" style="text-decoration: underline;">Words found: <span id="mob-words-found-count">0</span></a>
+                            <a href="#" id="mob-ignored-link" class="panel-label hidden" style="text-decoration: underline; margin-left: 1rem; color: #dc3545;">Ignore: <span id="mob-ignored-count">0</span></a>
+                        </div>
+                        <button id="btn-clear-found-mob" class="btn-text btn-danger">Clear</button>
+                    </div>
                     <textarea id="found-input" class="tall-textarea"
                         placeholder="Enter words separated by spaces or commas..."></textarea>
-                    <div id="ignored-count" class="ignored-count hidden"></div>
-                    <ul id="found-warning" class="warning-text hidden"></ul>
+                    <div id="ignored-count" class="ignored-count hidden hidden-mobile"></div>
+                    <ul id="found-warning" class="warning-text hidden hidden-mobile"></ul>
 
                     <div class="label-row mt-1-5">
                         <label for="lu-start" class="panel-label lookup-label">Look up</label>
@@ -220,6 +227,32 @@
                 <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
                 <li>Clear hints and words found to start afresh.</li>
             </ul>
+        </div>
+    </div>
+
+    <!-- Words Found Modal -->
+    <div id="words-found-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Words Found</h3>
+                <button id="words-found-close" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1rem; max-height: 60vh; overflow-y: auto;">
+                <div id="words-found-modal-content" style="white-space: pre-wrap; word-break: break-word;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ignored Words Modal -->
+    <div id="ignored-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ignored Words</h3>
+                <button id="ignored-close" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1rem; max-height: 60vh; overflow-y: auto;">
+                <ul id="ignored-modal-content" class="warning-text" style="display: block;"></ul>
+            </div>
         </div>
     </div>
 
