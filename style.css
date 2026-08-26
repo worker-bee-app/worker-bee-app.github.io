@@ -311,9 +311,18 @@ body.loaded .hints-transition {
 }
 
 @keyframes count-pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.4); color: var(--primary); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.4);
+        color: var(--primary);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .pop-anim {
@@ -838,7 +847,7 @@ td {
     }
 
     #two-letter-output {
-        margin-top: 2.75rem;
+        margin-top: 0.6rem;
     }
 
     .two-letter-item {

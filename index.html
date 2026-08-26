@@ -80,9 +80,15 @@
                     </div>
                     <textarea id="found-input" class="tall-textarea hidden-mobile"
                         placeholder="Enter words separated by spaces or commas..."></textarea>
-                    <input type="text" id="mob-found-input" class="hidden-desktop"
-                        placeholder="Paste or type in words..." autocomplete="off" spellcheck="false"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 1rem;">
+                    <div class="hidden-desktop" style="position: relative; width: 100%;">
+                        <input type="text" id="mob-found-input" 
+                            placeholder="Paste or type in words..." autocomplete="off" spellcheck="false"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 1rem;">
+                        <div id="mob-qbabm-overlay" class="qbabm-hidden" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: var(--primary); color: #fff; font-weight: 800; border-radius: var(--radius); font-size: 1.1rem; z-index: 10; transition: opacity 0.4s ease, transform 0.4s ease;">
+                            Queen Bee Achieved!
+                            <button id="btn-close-qbabm" style="position: absolute; right: 10px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #fff; padding: 0;">&times;</button>
+                        </div>
+                    </div>
                     <div id="ignored-count" class="ignored-count hidden hidden-mobile"></div>
                     <ul id="found-warning" class="warning-text hidden hidden-mobile"></ul>
 

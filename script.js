@@ -34,7 +34,8 @@ const State = {
         len: 0,
         constrain: false,
         excludeFound: false
-    }
+    },
+    dismissedQbabm: false
 };
 
 /* DOM Caching Helper */
@@ -98,6 +99,8 @@ const UI = {
     linkEditCenter: $('link-edit-center'),
 
     mobFoundInput: $('mob-found-input'),
+    mobQbabmOverlay: $('mob-qbabm-overlay'),
+    btnCloseQbabm: $('btn-close-qbabm'),
     mobWordsFoundLink: $('mob-words-found-link'),
     mobWordsFoundCount: $('mob-words-found-count'),
     mobIgnoredLink: $('mob-ignored-link'),
@@ -437,9 +440,18 @@ function render() {
     if (State.parsed.totals.words > 0 && State.computed.validFoundWords.length >= State.parsed.totals.words) {
         UI.qbabmMessage.classList.remove('qbabm-hidden');
         if(UI.qbabmMessageMob) UI.qbabmMessageMob.classList.remove('qbabm-hidden');
+        if(UI.mobQbabmOverlay && !State.dismissedQbabm) {
+            UI.mobQbabmOverlay.classList.remove('qbabm-hidden');
+            if(UI.mobFoundInput) UI.mobFoundInput.disabled = true;
+        }
     } else {
+        State.dismissedQbabm = false; // Reset if words dropped
         UI.qbabmMessage.classList.add('qbabm-hidden');
         if(UI.qbabmMessageMob) UI.qbabmMessageMob.classList.add('qbabm-hidden');
+        if(UI.mobQbabmOverlay) {
+            UI.mobQbabmOverlay.classList.add('qbabm-hidden');
+            if(UI.mobFoundInput) UI.mobFoundInput.disabled = false;
+        }
     }
 
     // 7. Grid & Two Letter
@@ -682,7 +694,7 @@ UI.foundInput.addEventListener('input', e => {
 if (UI.mobFoundInput) {
     const handleMobInput = (e) => {
         const val = e.target.value;
-        if (e.type === 'blur' || val.includes(' ') || val.includes(',') || val.includes('\n')) {
+        if (e.key === 'Enter' || e.type === 'blur' || val.includes(' ') || val.includes(',') || val.includes('\n')) {
             const clean = val.replace(/[\r\n,]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
             if (clean) {
                 State.foundText = (State.foundText + ' ' + clean).trim();
@@ -695,6 +707,17 @@ if (UI.mobFoundInput) {
     };
     UI.mobFoundInput.addEventListener('input', handleMobInput);
     UI.mobFoundInput.addEventListener('blur', handleMobInput);
+    UI.mobFoundInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleMobInput(e);
+    });
+}
+
+if (UI.btnCloseQbabm) {
+    UI.btnCloseQbabm.addEventListener('click', () => {
+        State.dismissedQbabm = true;
+        if (UI.mobQbabmOverlay) UI.mobQbabmOverlay.classList.add('qbabm-hidden');
+        if (UI.mobFoundInput) UI.mobFoundInput.disabled = false;
+    });
 }
 
 UI.btnClearFound.addEventListener('click', () => {
@@ -871,7 +894,9 @@ if (UI.btnClearFoundMob) {
 if (UI.mobWordsFoundLink) {
     UI.mobWordsFoundLink.addEventListener('click', (e) => {
         e.preventDefault();
-        UI.wordsFoundModalContent.innerText = State.foundText || 'No words entered.';
+        UI.wordsFoundModalContent.innerText = State.computed.validFoundWords.length > 0 
+            ? State.computed.validFoundWords.join(' ') 
+            : 'No words found.';
         UI.wordsFoundModal.classList.remove('hidden');
     });
 }
