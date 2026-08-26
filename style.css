@@ -828,7 +828,7 @@ td {
     .col-right {
         display: flex !important;
         width: 100%;
-        margin-bottom: 1rem;
+        margin-bottom: -1rem;
         margin-top: -0.25rem;
     }
 
@@ -888,6 +888,11 @@ td {
         align-items: flex-end;
         gap: 0.3rem;
         margin-top: 1.5rem;
+    }
+
+    .right-pane-header,
+    .label-row {
+        margin-bottom: 0;
     }
 
     .header-actions {
@@ -1091,9 +1096,10 @@ td {
         flex-direction: column;
         gap: 0.5rem;
         padding: 0.5rem;
-        min-height: auto;
+        min-height: 12rem;
         background-color: rgba(246, 192, 57, 0.1);
         border-radius: var(--radius);
+        margin-top: 0;
     }
 
     .lookup-options {
