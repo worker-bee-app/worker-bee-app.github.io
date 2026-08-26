@@ -27,7 +27,11 @@
                 <p>Your NYT Spelling Bee Companion</p>
             </header>
             <div class="header-actions hidden-desktop">
-                <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
+                <div class="date-picker-wrapper" style="position: relative; display: inline-flex; align-items: center; cursor: pointer;">
+                    <span id="custom-date-display-mob" style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);"></span>
+                    <i class="fa-regular fa-calendar" style="margin-left: 0.4rem; color: var(--primary);"></i>
+                    <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                </div>
                 <div class="header-actions-row">
                     <a href="#" id="btn-how-to-mob" class="how-to-trigger"
                         style="display: flex; align-items: center; font-size: 1.2rem; color: var(--text-color); text-decoration: none;">
@@ -52,7 +56,11 @@
 
 
                 <div class="header-actions hidden-mobile">
-                    <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date">
+                    <div class="date-picker-wrapper" style="position: relative; display: inline-flex; align-items: center; cursor: pointer;">
+                        <span id="custom-date-display" style="font-weight: 600; font-size: 0.95rem; color: var(--text-color);"></span>
+                        <i class="fa-regular fa-calendar" style="margin-left: 0.4rem; color: var(--primary);"></i>
+                        <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                    </div>
                     <a href="#" id="nyt-link" target="_blank" class="btn btn-small">Open Hints</a>
                     <div id="chevron-indicator" class="chevron-indicator">
                         <span>&#10095;</span><span>&#10095;</span><span>&#10095;</span>

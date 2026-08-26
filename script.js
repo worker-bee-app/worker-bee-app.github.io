@@ -84,6 +84,8 @@ const UI = {
     nytLinkMob: $('nyt-date') ? $('nyt-link-mob') : null,
     nytDate: $('nyt-date'),
     nytDateMob: $('nyt-date') ? $('nyt-date-mob') : null,
+    customDateDisplay: $('custom-date-display'),
+    customDateDisplayMob: $('custom-date-display-mob'),
     
     ignoredCount: $('ignored-count'),
     foundWarning: $('found-warning'),
@@ -574,12 +576,27 @@ function renderLookupUI() {
 
 /* --- EVENT HANDLERS (Mutate State -> Render) --- */
 
+function formatCustomDate(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    const d = date.getDate();
+    const m = date.toLocaleString('default', { month: 'short' });
+    const y = date.getFullYear();
+    return `${d} ${m} ${y}`;
+}
+
 async function init() {
     // Dynamic NYT Link
     const d = new Date();
     const defaultDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     UI.nytDate.value = defaultDate;
-    if(UI.nytDateMob) UI.nytDateMob.value = defaultDate;
+    if (UI.customDateDisplay) UI.customDateDisplay.innerText = formatCustomDate(defaultDate);
+    if(UI.nytDateMob) {
+        UI.nytDateMob.value = defaultDate;
+        if (UI.customDateDisplayMob) UI.customDateDisplayMob.innerText = formatCustomDate(defaultDate);
+    }
     updateNytLink(defaultDate);
     
     // Restore raw inputs
@@ -651,6 +668,7 @@ window.handleTwoLetterClick = (prefix) => {
 /* Attach Listeners */
 UI.nytDate.addEventListener('change', e => {
     updateNytLink(e.target.value);
+    if (UI.customDateDisplay) UI.customDateDisplay.innerText = formatCustomDate(e.target.value);
     render(); 
 });
 
@@ -847,6 +865,8 @@ async function fetchDefinition(word) {
 if (UI.nytDateMob) {
     UI.nytDateMob.addEventListener('change', (e) => {
         UI.nytDate.value = e.target.value;
+        if (UI.customDateDisplayMob) UI.customDateDisplayMob.innerText = formatCustomDate(e.target.value);
+        if (UI.customDateDisplay) UI.customDateDisplay.innerText = formatCustomDate(e.target.value);
         updateNytLink(e.target.value);
     });
 }
