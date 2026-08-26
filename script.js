@@ -446,7 +446,7 @@ function renderGridUI() {
             const origCount = State.parsed.grid.rows[letter]?.[l] || 0;
             if (count > 0) rowSigma += count;
 
-            let tdHtml = '-';
+            let tdHtml = '<span class="empty-dash">-</span><span class="empty-dot">.</span>';
             let clsList = '';
             let onclick = '';
 

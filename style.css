@@ -409,6 +409,10 @@ td {
     text-align: center;
 }
 
+.empty-dot {
+    display: none;
+}
+
 th {
     font-weight: 700;
     color: var(--secondary);
@@ -810,6 +814,14 @@ td {
         font-size: 1rem !important;
     }
 
+    #found-input {
+        height: 2.5rem !important;
+        min-height: 2.5rem !important;
+        white-space: nowrap;
+        overflow-x: auto;
+        resize: none;
+    }
+
     .col-left,
     .col-right {
         display: flex !important;
@@ -828,7 +840,9 @@ td {
     }
 
     .two-letter-item {
-        font-size: 0.85rem;
+        font-size: 0.65rem;
+        margin-right: 0.4rem;
+        margin-bottom: 0.2rem;
     }
 
     .row-split {
@@ -989,12 +1003,21 @@ td {
 
     .grid-container {
         flex: 1;
-        font-size: 0.75rem;
+        font-size: 0.65rem;
     }
 
     .grid-container th,
     .grid-container td {
-        padding: 4px 6px;
+        padding: 2px 3px;
+        font-size: 0.65rem;
+    }
+
+    .empty-dash {
+        display: none;
+    }
+    
+    .empty-dot {
+        display: inline !important;
     }
 
     .two-letter-container {
