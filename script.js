@@ -705,13 +705,20 @@ const updateLookupState = () => {
     
     
     let len = parseInt(UI.luLength.value);
-    if (UI.luLength.value !== '' && len < 4) { len = 4; UI.luLength.value = 4; }
     State.lookup.len = len || 0;
     
     State.lookup.constrain = UI.cbConstrain.checked;
     State.lookup.excludeFound = UI.cbExcludeFound.checked;
     render();
 };
+
+UI.luLength.addEventListener('blur', () => {
+    let len = parseInt(UI.luLength.value);
+    if (UI.luLength.value !== '' && len < 4) {
+        UI.luLength.value = 4;
+        updateLookupState();
+    }
+});
 
 UI.luStart.addEventListener('input', updateLookupState);
 UI.luContains.addEventListener('input', updateLookupState);

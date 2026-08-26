@@ -827,7 +827,7 @@ td {
         display: flex !important;
         width: 100%;
         margin-bottom: 1rem;
-        margin-top: -1.5rem;
+        margin-top: -1rem;
     }
 
     .qbabm-container,
@@ -1015,7 +1015,7 @@ td {
     .empty-dash {
         display: none;
     }
-    
+
     .empty-dot {
         display: inline !important;
     }
