@@ -303,7 +303,7 @@ button,
     justify-content: flex-start;
     gap: 1rem;
     align-items: center;
-    margin-top: 1rem;
+    margin-top: 1.2rem;
 }
 
 body.loaded .hints-transition {
@@ -807,7 +807,7 @@ td {
     input[type="number"],
     input[type="date"],
     textarea {
-        font-size: 0.75rem !important;
+        font-size: 1rem !important;
     }
 
     .col-left,
@@ -815,6 +815,20 @@ td {
         display: flex !important;
         width: 100%;
         margin-bottom: 1rem;
+        margin-top: -1.5rem;
+    }
+
+    .qbabm-container,
+    .tracker-title {
+        display: none;
+    }
+
+    #two-letter-output {
+        margin-top: 2.75rem;
+    }
+
+    .two-letter-item {
+        font-size: 0.85rem;
     }
 
     .row-split {
@@ -862,13 +876,18 @@ td {
 
     .header-actions-row {
         display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-        align-items: flex-end;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-end;
     }
 
     #nyt-date-mob {
         font-size: 0.9rem;
+        min-height: 24px;
+        position: relative;
+        z-index: 10;
+        cursor: pointer;
     }
 
     #nyt-link-mob {
@@ -1028,9 +1047,10 @@ td {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        padding: 0;
+        padding: 0.5rem;
         min-height: auto;
-        background: transparent;
+        background-color: rgba(246, 192, 57, 0.1);
+        border-radius: var(--radius);
     }
 
     .lookup-options {

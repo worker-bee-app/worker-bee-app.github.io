@@ -17,6 +17,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
     <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <body>
     <div class="app-container">
@@ -26,20 +27,14 @@
                 <p>Your NYT Spelling Bee Companion</p>
             </header>
             <div class="header-actions hidden-desktop">
+                <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
                 <div class="header-actions-row">
-                    <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date">
+                    <a href="#" id="btn-how-to-mob" class="how-to-trigger"
+                        style="display: flex; align-items: center; font-size: 1.2rem; color: var(--text-color); text-decoration: none;">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </a>
                     <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small">Open Hints</a>
                 </div>
-                <a href="#" id="btn-how-to-mob" class="btn-text how-to-trigger">
-                    <svg width="14" height="14" viewBox="0 0 24 24"
-                        style="vertical-align: text-bottom; margin-right: 4px;">
-                        <circle cx="12" cy="12" r="12" fill="var(--text-color)"></circle>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="var(--primary)" stroke-width="2.5"
-                            stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                        <line x1="12" y1="17" x2="12.01" y2="17" stroke="var(--primary)" stroke-width="2.5"
-                            stroke-linecap="round" stroke-linejoin="round"></line>
-                    </svg>How to use
-                </a>
             </div>
         </div>
 
