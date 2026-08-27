@@ -838,19 +838,23 @@ async function fetchDefinition(word) {
     dictError.classList.add('hidden');
     
     try {
-        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        const res = await fetch(`https://en.wiktionary.org/api/rest_v1/page/definition/${word}`);
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
-        const entry = data[0];
         
-        dictPhonetic.innerText = entry.phonetic || (entry.phonetics && entry.phonetics.find(p => p.text) ? entry.phonetics.find(p => p.text).text : '');
+        if (!data.en || data.en.length === 0) throw new Error("No English definitions found");
+        
+        dictPhonetic.innerText = ""; // Phonetic text not reliably provided in this API endpoint
         
         let meaningsHtml = '<ul class="dict-defs">';
-        entry.meanings.forEach(m => {
+        data.en.forEach(m => {
             if (m.definitions && m.definitions.length > 0) {
+                // Strip HTML tags from Wiktionary response
+                const rawDef = m.definitions[0].definition;
+                const cleanDef = rawDef.replace(/<[^>]+>/g, '');
                 meaningsHtml += `<li class="dict-meaning">
                     <span class="dict-part">${m.partOfSpeech}</span>
-                    <div>${m.definitions[0].definition}</div>
+                    <div>${cleanDef}</div>
                 </li>`;
             }
         });
