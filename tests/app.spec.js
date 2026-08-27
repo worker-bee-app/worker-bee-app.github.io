@@ -70,10 +70,14 @@ test.describe('Worker Bee Tests', () => {
     
     // Enter words
     const testWords = "pace pack peach";
-    await page.fill('#found-input', testWords);
-    
-    // Ensure stats updated
-    await expect(page.locator('#words-count')).toHaveText('3');
+    if (isMobile) {
+      await page.fill('#mob-found-input', testWords);
+      await page.keyboard.press('Enter');
+      await expect(page.locator('#words-count-mob')).toHaveText('3');
+    } else {
+      await page.fill('#found-input', testWords);
+      await expect(page.locator('#words-count')).toHaveText('3');
+    }
     
     // Refresh the page
     await page.reload();
@@ -81,11 +85,15 @@ test.describe('Worker Bee Tests', () => {
     // Check that the grid view is still visible (hints retained)
     await expect(page.locator('#orbit-wrapper')).toBeVisible();
     
-    // Check that the words are still in the textarea
+    // Check that the words are still in the state (found-input holds it even when hidden)
     await expect(page.locator('#found-input')).toHaveValue(testWords);
     
     // Check that stats are still calculated correctly
-    await expect(page.locator('#words-count')).toHaveText('3');
+    if (isMobile) {
+      await expect(page.locator('#words-count-mob')).toHaveText('3');
+    } else {
+      await expect(page.locator('#words-count')).toHaveText('3');
+    }
   });
 
 });
