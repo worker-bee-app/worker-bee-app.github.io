@@ -356,8 +356,6 @@ body.loaded .hints-transition {
 
 .letters-linear {
     display: flex;
-    justify-content: center;
-    align-items: center;
     gap: 0.5rem;
     font-size: 2.2rem;
     text-transform: uppercase;
@@ -723,12 +721,36 @@ td {
     padding: 0.2rem 0.5rem;
 }
 
-.letters-hint {
-    text-align: left;
+/* Global / Desktop Letters Layout */
+.letters-layout-wrapper {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.letters-left {
+    width: 100%;
+}
+
+.letters-right {
+    display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.letters-hint {
+    margin: 0;
+    color: #777;
+}
+
+.letters-hint::after {
+    content: "\00B7";
+    margin-left: 0.5rem;
+    color: var(--text-color);
 }
 
 .link-edit-center {
@@ -1014,6 +1036,10 @@ td {
         letter-spacing: 0.3rem;
     }
 
+    .letters-right {
+        gap: 0;
+    }
+
     #orbit-wrapper>.letters-layout-wrapper,
     #orbit-wrapper>#sticky-stats,
     #orbit-wrapper>.qbabm-container,
@@ -1074,6 +1100,10 @@ td {
         margin: 0;
         line-height: 1.2;
         font-size: 0.7rem;
+    }
+
+    .letters-hint::after {
+        content: none;
     }
 
     .link-edit-center {
