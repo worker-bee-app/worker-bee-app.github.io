@@ -69,9 +69,6 @@ test.describe('Worker Bee Tests', () => {
     await expect(page.locator('#orbit-wrapper')).toBeVisible();
     
     // Enter words
-    if (isMobile) {
-      await page.click('button.tab-btn[data-tab="tab-words"]');
-    }
     const testWords = "pace pack peach";
     await page.fill('#found-input', testWords);
     
