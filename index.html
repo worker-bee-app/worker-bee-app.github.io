@@ -16,7 +16,7 @@
     <meta property="og:type" content="website">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <body>
@@ -240,7 +240,7 @@
                 <h3 id="dict-word">Word</h3>
                 <button id="dict-close" class="btn-close">&times;</button>
             </div>
-            <div id="dict-body">
+            <div id="dict-body" style="max-height: 60vh; overflow-y: auto; padding-right: 0.5rem;">
                 <div id="dict-phonetic" class="dict-phonetic"></div>
                 <div id="dict-meanings" class="dict-meanings"></div>
                 <div id="dict-error" class="dict-error hidden">Definition not found.</div>
@@ -255,12 +255,15 @@
                 <h3>How to use</h3>
                 <button id="how-to-close" class="btn-close">&times;</button>
             </div>
-            <ul class="how-to-list" style="padding-left:1rem;">
-                <li>Open hints in a new tab and paste spelling bee grid below.</li>
-                <li>Paste or type in words found.</li>
-                <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
-                <li>Clear hints and words found to start afresh.</li>
-            </ul>
+            <div class="modal-body" style="max-height: 60vh; overflow-y: auto; padding-right: 0.5rem;">
+                <ul class="how-to-list" style="padding-left:1rem; margin-top:0;">
+                    <li>Open hints in a new tab and paste spelling bee grid below.</li>
+                    <li>Paste or type in words found.</li>
+                    <li>Use <b>Look up</b> to search the dictionary for valid words.</li>
+                    <li>Clear hints and words found to start afresh.</li>
+                </ul>
+                <p class="hidden-desktop" style="font-size: 0.9rem; font-style: italic; color: #555; margin-top: 1rem; margin-bottom: 0;">This is just a scratchpad! Verify your words in the actual game.</p>
+            </div>
         </div>
     </div>
 
@@ -292,7 +295,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 </body>
 
 </html>

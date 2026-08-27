@@ -303,6 +303,7 @@ function computeState(parsed, foundText) {
         });
     }
 
+    computed.validFoundWords.sort();
     return computed;
 }
 
@@ -382,7 +383,7 @@ function render() {
     if (State.computed.invalidWords.length > 0) {
         UI.ignoredCount.innerText = `${State.computed.invalidWords.length} ignored`;
         UI.ignoredCount.classList.remove('hidden');
-        UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li><span class="dict-clickable" onclick="fetchDefinition('${w}')">${w}</span></li>`).join('');
+        UI.foundWarning.innerHTML = State.computed.invalidWords.map(w => `<li>${w}</li>`).join('');
         UI.foundWarning.classList.remove('hidden');
         if (UI.mobIgnoredLink) {
             const curIgnored = State.computed.invalidWords.length;
