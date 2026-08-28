@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const sampleHints = `Spelling Bee Grid
+const sampleHints = `Puzzle Grid
 
 Center letter is in bold.
 

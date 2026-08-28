@@ -80,10 +80,10 @@ const UI = {
     btnClearFound: $('btn-clear-found'),
     btnSaveCenter: $('btn-save-center'),
     
-    nytLink: $('nyt-link'),
-    nytLinkMob: $('nyt-date') ? $('nyt-link-mob') : null,
-    nytDate: $('nyt-date'),
-    nytDateMob: $('nyt-date') ? $('nyt-date-mob') : null,
+    puzzleLink: $('puzzle-link'),
+    puzzleLinkMob: $('puzzle-date') ? $('puzzle-link-mob') : null,
+    puzzleDate: $('puzzle-date'),
+    puzzleDateMob: $('puzzle-date') ? $('puzzle-date-mob') : null,
     customDateDisplay: $('custom-date-display'),
     customDateDisplayMob: $('custom-date-display-mob'),
     
@@ -345,7 +345,7 @@ function render() {
         if (UI.chevronInd) UI.chevronInd.classList.add('hidden');
         if (UI.chevronIndMob) UI.chevronIndMob.classList.add('hidden');
         
-        let dateStr = UI.nytDate.value;
+        let dateStr = UI.puzzleDate.value;
         let formattedDate = dateStr;
         if (dateStr) {
             const dateObj = new Date(dateStr + "T00:00:00");
@@ -589,16 +589,16 @@ function formatCustomDate(dateStr) {
 }
 
 async function init() {
-    // Dynamic NYT Link
+    // Dynamic Puzzle Link
     const d = new Date();
     const defaultDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    UI.nytDate.value = defaultDate;
+    UI.puzzleDate.value = defaultDate;
     if (UI.customDateDisplay) UI.customDateDisplay.innerText = formatCustomDate(defaultDate);
-    if(UI.nytDateMob) {
-        UI.nytDateMob.value = defaultDate;
+    if(UI.puzzleDateMob) {
+        UI.puzzleDateMob.value = defaultDate;
         if (UI.customDateDisplayMob) UI.customDateDisplayMob.innerText = formatCustomDate(defaultDate);
     }
-    updateNytLink(defaultDate);
+    updatePuzzleLink(defaultDate);
     
     // Restore raw inputs
     UI.hintsInput.value = localStorage.getItem('workerBeeHints') || '';
@@ -635,13 +635,13 @@ async function init() {
     }
 }
 
-function updateNytLink(dateStr) {
+function updatePuzzleLink(dateStr) {
     if (!dateStr) return;
     const parts = dateStr.split('-');
     if (parts.length === 3) {
         const url = `https://www.nytimes.com/${parts[0]}/${parts[1]}/${parts[2]}/crosswords/spelling-bee-forum.html`;
-        UI.nytLink.href = url;
-        if(UI.nytLinkMob) UI.nytLinkMob.href = url;
+        UI.puzzleLink.href = url;
+        if(UI.puzzleLinkMob) UI.puzzleLinkMob.href = url;
     }
 }
 
@@ -667,8 +667,8 @@ window.handleTwoLetterClick = (prefix) => {
 };
 
 /* Attach Listeners */
-UI.nytDate.addEventListener('change', e => {
-    updateNytLink(e.target.value);
+UI.puzzleDate.addEventListener('change', e => {
+    updatePuzzleLink(e.target.value);
     if (UI.customDateDisplay) UI.customDateDisplay.innerText = formatCustomDate(e.target.value);
     render(); 
 });
@@ -867,12 +867,12 @@ async function fetchDefinition(word) {
     }
 }
 
-if (UI.nytDateMob) {
-    UI.nytDateMob.addEventListener('change', (e) => {
-        UI.nytDate.value = e.target.value;
+if (UI.puzzleDateMob) {
+    UI.puzzleDateMob.addEventListener('change', (e) => {
+        UI.puzzleDate.value = e.target.value;
         if (UI.customDateDisplayMob) UI.customDateDisplayMob.innerText = formatCustomDate(e.target.value);
         if (UI.customDateDisplay) UI.customDateDisplay.innerText = formatCustomDate(e.target.value);
-        updateNytLink(e.target.value);
+        updatePuzzleLink(e.target.value);
     });
 }
 

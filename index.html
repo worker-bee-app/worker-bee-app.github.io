@@ -34,7 +34,7 @@
                         style="font-size: 1.2rem; margin-right: 0.5rem; color: var(--primary);"></i>
                     <span id="custom-date-display-mob"
                         style="font-weight: 600; font-size: 0.9rem; color: var(--text-color); min-width: 100px; text-align: center; border: 1px solid var(--primary); padding: 0.1rem 0.45rem; display: inline-flex; justify-content: center; align-items: center; box-sizing: border-box;"></span>
-                    <input type="date" id="nyt-date-mob" min="2021-09-20" title="Select a past date"
+                    <input type="date" id="puzzle-date-mob" min="2021-09-20" title="Select a past date"
                         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                 </div>
                 <div class="header-actions-row">
@@ -42,7 +42,7 @@
                         style="display: flex; align-items: center; font-size: 1.2rem; color: var(--text-color); text-decoration: none;">
                         <i class="fa-solid fa-circle-question fa-fw"></i>
                     </a>
-                    <a href="#" id="nyt-link-mob" target="_blank" class="btn btn-small"
+                    <a href="#" id="puzzle-link-mob" target="_blank" class="btn btn-small"
                         style="min-width: 100px; justify-content: center; border: 1px solid var(--primary); box-sizing: border-box;">Open
                         Hints</a>
                 </div>
@@ -68,10 +68,10 @@
                         <span id="custom-date-display"
                             style="font-weight: 600; font-size: 0.95rem; color: var(--text-color);"></span>
                         <i class="fa-regular fa-calendar" style="margin-left: 0.5rem; color: var(--primary);"></i>
-                        <input type="date" id="nyt-date" min="2021-09-20" title="Select a past date"
+                        <input type="date" id="puzzle-date" min="2021-09-20" title="Select a past date"
                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                     </div>
-                    <a href="#" id="nyt-link" target="_blank" class="btn btn-small"
+                    <a href="#" id="puzzle-link" target="_blank" class="btn btn-small"
                         style="border: 1px solid var(--primary); box-sizing: border-box;">Open Hints</a>
                     <div id="chevron-indicator" class="chevron-indicator">
                         <span>&#10095;</span><span>&#10095;</span><span>&#10095;</span>
@@ -148,7 +148,7 @@
 
                     <div id="hints-container" class="hints-transition">
                         <textarea id="hints-input"
-                            placeholder="Copy and paste the entire hints section that looks like:&#10;&#10;Spelling Bee Grid&#10;&#10;Center letter is in bold.&#10;&#10;P A C E H K Y&#10;&#10;WORDS: 30, POINTS: 107, PANGRAMS: 1, BINGO&#10;&#10;         4	  5	  6	  8	  Σ&#10;A:	  -	  1	  -	  -	  1&#10;C:	  2	  2	  -	  -	  4&#10;E:	  1	  -	  -	  -	1&#10;H:	  2	  1	  -	  -	  3&#10;K:	  1	  1	  -	  -	2&#10;P:	  8	  6	  3	  1	18&#10;Y:	  -	  1	  -	  -	  1&#10;Σ:	14	12	  3	  1	30&#10;&#10;Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3&#10;EP-1&#10;HA-1 HE-1 HY-1&#10;KA-1 KE-1&#10;PA-8 PE-10&#10;YA-1"
+                            placeholder="Copy and paste the entire hints section that looks like:&#10;&#10;Puzzle Grid&#10;&#10;Center letter is in bold.&#10;&#10;P A C E H K Y&#10;&#10;WORDS: 30, POINTS: 107, PANGRAMS: 1, BINGO&#10;&#10;         4	  5	  6	  8	  Σ&#10;A:	  -	  1	  -	  -	  1&#10;C:	  2	  2	  -	  -	  4&#10;E:	  1	  -	  -	  -	1&#10;H:	  2	  1	  -	  -	  3&#10;K:	  1	  1	  -	  -	2&#10;P:	  8	  6	  3	  1	18&#10;Y:	  -	  1	  -	  -	  1&#10;Σ:	14	12	  3	  1	30&#10;&#10;Two letter list:&#10;&#10;AP-1&#10;CA-1 CH-3&#10;EP-1&#10;HA-1 HE-1 HY-1&#10;KA-1 KE-1&#10;PA-8 PE-10&#10;YA-1"
                             class="hints-textarea"></textarea>
                         <div id="hints-error" class="hidden error-text"></div>
                         <div class="hints-actions">

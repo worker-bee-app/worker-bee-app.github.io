@@ -550,8 +550,8 @@ td {
     padding: 0.25rem 0;
 }
 
-#nyt-date,
-#nyt-date-mob {
+#puzzle-date,
+#puzzle-date-mob {
     padding: 0;
     border: none;
     background: transparent;
@@ -564,8 +564,8 @@ td {
     outline: none;
 }
 
-#nyt-date::-webkit-calendar-picker-indicator,
-#nyt-date-mob::-webkit-calendar-picker-indicator {
+#puzzle-date::-webkit-calendar-picker-indicator,
+#puzzle-date-mob::-webkit-calendar-picker-indicator {
     filter: invert(72%) sepia(60%) saturate(1483%) hue-rotate(345deg) brightness(101%) contrast(100%);
     cursor: pointer;
 }
@@ -929,7 +929,7 @@ td {
         justify-content: flex-end;
     }
 
-    #nyt-date-mob {
+    #puzzle-date-mob {
         font-size: 0.9rem;
         min-height: 24px;
         position: relative;
@@ -937,7 +937,7 @@ td {
         cursor: pointer;
     }
 
-    #nyt-link-mob {
+    #puzzle-link-mob {
         padding: 0.1rem 0.6rem;
     }
 

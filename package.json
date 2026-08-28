@@ -1,7 +1,7 @@
 {
   "name": "worker-bee",
   "version": "1.0.0",
-  "description": "NYT Spelling Bee Companion",
+  "description": "Hexagon Word Game Companion",
   "private": true,
   "scripts": {
     "test": "playwright test"
