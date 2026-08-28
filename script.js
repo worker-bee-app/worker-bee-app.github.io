@@ -35,7 +35,7 @@ const State = {
         constrain: false,
         excludeFound: false
     },
-    dismissedQbabm: false
+    dismissedAllFound: false
 };
 
 /* DOM Caching Helper */
@@ -62,7 +62,7 @@ const UI = {
     bingoLabelMob: $('bingo-label-mob'),
     bingoStatusMob: $('bingo-status-mob'),
     gridOutput: $('grid-output'),
-    twoLetterOutput: $('two-letter-output'),
+    twoLetterOutput: null, // Removed
     luStart: $('lu-start'),
     luContains: $('lu-contains'),
     luLength: $('lu-length'),
@@ -89,8 +89,8 @@ const UI = {
     
     ignoredCount: $('ignored-count'),
     foundWarning: $('found-warning'),
-    qbabmMessage: $('qbabm-message'),
-    qbabmMessageMob: $('qbabm-message-mob'),
+    allFoundMessage: $('all-found-message'),
+    allFoundMessageMob: $('all-found-message-mob'),
     hintsError: $('hints-error'),
     chevronInd: $('chevron-indicator'),
     chevronIndMob: $('chevron-indicator-mob'),
@@ -101,8 +101,8 @@ const UI = {
     linkEditCenter: $('link-edit-center'),
 
     mobFoundInput: $('mob-found-input'),
-    mobQbabmOverlay: $('mob-qbabm-overlay'),
-    btnCloseQbabm: $('btn-close-qbabm'),
+    mobAllFoundOverlay: $('mob-all-found-overlay'),
+    btnCloseAllFound: $('btn-close-all-found'),
     mobWordsFoundLink: $('mob-words-found-link'),
     mobWordsFoundCount: $('mob-words-found-count'),
     mobIgnoredLink: $('mob-ignored-link'),
@@ -156,12 +156,12 @@ function parseHintsText(text) {
     let gridStarted = false;
     for (const line of lines) {
         if (!gridStarted) {
-            if (line.match(/^(?:\d+\s+)+[σΣ]/i) || (line.includes('4') && line.includes('5') && line.includes('Σ') && line.match(/\d/))) {
+            if (line.match(/^(?:\d+\s+)+([σΣ]|tot)/i) || (line.includes('4') && line.includes('5') && (line.includes('Σ') || line.includes('tot')) && line.match(/\d/))) {
                 gridStarted = true;
                 p.grid.lengths = line.match(/\d+/g).map(Number);
             }
         } else {
-            if (line.includes('Σ') || line.includes('sigma')) break;
+            if (line.includes('Σ') || line.includes('sigma') || line.includes('tot')) break;
             const rowMatch = line.match(/^([a-z]):\s*(.*)$/i);
             if (rowMatch) {
                 const letter = rowMatch[1];
@@ -441,42 +441,61 @@ function render() {
     }
 
     if (State.parsed.totals.words > 0 && State.computed.validFoundWords.length >= State.parsed.totals.words) {
-        UI.qbabmMessage.classList.remove('qbabm-hidden');
-        if(UI.qbabmMessageMob) UI.qbabmMessageMob.classList.remove('qbabm-hidden');
-        if(UI.mobQbabmOverlay && !State.dismissedQbabm) {
-            UI.mobQbabmOverlay.classList.remove('qbabm-hidden');
+        UI.allFoundMessage.classList.remove('all-found-hidden');
+        if(UI.allFoundMessageMob) UI.allFoundMessageMob.classList.remove('all-found-hidden');
+        if(UI.mobAllFoundOverlay && !State.dismissedAllFound) {
+            UI.mobAllFoundOverlay.classList.remove('all-found-hidden');
             if(UI.mobFoundInput) UI.mobFoundInput.disabled = true;
         }
     } else {
-        State.dismissedQbabm = false; // Reset if words dropped
-        UI.qbabmMessage.classList.add('qbabm-hidden');
-        if(UI.qbabmMessageMob) UI.qbabmMessageMob.classList.add('qbabm-hidden');
-        if(UI.mobQbabmOverlay) {
-            UI.mobQbabmOverlay.classList.add('qbabm-hidden');
+        State.dismissedAllFound = false; // Reset if words dropped
+        UI.allFoundMessage.classList.add('all-found-hidden');
+        if(UI.allFoundMessageMob) UI.allFoundMessageMob.classList.add('all-found-hidden');
+        if(UI.mobAllFoundOverlay) {
+            UI.mobAllFoundOverlay.classList.add('all-found-hidden');
             if(UI.mobFoundInput) UI.mobFoundInput.disabled = false;
         }
     }
 
     // 7. Grid & Two Letter
     renderGridUI();
-    renderTwoLetterUI();
 }
 
 function renderGridUI() {
     const grid = State.computed.grid;
+    const twoLetter = State.computed.twoLetter;
+    
     if (!grid.lengths.length) {
         UI.gridOutput.innerHTML = '<em>No grid data found</em>';
         return;
     }
     
-    let html = '<table><thead><tr><th></th>';
+    // Extract unique second letters for bigram columns
+    const secondLetters = new Set();
+    Object.keys(twoLetter).forEach(k => secondLetters.add(k[1]));
+    const slArray = Array.from(secondLetters).sort();
+    
+    let html = '<div class="grid-legend" style="margin-bottom: 0.75rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: flex-start;">';
+    html += '<span style="display:inline-flex; align-items:center; margin-right:1rem;"><span style="display:inline-block; width:16px; height:8px; border-radius:4px; background:#f5f5f5; border:1px solid #ccc; margin-right:6px;"></span> first letter</span>';
+    html += '<span style="display:inline-flex; align-items:center; margin-right:1rem;"><span style="display:inline-block; width:16px; height:8px; border-radius:4px; background:#ffffff; border:1px solid #ccc; margin-right:6px;"></span> word length</span>';
+    html += '<span style="display:inline-flex; align-items:center; margin-right:1rem;"><span style="display:inline-block; width:16px; height:8px; border-radius:4px; background:#e3f2fd; border:1px solid #ccc; margin-right:6px;"></span> second letter</span>';
+    html += '</div>';
+
+    const totalCols = 1 + grid.lengths.length + 1 + slArray.length;
+    const maxTableWidth = totalCols * 42;
+
+    html += `<table style="max-width: ${maxTableWidth}px;"><thead>`;
+    html += '<tr><th class="first-letter-cell"></th>';
     grid.lengths.forEach(l => html += `<th>${l}</th>`);
-    html += '<th>Σ</th></tr></thead><tbody>';
+    html += '<th class="tot-cell">TOT</th>';
+    slArray.forEach(sl => html += `<th class="bigram-cell">${sl.toUpperCase()}</th>`);
+    html += '</tr></thead><tbody>';
 
     for (const [letter, counts] of Object.entries(grid.rows)) {
-        html += `<tr><th>${letter.toUpperCase()}</th>`;
+        html += `<tr><th class="first-letter-cell">${letter.toUpperCase()}</th>`;
         let rowSigma = 0;
         
+        // Grid counts
         grid.lengths.forEach(l => {
             const count = counts[l] || 0;
             const origCount = State.parsed.grid.rows[letter]?.[l] || 0;
@@ -498,37 +517,52 @@ function renderGridUI() {
             }
             html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
         });
-        html += `<th class="${rowSigma <= 0 ? 'zero' : ''}">${rowSigma || 0}</th></tr>`;
+        
+        // row TOT
+        html += `<th class="tot-cell ${rowSigma <= 0 ? 'zero' : ''}">${rowSigma || 0}</th>`;
+        
+        // Two Letter counts
+        slArray.forEach(sl => {
+            const bigram = letter + sl;
+            const count = twoLetter[bigram];
+            const origCount = State.parsed.twoLetter[bigram];
+            
+            let tdHtml = '<span class="empty-dash">-</span><span class="empty-dot">.</span>';
+            let clsList = 'bigram-cell';
+            let onclick = '';
+            
+            if (origCount > 0) {
+                if (count <= 0) {
+                    tdHtml = '0';
+                    clsList += ' zero';
+                } else {
+                    tdHtml = count;
+                    clsList += ' clickable';
+                    onclick = `onclick="handleTwoLetterClick('${bigram}')"`;
+                }
+            }
+            html += `<td class="${clsList}" ${onclick}>${tdHtml}</td>`;
+        });
+        
+        html += '</tr>';
     }
 
-    html += `<tr><th>Σ</th>`;
+    // Bottom TOT row
+    html += `<tr><th class="tot-cell">TOT</th>`;
     grid.lengths.forEach(l => {
         const cTotal = State.computed.gridColTotals[l] || 0;
-        html += `<th class="${cTotal <= 0 ? 'zero' : ''}">${cTotal}</th>`;
+        html += `<th class="tot-cell ${cTotal <= 0 ? 'zero' : ''}">${cTotal}</th>`;
     });
-    html += `<th class="${State.computed.gridTotalSigma <= 0 ? 'zero' : ''}">${State.computed.gridTotalSigma}</th></tr>`;
+    html += `<th class="tot-cell ${State.computed.gridTotalSigma <= 0 ? 'zero' : ''}">${State.computed.gridTotalSigma}</th>`;
+    
+    slArray.forEach(() => {
+        html += '<th class="bigram-cell empty-dash">-</th>';
+    });
+    html += '</tr>';
+    
     html += '</tbody></table>';
     
     UI.gridOutput.innerHTML = html;
-}
-
-function renderTwoLetterUI() {
-    const twoLetter = State.computed.twoLetter;
-    let html = '';
-    let currentLetter = '';
-    
-    Object.keys(twoLetter).sort().forEach(k => {
-        const count = twoLetter[k];
-        const clsList = 'two-letter-item ' + (count <= 0 ? 'zero' : 'clickable');
-        const onclick = count > 0 ? `onclick="handleTwoLetterClick('${k}')"` : '';
-        
-        if (currentLetter && currentLetter !== k[0]) html += '<br>';
-        currentLetter = k[0];
-        
-        html += `<span class="${clsList}" ${onclick}>${k.toUpperCase()}-${count}</span>`;
-    });
-    
-    UI.twoLetterOutput.innerHTML = html || '<em>No two-letter data found</em>';
 }
 
 function renderLookupUI() {
@@ -731,10 +765,10 @@ if (UI.mobFoundInput) {
     });
 }
 
-if (UI.btnCloseQbabm) {
-    UI.btnCloseQbabm.addEventListener('click', () => {
-        State.dismissedQbabm = true;
-        if (UI.mobQbabmOverlay) UI.mobQbabmOverlay.classList.add('qbabm-hidden');
+if (UI.btnCloseAllFound) {
+    UI.btnCloseAllFound.addEventListener('click', () => {
+        State.dismissedAllFound = true;
+        if (UI.mobAllFoundOverlay) UI.mobAllFoundOverlay.classList.add('all-found-hidden');
         if (UI.mobFoundInput) UI.mobFoundInput.disabled = false;
     });
 }

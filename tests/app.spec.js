@@ -4,29 +4,27 @@ const sampleHints = `Puzzle Grid
 
 Center letter is in bold.
 
-P A C E H K Y
+A B C D E F G
 
-WORDS: 30, POINTS: 107, PANGRAMS: 1, BINGO
+WORDS: 18, POINTS: 75, PANGRAMS: 0
 
-         4    5    6    8    Σ
-A:       -    1    -    -    1
-C:       2    2    -    -    4
-E:       1    -    -    -    1
-H:       2    1    -    -    3
-K:       1    1    -    -    2
-P:       8    6    3    1   18
-Y:       -    1    -    -    1
-Σ:      14   12    3    1   30
+       4  5  6  7  TOT
+A:     2  -  -  -   2
+B:     3  1  -  1   5
+C:     2  -  -  1   3
+D:     3  -  1  -   4
+F:     2  -  1  -   3
+G:     1  -  -  -   1
+TOT:  13  1  2  2  18
 
 Two letter list:
 
-AP-1
-CA-1 CH-3
-EP-1
-HA-1 HE-1 HY-1
-KA-1 KE-1
-PA-8 PE-10
-YA-1`;
+AB-1 AG-1
+BA-2 BE-3
+CA-3
+DE-4
+FA-3
+GA-1`;
 
 test.describe('Worker Bee Tests', () => {
 
@@ -49,14 +47,13 @@ test.describe('Worker Bee Tests', () => {
     if (!isMobile) {
       // Check Desktop stats
       await expect(page.locator('#words-count')).toHaveText('0');
-      await expect(page.locator('#words-total')).toHaveText('30');
-      await expect(page.locator('#bingo-label')).toContainText('P, A, C, E, H, K, Y');
+      await expect(page.locator('#words-total')).toHaveText('18');
+      await expect(page.locator('#bingo-label')).toContainText('N/A');
     } else {
       // Check Mobile stats
-      // Switch to words tab first on mobile if needed, but sticky stats are always visible
       await expect(page.locator('#words-count-mob')).toHaveText('0');
-      await expect(page.locator('#words-total-mob')).toHaveText('30');
-      await expect(page.locator('#bingo-label-mob')).toContainText('P, A, C, E, H, K, Y');
+      await expect(page.locator('#words-total-mob')).toHaveText('18');
+      await expect(page.locator('#bingo-label-mob')).toContainText('N/A');
     }
   });
 
@@ -69,7 +66,7 @@ test.describe('Worker Bee Tests', () => {
     await expect(page.locator('#orbit-wrapper')).toBeVisible();
     
     // Enter words
-    const testWords = "pace pack peach";
+    const testWords = "face fade cafe";
     if (isMobile) {
       await page.fill('#mob-found-input', testWords);
       await page.keyboard.press('Enter');
