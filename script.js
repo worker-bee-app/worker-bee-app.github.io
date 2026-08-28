@@ -110,6 +110,8 @@ const UI = {
     btnClearFoundMob: $('btn-clear-found-mob'),
     wordsFoundModal: $('words-found-modal'),
     wordsFoundModalContent: $('words-found-modal-content'),
+    wordsFoundModalDisplay: $('words-found-modal-display'),
+    btnEditWordsMob: $('btn-edit-words-mob'),
     wordsFoundClose: $('words-found-close'),
     ignoredModal: $('ignored-modal'),
     ignoredModalContent: $('ignored-modal-content'),
@@ -733,6 +735,34 @@ UI.btnClearHints.addEventListener('click', () => {
     render();
 });
 
+UI.wordsFoundModalContent.addEventListener('input', e => {
+    const normalized = e.target.value.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ');
+    if (normalized !== e.target.value) {
+        e.target.value = normalized;
+    }
+    State.foundText = e.target.value.toLowerCase().replace(/[^a-z\s]/g, '');
+    if (UI.foundInput) UI.foundInput.value = State.foundText;
+    State.computed = computeState(State.parsed, State.foundText);
+    render();
+});
+
+if (UI.btnEditWordsMob) {
+    UI.btnEditWordsMob.addEventListener('click', () => {
+        const isEditing = !UI.wordsFoundModalContent.classList.contains('hidden');
+        if (isEditing) {
+            UI.wordsFoundModalContent.classList.add('hidden');
+            UI.wordsFoundModalDisplay.innerText = State.foundText || 'No words entered yet.';
+            UI.wordsFoundModalDisplay.classList.remove('hidden');
+            UI.btnEditWordsMob.innerText = 'Edit';
+        } else {
+            UI.wordsFoundModalDisplay.classList.add('hidden');
+            UI.wordsFoundModalContent.classList.remove('hidden');
+            UI.btnEditWordsMob.innerText = 'Done';
+            UI.wordsFoundModalContent.focus();
+        }
+    });
+}
+
 UI.foundInput.addEventListener('input', e => {
     // Normalize input: replace all newlines and multiple spaces with a single space
     const normalized = e.target.value.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ');
@@ -750,7 +780,15 @@ if (UI.mobFoundInput) {
         if (e.key === 'Enter' || e.type === 'blur' || val.includes(' ') || val.includes(',') || val.includes('\n')) {
             const clean = val.replace(/[\r\n,]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
             if (clean) {
-                State.foundText = (State.foundText + ' ' + clean).trim();
+                const wordsToAdd = clean.split(/\s+/);
+                const currentWords = State.foundText.split(/\s+/).filter(w=>w);
+                for (let w of wordsToAdd) {
+                    if (!currentWords.includes(w)) {
+                        currentWords.push(w);
+                    }
+                }
+                State.foundText = currentWords.join(' ');
+                
                 if (UI.foundInput) UI.foundInput.value = State.foundText;
                 State.computed = computeState(State.parsed, State.foundText);
                 e.target.value = '';
@@ -953,9 +991,10 @@ if (UI.btnClearFoundMob) {
 if (UI.mobWordsFoundLink) {
     UI.mobWordsFoundLink.addEventListener('click', (e) => {
         e.preventDefault();
-        UI.wordsFoundModalContent.innerText = State.computed.validFoundWords.length > 0 
-            ? State.computed.validFoundWords.join(' ') 
-            : 'No words found.';
+        if (UI.wordsFoundModalContent.value !== State.foundText) {
+            UI.wordsFoundModalContent.value = State.foundText;
+        }
+        UI.wordsFoundModalDisplay.innerText = State.foundText || 'No words entered yet.';
         UI.wordsFoundModal.classList.remove('hidden');
     });
 }
