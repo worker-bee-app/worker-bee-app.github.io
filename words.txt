@@ -98339,6 +98339,7 @@ enbloc
 enbranglement
 enbrave
 enbusshe
+enby
 encadre
 encaenia
 encage
@@ -151239,6 +151240,7 @@ inness
 innest
 innet
 innholder
+innie
 inning
 innings
 inninmorite
@@ -185339,6 +185341,7 @@ miriest
 mirific
 mirifical
 miriki
+mirin
 miriness
 mirinesses
 miring
@@ -210767,6 +210770,7 @@ opinioned
 opinionedness
 opinionist
 opinions
+opioid
 opiomania
 opiomaniac
 opiophagism
@@ -226880,6 +226884,7 @@ pennatularian
 pennatulid
 pennatulidae
 pennatuloid
+penne
 penned
 penneech
 penneeck
@@ -312103,6 +312108,7 @@ tailgunner
 tailhead
 tailing
 tailings
+taillamp
 taille
 tailles
 tailless
@@ -312557,6 +312563,7 @@ tamarao
 tamaraos
 tamarau
 tamaraus
+tamari
 tamaricaceae
 tamaricaceous
 tamarin
@@ -360272,6 +360279,7 @@ weeper
 weepered
 weepers
 weepful
+weepie
 weepier
 weepiest
 weepiness
