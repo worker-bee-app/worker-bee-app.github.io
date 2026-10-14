@@ -79042,6 +79042,8 @@ defunctionalization
 defunctionalize
 defunctive
 defunctness
+defund
+defunded
 defuse
 defused
 defuses
@@ -84528,6 +84530,7 @@ diddler
 diddlers
 diddles
 diddling
+diddly
 diddy
 didelph
 didelphia
@@ -109341,6 +109344,7 @@ farriers
 farriery
 farris
 farrisite
+farro
 farrow
 farrowed
 farrowing
@@ -150196,6 +150200,7 @@ infighting
 infigured
 infile
 infill
+infilled
 infilling
 infilm
 infilter
@@ -187536,6 +187541,7 @@ mocha
 mochas
 moche
 mochel
+mochi
 mochica
 mochila
 mochilas
@@ -195677,6 +195683,7 @@ neocolonialist
 neocolonialists
 neocolonially
 neocomian
+neocon
 neoconcretist
 neoconservative
 neoconstructivism
@@ -270966,6 +270973,7 @@ romaunts
 romble
 rombos
 rombowline
+romcom
 rome
 romeine
 romeite
@@ -365958,6 +365966,7 @@ yonner
 yonnie
 yonside
 yont
+yoohoo
 yook
 yoop
 yore
